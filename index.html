@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Elite Academy | School Management Portal</title>
-  <!-- Google Fonts + Font Awesome -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <title>Hermana Academy | Smart Enrollment Portal</title>
+  <!-- Google Fonts + Font Awesome 6 -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * {
@@ -15,687 +15,643 @@
     }
 
     body {
-      font-family: 'Inter', sans-serif;
-      background: #f4f7fc;
-      color: #1e293b;
-      line-height: 1.5;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+      min-height: 100vh;
       padding: 2rem 1.5rem;
     }
 
-    /* container */
-    .container {
-      max-width: 1400px;
+    .academy-container {
+      max-width: 1300px;
       margin: 0 auto;
     }
 
     /* header */
-    .header {
-      margin-bottom: 2.5rem;
+    .hero {
       text-align: center;
+      margin-bottom: 2.2rem;
     }
-    .header h1 {
+    .hero h1 {
       font-size: 2.2rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #1E3C72, #2A5298);
-      background-clip: text;
+      font-weight: 800;
+      background: linear-gradient(120deg, #0F2B3D, #1B4A6F);
       -webkit-background-clip: text;
+      background-clip: text;
       color: transparent;
-      letter-spacing: -0.3px;
+      letter-spacing: -0.5px;
     }
-    .header .badge {
-      background: #e9f0f5;
-      display: inline-block;
-      padding: 0.3rem 1rem;
-      border-radius: 40px;
-      font-size: 0.8rem;
+    .hero .tagline {
+      color: #2c3e66;
       font-weight: 500;
-      color: #1e4a76;
-      margin-top: 0.5rem;
-    }
-    .sub {
-      color: #5c6f87;
-      margin-top: 0.3rem;
-      font-size: 0.95rem;
+      margin-top: 0.4rem;
     }
 
-    /* dashboard grid */
-    .dashboard {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-      gap: 1.8rem;
-      margin-bottom: 2rem;
-    }
-
-    /* cards */
-    .card {
+    /* step indicator */
+    .step-progress {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2.5rem;
       background: white;
-      border-radius: 28px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
-      overflow: hidden;
-      transition: transform 0.2s, box-shadow 0.2s;
-      display: flex;
-      flex-direction: column;
-      backdrop-filter: blur(0px);
-      border: 1px solid rgba(0, 0, 0, 0.03);
+      padding: 1rem 1.8rem;
+      border-radius: 80px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.05);
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.12);
-    }
-    .card-header {
-      padding: 1.3rem 1.5rem 0.7rem 1.5rem;
-      border-bottom: 2px solid #eef2f6;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .card-header i {
-      font-size: 1.7rem;
-      color: #2a5f8a;
-      background: #eef2fa;
-      padding: 8px;
-      border-radius: 18px;
-    }
-    .card-header h2 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #0f2b3d;
-    }
-    .card-body {
-      padding: 1.5rem;
+    .step-item {
       flex: 1;
-    }
-
-    /* forms */
-    .form-group {
-      margin-bottom: 1rem;
-    }
-    label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #4a627a;
-      margin-bottom: 0.3rem;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border: 1px solid #dce3ec;
-      border-radius: 18px;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.9rem;
-      transition: 0.2s;
-      background-color: #fff;
-    }
-    input:focus, select:focus, textarea:focus {
-      outline: none;
-      border-color: #2a6b9e;
-      box-shadow: 0 0 0 3px rgba(42, 107, 158, 0.1);
-    }
-    .btn {
-      background: #1e4a76;
-      color: white;
-      border: none;
-      padding: 0.75rem 1.3rem;
-      border-radius: 40px;
-      font-weight: 600;
+      text-align: center;
       font-size: 0.85rem;
-      cursor: pointer;
-      transition: 0.2s;
-      width: 100%;
-      margin-top: 0.5rem;
-      display: inline-flex;
+      font-weight: 600;
+      color: #94a3b8;
+      display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
+      transition: 0.2s;
     }
-    .btn i {
-      font-size: 0.9rem;
-    }
-    .btn:hover {
-      background: #0f3b5c;
-      transform: scale(0.98);
-    }
-    .btn-outline {
-      background: white;
-      border: 1px solid #cbdde9;
+    .step-item.active {
       color: #1e4a76;
     }
-    .btn-outline:hover {
-      background: #f0f6fe;
+    .step-item.completed {
+      color: #15803d;
     }
-    .delete-btn {
-      background: #f1f3f7;
-      color: #b91c1c;
-      border: none;
-      font-size: 0.7rem;
-      padding: 0.2rem 0.6rem;
-      border-radius: 30px;
-      margin-left: 8px;
-      cursor: pointer;
+    .step-icon {
+      background: #f1f5f9;
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 40px;
+      font-size: 0.9rem;
     }
-    .list-container {
-      margin-top: 1.5rem;
-      border-top: 1px solid #ecf3f9;
-      padding-top: 1rem;
+    .step-item.active .step-icon {
+      background: #1e4a76;
+      color: white;
     }
-    .list-title {
+    .step-item.completed .step-icon {
+      background: #15803d;
+      color: white;
+    }
+
+    /* main card */
+    .main-card {
+      background: white;
+      border-radius: 2rem;
+      box-shadow: 0 25px 45px -12px rgba(0,0,0,0.2);
+      padding: 2rem 2rem;
+      transition: all 0.2s;
+    }
+
+    /* form styles */
+    .form-group {
+      margin-bottom: 1.3rem;
+    }
+    label {
       font-weight: 600;
       font-size: 0.85rem;
-      margin-bottom: 0.7rem;
-      color: #2c5a7a;
+      color: #1f3a5f;
+      margin-bottom: 0.3rem;
+      display: block;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 1.2rem;
+      font-family: inherit;
+      transition: 0.2s;
+      background: #fefefe;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #2c6e9e;
+      box-shadow: 0 0 0 3px rgba(44,110,158,0.1);
+    }
+    .btn-primary {
+      background: #1f4e79;
+      border: none;
+      padding: 0.9rem 1.4rem;
+      border-radius: 2rem;
+      font-weight: 700;
+      color: white;
+      width: 100%;
+      font-size: 1rem;
+      cursor: pointer;
       display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: 0.2s;
+    }
+    .btn-primary:hover {
+      background: #0e3b5c;
+      transform: translateY(-2px);
+    }
+    .btn-secondary {
+      background: #eef2ff;
+      border: none;
+      padding: 0.8rem 1.2rem;
+      border-radius: 2rem;
+      font-weight: 600;
+      color: #1f4e79;
+      cursor: pointer;
+      display: inline-flex;
       align-items: center;
       gap: 8px;
     }
-    .student-item, .payment-item, .feedback-item {
-      background: #f9fbfd;
-      border-radius: 20px;
-      padding: 0.7rem 1rem;
-      margin-bottom: 0.6rem;
-      font-size: 0.85rem;
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .exam-question {
+      background: #f8fafc;
+      padding: 1rem;
+      border-radius: 1.2rem;
+      margin-bottom: 1.2rem;
+      border-left: 5px solid #2c6e9e;
+    }
+    .options {
+      margin-top: 0.5rem;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 0.8rem;
     }
-    .student-info, .payment-info, .feedback-info {
-      flex: 1;
+    .option-radio {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
     }
-    .small-badge {
-      background: #e4eef9;
-      border-radius: 50px;
-      padding: 0.2rem 0.7rem;
-      font-size: 0.7rem;
-      font-weight: 500;
+    .receipt-card {
+      background: #fef9e6;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      border: 1px solid #ffe2a4;
+      font-family: monospace;
     }
-    .stars {
-      color: #f5b042;
-      letter-spacing: 2px;
-    }
-    .alert-message {
-      background: #e5f6e9;
-      color: #1f6e43;
-      padding: 0.6rem;
-      border-radius: 40px;
-      font-size: 0.75rem;
+    .alert-badge {
+      background: #e6f7ec;
+      border-radius: 2rem;
+      padding: 0.6rem 1rem;
+      font-size: 0.8rem;
       margin-top: 0.8rem;
       text-align: center;
     }
+    .flex-btns {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .dashboard-preview {
+      background: linear-gradient(145deg, #f0f9ff, #e9f2fa);
+      border-radius: 1.5rem;
+      padding: 1.4rem;
+    }
     hr {
       margin: 1rem 0;
-      border: 0;
-      height: 1px;
-      background: #e2e8f0;
     }
-    footer {
-      text-align: center;
-      margin-top: 2rem;
-      font-size: 0.75rem;
-      color: #6d8aac;
-    }
-    @media (max-width: 780px) {
+    @media (max-width: 680px) {
       body { padding: 1rem; }
-      .card-header h2 { font-size: 1.3rem; }
+      .main-card { padding: 1.2rem; }
+      .step-progress { border-radius: 2rem; }
     }
   </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <h1><i class="fas fa-landmark"></i> Elite International Academy</h1>
-    <div class="badge"><i class="fas fa-shield-alt"></i> Secure Campus Portal</div>
-    <div class="sub">Student registration • Fee payment • Parent feedback hub</div>
+<div class="academy-container">
+  <div class="hero">
+    <h1><i class="fas fa-graduation-cap"></i> Hermana Academy</h1>
+    <div class="tagline">Intelligent Enrollment · Ability Exam · Secure Payment · Smart Receipt</div>
   </div>
 
-  <div class="dashboard">
-    <!-- CARD 1: STUDENT REGISTRATION -->
-    <div class="card">
-      <div class="card-header">
-        <i class="fas fa-user-graduate"></i>
-        <h2>Student Registration</h2>
-      </div>
-      <div class="card-body">
-        <form id="studentForm">
-          <div class="form-group">
-            <label>Full name *</label>
-            <input type="text" id="studentName" placeholder="e.g., Olivia Chen" required>
-          </div>
-          <div class="form-group">
-            <label>Email address *</label>
-            <input type="email" id="studentEmail" placeholder="student@example.com" required>
-          </div>
-          <div class="form-group">
-            <label>Grade / Class</label>
-            <select id="studentGrade">
-              <option value="Grade 1">Grade 1</option>
-              <option value="Grade 2">Grade 2</option>
-              <option value="Grade 3">Grade 3</option>
-              <option value="Grade 4">Grade 4</option>
-              <option value="Grade 5">Grade 5</option>
-              <option value="Middle School">Middle School</option>
-              <option value="High School">High School</option>
-            </select>
-          </div>
-          <button type="submit" class="btn"><i class="fas fa-user-plus"></i> Register Student</button>
-        </form>
-        <div id="regSuccessMsg" class="alert-message" style="display: none;">✔ Student registered successfully</div>
-        
-        <div class="list-container">
-          <div class="list-title"><i class="fas fa-users"></i> Enrolled Students</div>
-          <div id="studentListContainer">
-            <!-- dynamic list -->
-            <div style="color: #9aaebf; text-align:center; padding:0.5rem;">No students yet — register above</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- CARD 2: FEE PAYMENT (Simulated) -->
-    <div class="card">
-      <div class="card-header">
-        <i class="fas fa-credit-card"></i>
-        <h2>Fee Payment</h2>
-      </div>
-      <div class="card-body">
-        <div class="form-group">
-          <label>Select Student *</label>
-          <select id="paymentStudentSelect">
-            <option value="">-- No students available --</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Amount (USD)</label>
-          <input type="number" id="feeAmount" value="450" step="10" min="10">
-        </div>
-        <div class="form-group">
-          <label>Card Number (demo)</label>
-          <input type="text" id="cardNumber" placeholder="4242 4242 4242 4242" maxlength="19">
-        </div>
-        <div class="form-group" style="display: flex; gap: 8px;">
-          <div style="flex:1"><label>Expiry</label><input type="text" placeholder="MM/YY" id="expiry"></div>
-          <div style="flex:1"><label>CVV</label><input type="text" placeholder="123" id="cvv" maxlength="4"></div>
-        </div>
-        <button id="payFeeBtn" class="btn"><i class="fas fa-lock"></i> Pay School Fee (Demo)</button>
-        <div id="paymentMessage" class="alert-message" style="display: none;"></div>
-        
-        <div class="list-container">
-          <div class="list-title"><i class="fas fa-history"></i> Recent Transactions</div>
-          <div id="paymentHistoryList">
-            <div style="color: #9aaebf; text-align:center;">No payments yet</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- CARD 3: PARENT FEEDBACK -->
-    <div class="card">
-      <div class="card-header">
-        <i class="fas fa-comment-dots"></i>
-        <h2>Parent Feedback</h2>
-      </div>
-      <div class="card-body">
-        <form id="feedbackForm">
-          <div class="form-group">
-            <label>Parent / Guardian Name *</label>
-            <input type="text" id="parentName" placeholder="e.g., Michael Johnson" required>
-          </div>
-          <div class="form-group">
-            <label>Associated Student (optional)</label>
-            <select id="feedbackStudentSelect">
-              <option value="">— General feedback —</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Rating</label>
-            <select id="feedbackRating">
-              <option value="5">★★★★★ (5)</option>
-              <option value="4">★★★★☆ (4)</option>
-              <option value="3">★★★☆☆ (3)</option>
-              <option value="2">★★☆☆☆ (2)</option>
-              <option value="1">★☆☆☆☆ (1)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Your feedback *</label>
-            <textarea rows="2" id="feedbackComment" placeholder="Share your experience, suggestions, or concerns..."></textarea>
-          </div>
-          <button type="submit" class="btn"><i class="fas fa-paper-plane"></i> Submit Feedback</button>
-        </form>
-        <div id="feedbackMsg" class="alert-message" style="display: none;"></div>
-        <div class="list-container">
-          <div class="list-title"><i class="fas fa-star"></i> Recent Messages</div>
-          <div id="feedbackListContainer">
-            <div style="color: #9aaebf; text-align:center;">No feedback yet — be the first</div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <!-- Step Progress -->
+  <div class="step-progress" id="stepProgress">
+    <div class="step-item" data-step="1"><span class="step-icon">1</span> Register</div>
+    <div class="step-item" data-step="2"><span class="step-icon">2</span> Ability Exam</div>
+    <div class="step-item" data-step="3"><span class="step-icon">3</span> Payment</div>
+    <div class="step-item" data-step="4"><span class="step-icon">4</span> Receipt & Bot</div>
+    <div class="step-item" data-step="5"><span class="step-icon">5</span> Enter Web</div>
   </div>
-  <footer>
-    <i class="fas fa-shield-heart"></i> Demo secure environment • All payments are simulated for demonstration • Elite Academy
-  </footer>
+
+  <div class="main-card" id="appContainer">
+    <!-- DYNAMIC STEP CONTENT WILL BE RENDERED HERE -->
+    <div id="stepContent"></div>
+  </div>
 </div>
 
 <script>
-  // ---------- DATA MODELS (LocalStorage) ----------
-  let students = [];       // { id, name, email, grade, date }
-  let payments = [];       // { id, studentId, studentName, amount, date, transactionId }
-  let feedbacks = [];      // { id, parentName, studentNameRef, rating, comment, date }
+  // ------------------- DATA STATE -------------------
+  let studentData = null;         // { name, email, grade, parentPhone, regDate }
+  let examScore = null;           // { total, correct, percentage, answers }
+  let examQuestions = [];
+  let paymentCompleted = false;
+  let transactionId = null;
+  let receiptData = null;
 
-  // Helper: generate random transaction ID
-  function generateTransactionId() {
-    return 'TXN' + Date.now() + '-' + Math.floor(Math.random() * 10000);
+  // Local storage persistence
+  function loadState() {
+    const saved = localStorage.getItem('hermana_enrollment');
+    if (saved) {
+      try {
+        const state = JSON.parse(saved);
+        studentData = state.studentData;
+        examScore = state.examScore;
+        examQuestions = state.examQuestions || [];
+        paymentCompleted = state.paymentCompleted || false;
+        transactionId = state.transactionId;
+        receiptData = state.receiptData;
+      } catch(e) {}
+    }
+    // ensure step integrity
+  }
+  function saveState() {
+    const state = { studentData, examScore, examQuestions, paymentCompleted, transactionId, receiptData };
+    localStorage.setItem('hermana_enrollment', JSON.stringify(state));
   }
 
-  // Load from localStorage
-  function loadData() {
-    const storedStudents = localStorage.getItem('elite_students');
-    const storedPayments = localStorage.getItem('elite_payments');
-    const storedFeedbacks = localStorage.getItem('elite_feedbacks');
-    
-    if (storedStudents) students = JSON.parse(storedStudents);
-    else {
-      // Sample initial data to make demo lively
-      students = [
-        { id: 1001, name: "Sophia Martinez", email: "sophia.m@elite.edu", grade: "Grade 5", date: new Date().toISOString() },
-        { id: 1002, name: "Liam Thompson", email: "liam.t@elite.edu", grade: "Middle School", date: new Date().toISOString() }
+  // Helper: generate questions based on grade
+  function generateQuestionsForGrade(grade) {
+    const gradeLower = grade.toLowerCase();
+    if (gradeLower.includes('grade 1') || gradeLower.includes('grade 2') || grade === 'Grade 1' || grade === 'Grade 2') {
+      return [
+        { text: "What is 12 + 7?", options: ["18", "19", "20", "21"], correct: 1 },
+        { text: "Which animal is known as the 'King of the Jungle'?", options: ["Elephant", "Tiger", "Lion", "Giraffe"], correct: 2 },
+        { text: "What is 5 × 3?", options: ["12", "15", "18", "20"], correct: 1 },
+        { text: "What color are bananas when ripe?", options: ["Red", "Green", "Yellow", "Blue"], correct: 2 },
+        { text: "Which shape has 3 sides?", options: ["Square", "Circle", "Triangle", "Rectangle"], correct: 2 }
       ];
-    }
-    
-    if (storedPayments) payments = JSON.parse(storedPayments);
-    else {
-      payments = [
-        { id: 5001, studentId: 1001, studentName: "Sophia Martinez", amount: 450, date: new Date(Date.now() - 86400000).toISOString(), transactionId: "ELT-9A2F1" },
-        { id: 5002, studentId: 1002, studentName: "Liam Thompson", amount: 450, date: new Date(Date.now() - 172800000).toISOString(), transactionId: "ELT-7B3D9" }
+    } else if (gradeLower.includes('grade 3') || gradeLower.includes('grade 4') || gradeLower.includes('grade 5')) {
+      return [
+        { text: "Solve: 144 ÷ 12", options: ["10", "12", "14", "16"], correct: 1 },
+        { text: "What is the capital of France?", options: ["Berlin", "Madrid", "Paris", "Lisbon"], correct: 2 },
+        { text: "Fraction equivalent to 0.75?", options: ["1/4", "2/3", "3/4", "4/5"], correct: 2 },
+        { text: "'Fast' is opposite of?", options: ["Quick", "Slow", "Rapid", "Speedy"], correct: 1 },
+        { text: "Perimeter of square side 6cm?", options: ["24cm", "36cm", "12cm", "18cm"], correct: 0 }
       ];
-    }
-    
-    if (storedFeedbacks) feedbacks = JSON.parse(storedFeedbacks);
-    else {
-      feedbacks = [
-        { id: 9001, parentName: "Mrs. Davis", studentNameRef: "Sophia Martinez", rating: 5, comment: "Excellent teachers and supportive environment!", date: new Date().toISOString() },
-        { id: 9002, parentName: "Robert Chen", studentNameRef: "General", rating: 4, comment: "Great curriculum but more sports activities please.", date: new Date().toISOString() }
-      ];
-    }
-  }
-
-  function saveAll() {
-    localStorage.setItem('elite_students', JSON.stringify(students));
-    localStorage.setItem('elite_payments', JSON.stringify(payments));
-    localStorage.setItem('elite_feedbacks', JSON.stringify(feedbacks));
-  }
-
-  // ---------- RENDER FUNCTIONS ----------
-  function renderStudentList() {
-    const container = document.getElementById('studentListContainer');
-    if (!container) return;
-    if (students.length === 0) {
-      container.innerHTML = '<div style="color: #9aaebf; text-align:center;">No students yet — register above</div>';
-      return;
-    }
-    container.innerHTML = '';
-    students.forEach(student => {
-      const div = document.createElement('div');
-      div.className = 'student-item';
-      div.innerHTML = `
-        <div class="student-info">
-          <strong>${escapeHtml(student.name)}</strong><br>
-          <span class="small-badge">${escapeHtml(student.grade)}</span> • ${escapeHtml(student.email)}
-          <div style="font-size:0.7rem; color:#7b8ea0;">ID: ${student.id}</div>
-        </div>
-        <button class="delete-btn" data-id="${student.id}" data-type="student"><i class="fas fa-trash-alt"></i> Remove</button>
-      `;
-      container.appendChild(div);
-    });
-    // attach delete events
-    document.querySelectorAll('.delete-btn[data-type="student"]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = parseInt(btn.getAttribute('data-id'));
-        deleteStudentById(id);
-      });
-    });
-  }
-
-  function deleteStudentById(id) {
-    if (confirm('Remove this student? All linked payment records will be erased (demo policy).')) {
-      // remove student
-      students = students.filter(s => s.id !== id);
-      // remove payments with this studentId
-      payments = payments.filter(p => p.studentId !== id);
-      // feedbacks remain with studentNameRef as text (no cascade)
-      saveAll();
-      renderStudentList();
-      updateDropdowns();        // update both payment & feedback dropdowns
-      renderPaymentHistory();
-      renderFeedbackList();
-      showTemporaryMessage('regSuccessMsg', 'Student removed successfully', 2000);
-    }
-  }
-
-  function renderPaymentHistory() {
-    const container = document.getElementById('paymentHistoryList');
-    if (!container) return;
-    if (payments.length === 0) {
-      container.innerHTML = '<div style="color: #9aaebf; text-align:center;">No payments yet</div>';
-      return;
-    }
-    container.innerHTML = '';
-    [...payments].reverse().slice(0, 8).forEach(pay => {
-      const payDiv = document.createElement('div');
-      payDiv.className = 'payment-item';
-      payDiv.innerHTML = `
-        <div class="payment-info">
-          <strong>${escapeHtml(pay.studentName)}</strong> • $${pay.amount}<br>
-          <span style="font-size:0.7rem;">${new Date(pay.date).toLocaleDateString()} | Ref: ${pay.transactionId}</span>
-        </div>
-        <i class="fas fa-check-circle" style="color:#2e7d64;"></i>
-      `;
-      container.appendChild(payDiv);
-    });
-  }
-
-  function renderFeedbackList() {
-    const container = document.getElementById('feedbackListContainer');
-    if (!container) return;
-    if (feedbacks.length === 0) {
-      container.innerHTML = '<div style="color: #9aaebf; text-align:center;">No feedback yet — be the first</div>';
-      return;
-    }
-    container.innerHTML = '';
-    [...feedbacks].reverse().slice(0, 6).forEach(fb => {
-      const stars = '★'.repeat(fb.rating) + '☆'.repeat(5-fb.rating);
-      const fbDiv = document.createElement('div');
-      fbDiv.className = 'feedback-item';
-      fbDiv.innerHTML = `
-        <div style="flex:1">
-          <div><strong>${escapeHtml(fb.parentName)}</strong> <span class="stars">${stars}</span></div>
-          <div style="font-size:0.75rem;">For: ${fb.studentNameRef === "General" ? "General / School" : escapeHtml(fb.studentNameRef)}</div>
-          <div style="font-size:0.8rem; margin-top:4px;">“${escapeHtml(fb.comment.substring(0, 100))}”</div>
-          <div style="font-size:0.65rem; color:#7f8c8d;">${new Date(fb.date).toLocaleDateString()}</div>
-        </div>
-      `;
-      container.appendChild(fbDiv);
-    });
-  }
-
-  // Update dropdowns for payment student selection & feedback student association
-  function updateDropdowns() {
-    const paymentSelect = document.getElementById('paymentStudentSelect');
-    const feedbackSelect = document.getElementById('feedbackStudentSelect');
-    if (!paymentSelect || !feedbackSelect) return;
-    
-    // payment dropdown
-    paymentSelect.innerHTML = '';
-    if (students.length === 0) {
-      paymentSelect.innerHTML = '<option value="">-- No students registered --</option>';
-      paymentSelect.disabled = true;
     } else {
-      paymentSelect.disabled = false;
-      students.forEach(std => {
-        const option = document.createElement('option');
-        option.value = std.id;
-        option.textContent = `${std.name} (${std.grade})`;
-        paymentSelect.appendChild(option);
+      // middle/high school more advanced
+      return [
+        { text: "Solve: 3x - 7 = 11. What is x?", options: ["4", "5", "6", "7"], correct: 2 },
+        { text: "Which element has the chemical symbol 'O'?", options: ["Gold", "Oxygen", "Osmium", "Hydrogen"], correct: 1 },
+        { text: "What is the square root of 144?", options: ["10", "11", "12", "13"], correct: 2 },
+        { text: "Who wrote 'Romeo and Juliet'?", options: ["Charles Dickens", "Jane Austen", "Mark Twain", "William Shakespeare"], correct: 3 },
+        { text: "If a train travels 60 miles per hour, how far in 2.5 hours?", options: ["120 miles", "150 miles", "180 miles", "100 miles"], correct: 1 }
+      ];
+    }
+  }
+
+  // Render logic (step based on current progress)
+  let currentStep = 1; // 1-5
+
+  function getCurrentStepBasedOnProgress() {
+    if (!studentData) return 1;
+    if (!examScore) return 2;
+    if (!paymentCompleted) return 3;
+    if (!receiptData) return 4;
+    return 5;
+  }
+
+  function updateStepUI() {
+    const steps = document.querySelectorAll('.step-item');
+    steps.forEach((stepEl, idx) => {
+      const stepNum = idx+1;
+      stepEl.classList.remove('active', 'completed');
+      if (stepNum < currentStep) stepEl.classList.add('completed');
+      else if (stepNum === currentStep) stepEl.classList.add('active');
+    });
+  }
+
+  function renderStep() {
+    const container = document.getElementById('stepContent');
+    if (!container) return;
+    if (currentStep === 1) renderRegistrationStep(container);
+    else if (currentStep === 2) renderExamStep(container);
+    else if (currentStep === 3) renderPaymentStep(container);
+    else if (currentStep === 4) renderReceiptBotStep(container);
+    else if (currentStep === 5) renderWebDashboard(container);
+    updateStepUI();
+  }
+
+  // STEP 1: REGISTRATION
+  function renderRegistrationStep(container) {
+    container.innerHTML = `
+      <h2 style="margin-bottom: 1rem;"><i class="fas fa-user-edit"></i> Register at Hermana Academy</h2>
+      <form id="regForm">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" id="fullName" value="${studentData?.name || ''}" placeholder="e.g., Isabella Reyes" required>
+        </div>
+        <div class="form-group">
+          <label>Email Address *</label>
+          <input type="email" id="email" value="${studentData?.email || ''}" placeholder="student@hermana.edu" required>
+        </div>
+        <div class="form-group">
+          <label>Parent/Guardian Phone</label>
+          <input type="text" id="phone" value="${studentData?.parentPhone || ''}" placeholder="+123456789">
+        </div>
+        <div class="form-group">
+          <label>Select Grade Level *</label>
+          <select id="gradeSelect">
+            <option value="Grade 1" ${studentData?.grade === 'Grade 1' ? 'selected' : ''}>Grade 1</option>
+            <option value="Grade 2" ${studentData?.grade === 'Grade 2' ? 'selected' : ''}>Grade 2</option>
+            <option value="Grade 3" ${studentData?.grade === 'Grade 3' ? 'selected' : ''}>Grade 3</option>
+            <option value="Grade 4" ${studentData?.grade === 'Grade 4' ? 'selected' : ''}>Grade 4</option>
+            <option value="Grade 5" ${studentData?.grade === 'Grade 5' ? 'selected' : ''}>Grade 5</option>
+            <option value="Middle School" ${studentData?.grade === 'Middle School' ? 'selected' : ''}>Middle School</option>
+            <option value="High School" ${studentData?.grade === 'High School' ? 'selected' : ''}>High School</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-primary"><i class="fas fa-arrow-right"></i> Register & Continue</button>
+      </form>
+    `;
+    document.getElementById('regForm')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('fullName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const grade = document.getElementById('gradeSelect').value;
+      if (!name || !email) {
+        alert("Please fill name and email.");
+        return;
+      }
+      if (!email.includes('@')) { alert("Valid email required"); return; }
+      studentData = { name, email, parentPhone: phone, grade, regDate: new Date().toISOString() };
+      // reset exam & payment when new registration
+      examScore = null;
+      paymentCompleted = false;
+      transactionId = null;
+      receiptData = null;
+      examQuestions = generateQuestionsForGrade(grade);
+      saveState();
+      currentStep = 2;
+      renderStep();
+    });
+  }
+
+  // STEP 2: EXAM (ability test based on grade)
+  function renderExamStep(container) {
+    if (!studentData) {
+      currentStep = 1;
+      renderStep();
+      return;
+    }
+    const questions = examQuestions.length ? examQuestions : generateQuestionsForGrade(studentData.grade);
+    examQuestions = questions;
+    saveState();
+    let answersHtml = '';
+    questions.forEach((q, idx) => {
+      answersHtml += `
+        <div class="exam-question">
+          <strong>${idx+1}. ${q.text}</strong>
+          <div class="options">
+            ${q.options.map((opt, optIdx) => `
+              <label class="option-radio">
+                <input type="radio" name="q${idx}" value="${optIdx}"> ${opt}
+              </label>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = `
+      <h2><i class="fas fa-brain"></i> Ability Assessment (${studentData.grade} level)</h2>
+      <p style="margin-bottom: 1rem;">Answer all questions to evaluate your readiness. ${examScore ? 'Your previous score: ' + examScore.percentage + '% - you can retake.' : ''}</p>
+      <form id="examForm">
+        ${answersHtml}
+        <button type="submit" class="btn-primary"><i class="fas fa-check-double"></i> Submit Exam</button>
+        ${examScore ? `<button type="button" id="retakeExamBtn" class="btn-secondary" style="margin-top: 0.6rem;"><i class="fas fa-redo-alt"></i> Retake Exam</button>` : ''}
+      </form>
+      <div id="examResultMsg" style="margin-top: 1rem;"></div>
+    `;
+    const examForm = document.getElementById('examForm');
+    examForm?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let correctCount = 0;
+      for (let i = 0; i < examQuestions.length; i++) {
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        if (selected && parseInt(selected.value) === examQuestions[i].correct) correctCount++;
+      }
+      const total = examQuestions.length;
+      const percent = Math.round((correctCount/total)*100);
+      examScore = { total, correct: correctCount, percentage: percent, date: new Date().toISOString() };
+      saveState();
+      const msgDiv = document.getElementById('examResultMsg');
+      msgDiv.innerHTML = `<div class="alert-badge" style="background:#d9f0ec;">✅ Exam completed! Score: ${correctCount}/${total} (${percent}%). You can now proceed to payment.</div>`;
+      // auto enable step but only if exam exists.
+      setTimeout(() => {
+        currentStep = 3;
+        renderStep();
+      }, 1500);
+    });
+    const retakeBtn = document.getElementById('retakeExamBtn');
+    if (retakeBtn) retakeBtn.addEventListener('click', () => {
+      examScore = null;
+      saveState();
+      renderExamStep(container);
+    });
+  }
+
+  // STEP 3: PAYMENT (registration fee)
+  function renderPaymentStep(container) {
+    if (!studentData || !examScore) {
+      currentStep = 2;
+      renderStep();
+      return;
+    }
+    const feeAmount = 79; // registration fee USD
+    container.innerHTML = `
+      <h2><i class="fas fa-credit-card"></i> Pay Registration Fee ($${feeAmount})</h2>
+      <p><strong>Student:</strong> ${studentData.name} | Grade: ${studentData.grade} | Exam Score: ${examScore.percentage}%</p>
+      <div class="form-group">
+        <label>Cardholder Name</label>
+        <input type="text" id="cardName" placeholder="Full name on card">
+      </div>
+      <div class="form-group">
+        <label>Card Number (demo)</label>
+        <input type="text" id="cardNumber" placeholder="4242 4242 4242 4242">
+      </div>
+      <div class="grid-2">
+        <div class="form-group"><label>Expiry (MM/YY)</label><input type="text" id="expiry" placeholder="08/28"></div>
+        <div class="form-group"><label>CVV</label><input type="text" id="cvv" placeholder="123"></div>
+      </div>
+      <button id="payNowBtn" class="btn-primary"><i class="fas fa-lock"></i> Pay $${feeAmount} & Generate Receipt</button>
+      <div id="payMsg" style="margin-top: 1rem;"></div>
+    `;
+    document.getElementById('payNowBtn')?.addEventListener('click', () => {
+      const cardName = document.getElementById('cardName').value.trim();
+      const cardNum = document.getElementById('cardNumber').value.trim();
+      if (!cardName || cardNum.length < 10) {
+        document.getElementById('payMsg').innerHTML = '<div class="alert-badge" style="background:#ffe0db;">⚠️ Fill valid card details (demo).</div>';
+        return;
+      }
+      // simulate payment
+      transactionId = 'HA-' + Date.now() + '-' + Math.floor(Math.random()*10000);
+      paymentCompleted = true;
+      // build receipt object
+      receiptData = {
+        studentName: studentData.name,
+        studentEmail: studentData.email,
+        grade: studentData.grade,
+        examPercent: examScore.percentage,
+        examCorrect: `${examScore.correct}/${examScore.total}`,
+        amountPaid: feeAmount,
+        transactionId: transactionId,
+        paymentDate: new Date().toLocaleString(),
+        academy: "Hermana Academy"
+      };
+      saveState();
+      document.getElementById('payMsg').innerHTML = '<div class="alert-badge" style="background:#c8e6df;">✓ Payment successful! Redirecting to receipt...</div>';
+      setTimeout(() => {
+        currentStep = 4;
+        renderStep();
+      }, 1200);
+    });
+  }
+
+  // STEP 4: RECEIPT + SEND TO BOT + SAVE
+  function renderReceiptBotStep(container) {
+    if (!receiptData || !paymentCompleted) {
+      currentStep = 3;
+      renderStep();
+      return;
+    }
+    const rec = receiptData;
+    const receiptHtml = `
+      <div class="receipt-card" id="receiptContainer">
+        <div style="text-align:center;"><i class="fas fa-scroll"></i> <strong>HERMANA ACADEMY OFFICIAL RECEIPT</strong></div>
+        <hr>
+        <p><strong>Student:</strong> ${rec.studentName}</p>
+        <p><strong>Email:</strong> ${rec.studentEmail}</p>
+        <p><strong>Grade:</strong> ${rec.grade}</p>
+        <p><strong>Ability Exam Score:</strong> ${rec.examPercent}% (${rec.examCorrect})</p>
+        <p><strong>Registration Fee:</strong> $${rec.amountPaid} USD</p>
+        <p><strong>Transaction ID:</strong> ${rec.transactionId}</p>
+        <p><strong>Date:</strong> ${rec.paymentDate}</p>
+        <hr>
+        <p style="font-size:0.7rem;">* This receipt confirms enrollment & exam. Keep for records.</p>
+      </div>
+    `;
+    container.innerHTML = `
+      <h2><i class="fas fa-receipt"></i> Enrollment Receipt</h2>
+      ${receiptHtml}
+      <div class="flex-btns">
+        <button id="saveReceiptBtn" class="btn-secondary"><i class="fas fa-download"></i> Save Receipt (Text)</button>
+        <button id="sendToBotBtn" class="btn-primary"><i class="fab fa-telegram"></i> Send to Hermana Bot</button>
+        <button id="printReceiptBtn" class="btn-secondary"><i class="fas fa-print"></i> Print Receipt</button>
+      </div>
+      <div id="botFeedback" class="alert-badge" style="margin-top: 1rem;"></div>
+      <div style="margin-top: 1.5rem; text-align:center;">
+        <button id="proceedToWebBtn" class="btn-primary"><i class="fas fa-globe"></i> Enter Web Portal →</button>
+      </div>
+    `;
+    // Save receipt as .txt
+    document.getElementById('saveReceiptBtn')?.addEventListener('click', () => {
+      let receiptText = `HERMANA ACADEMY RECEIPT\n----------------------\nStudent: ${rec.studentName}\nEmail: ${rec.studentEmail}\nGrade: ${rec.grade}\nExam Score: ${rec.examPercent}%\nFee Paid: $${rec.amountPaid}\nTxn ID: ${rec.transactionId}\nDate: ${rec.paymentDate}\n----------------------\nThank you for enrolling!`;
+      const blob = new Blob([receiptText], {type: "text/plain"});
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `Hermana_Receipt_${rec.transactionId}.txt`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+      document.getElementById('botFeedback').innerHTML = "✅ Receipt saved locally!";
+      setTimeout(() => document.getElementById('botFeedback').innerHTML = "", 2000);
+    });
+    // send to bot simulation
+    document.getElementById('sendToBotBtn')?.addEventListener('click', () => {
+      // simulate sending to a bot (Telegram/WhatsApp)
+      const fakeBotMessage = `📢 *Hermana Academy Bot* 📢\n✅ Receipt forwarded to official Hermana support bot.\nStudent: ${rec.studentName}\nTxn: ${rec.transactionId}\nWe'll contact you within 24h for orientation.`;
+      alert("🤖 BOT SIMULATION: " + fakeBotMessage + "\n\n[In production, this sends the receipt to Hermana Academy's enrollment bot]");
+      document.getElementById('botFeedback').innerHTML = "📨 Receipt sent to Hermana Bot! Check your linked chat.";
+      setTimeout(() => document.getElementById('botFeedback').innerHTML = "", 3000);
+    });
+    // print receipt
+    document.getElementById('printReceiptBtn')?.addEventListener('click', () => {
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(`<html><head><title>Hermana Receipt</title><style>body{font-family:sans-serif;padding:2rem}</style></head><body>${document.getElementById('receiptContainer').outerHTML}</body></html>`);
+      printWindow.document.close();
+      printWindow.print();
+    });
+    document.getElementById('proceedToWebBtn')?.addEventListener('click', () => {
+      currentStep = 5;
+      renderStep();
+    });
+  }
+
+  // STEP 5: ENTER THE WEB (Student Dashboard)
+  function renderWebDashboard(container) {
+    if (!studentData) {
+      currentStep = 1;
+      renderStep();
+      return;
+    }
+    container.innerHTML = `
+      <h2><i class="fas fa-chalkboard-user"></i> Welcome to Hermana Academy Portal, ${studentData.name}!</h2>
+      <div class="dashboard-preview">
+        <p><i class="fas fa-id-card"></i> <strong>Enrollment status:</strong> Active ✅</p>
+        <p><i class="fas fa-chart-line"></i> <strong>Ability Exam:</strong> ${examScore?.percentage || 'N/A'}% - Level: ${examScore?.percentage >= 70 ? 'Advanced Track' : 'Foundation Track'}</p>
+        <p><i class="fas fa-calendar-alt"></i> <strong>Next steps:</strong> Orientation on ${new Date(Date.now() + 7*86400000).toLocaleDateString()}</p>
+        <p><i class="fas fa-book-open"></i> Learning materials & parent portal ready.</p>
+        <hr>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+          <button id="resetPortalBtn" class="btn-secondary"><i class="fas fa-sync-alt"></i> Start Over (Reset)</button>
+          <button id="downloadFullRecordBtn" class="btn-secondary"><i class="fas fa-file-alt"></i> Download Enrollment Summary</button>
+        </div>
+      </div>
+    `;
+    document.getElementById('resetPortalBtn')?.addEventListener('click', () => {
+      if(confirm("This will clear all enrollment data. Proceed?")) {
+        localStorage.removeItem('hermana_enrollment');
+        studentData = null; examScore = null; paymentCompleted = false; receiptData = null; transactionId = null;
+        currentStep = 1;
+        renderStep();
+      }
+    });
+    document.getElementById('downloadFullRecordBtn')?.addEventListener('click', () => {
+      let dataStr = `HERMANA ACADEMY ENROLLMENT SUMMARY\nStudent: ${studentData.name}\nEmail: ${studentData.email}\nGrade: ${studentData.grade}\nExam Score: ${examScore?.percentage || 'N/A'}%\nPayment ID: ${transactionId || 'pending'}\nReceipt: ${receiptData ? 'Completed' : 'Not paid'}`;
+      const blob = new Blob([dataStr], {type: 'text/plain'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'hermana_enrollment.txt';
+      a.click();
+    });
+  }
+
+  // main navigation check integrity
+  function navigateToStep(step) {
+    if (step === 2 && !studentData) { alert("Please complete registration first."); return; }
+    if (step === 3 && (!studentData || !examScore)) { alert("You must complete the ability exam first."); return; }
+    if (step === 4 && (!paymentCompleted || !receiptData)) { alert("Complete payment to generate receipt."); return; }
+    if (step === 5 && (!receiptData)) { alert("Please finalize receipt first."); return; }
+    currentStep = step;
+    renderStep();
+  }
+
+  // Attach step clicks (optional)
+  function bindStepClicks() {
+    const stepDivs = document.querySelectorAll('.step-item');
+    stepDivs.forEach((div, idx) => {
+      div.addEventListener('click', () => {
+        const targetStep = idx+1;
+        if (targetStep === 1) { currentStep = 1; renderStep(); }
+        else if (targetStep === 2 && studentData) navigateToStep(2);
+        else if (targetStep === 3 && examScore) navigateToStep(3);
+        else if (targetStep === 4 && paymentCompleted) navigateToStep(4);
+        else if (targetStep === 5 && receiptData) navigateToStep(5);
+        else if (targetStep === 1) navigateToStep(1);
+        else alert("Please follow the sequential enrollment process.");
       });
-    }
-    
-    // feedback dropdown: optional student selection
-    feedbackSelect.innerHTML = '<option value="">— General feedback —</option>';
-    students.forEach(std => {
-      const opt = document.createElement('option');
-      opt.value = std.name;
-      opt.textContent = std.name;
-      feedbackSelect.appendChild(opt);
     });
   }
 
-  // Helper: show temporary message in specific alert div
-  function showTemporaryMessage(elementId, message, duration = 3000) {
-    const msgDiv = document.getElementById(elementId);
-    if (msgDiv) {
-      msgDiv.textContent = message;
-      msgDiv.style.display = 'block';
-      setTimeout(() => { if(msgDiv) msgDiv.style.display = 'none'; }, duration);
-    }
-  }
-
-  function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-      if(m === '&') return '&amp;';
-      if(m === '<') return '&lt;';
-      if(m === '>') return '&gt;';
-      return m;
-    }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-      return c;
-    });
-  }
-
-  // ---------- STUDENT REGISTRATION ----------
-  document.getElementById('studentForm')?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const name = document.getElementById('studentName').value.trim();
-    const email = document.getElementById('studentEmail').value.trim();
-    const grade = document.getElementById('studentGrade').value;
-    if (!name || !email) {
-      showTemporaryMessage('regSuccessMsg', '❌ Please fill name and email', 2000);
-      return;
-    }
-    if (!email.includes('@')) {
-      showTemporaryMessage('regSuccessMsg', '❌ Valid email required', 2000);
-      return;
-    }
-    const newId = Date.now();
-    const newStudent = {
-      id: newId,
-      name: name,
-      email: email,
-      grade: grade,
-      date: new Date().toISOString()
-    };
-    students.push(newStudent);
-    saveAll();
-    renderStudentList();
-    updateDropdowns();
-    document.getElementById('studentForm').reset();
-    showTemporaryMessage('regSuccessMsg', `✔ ${name} registered successfully!`, 2500);
-  });
-
-  // ---------- FEE PAYMENT (Simulated) ----------
-  document.getElementById('payFeeBtn')?.addEventListener('click', () => {
-    const studentSelect = document.getElementById('paymentStudentSelect');
-    const selectedStudentId = parseInt(studentSelect.value);
-    if (students.length === 0 || !selectedStudentId) {
-      showTemporaryMessage('paymentMessage', '⚠️ Please register a student or select a valid student', 2500);
-      return;
-    }
-    const selectedStudent = students.find(s => s.id === selectedStudentId);
-    if (!selectedStudent) {
-      showTemporaryMessage('paymentMessage', 'Student not found, refresh list', 2000);
-      return;
-    }
-    let amount = parseFloat(document.getElementById('feeAmount').value);
-    if (isNaN(amount) || amount <= 0) amount = 450;
-    
-    const cardNum = document.getElementById('cardNumber').value.trim();
-    const expiry = document.getElementById('expiry').value.trim();
-    const cvv = document.getElementById('cvv').value.trim();
-    // Simple demo validation (just for show)
-    if (cardNum.length < 8 || expiry.length < 3 || cvv.length < 2) {
-      showTemporaryMessage('paymentMessage', '⚠️ Please fill card details (demo: any 16-digit / any expiry)', 2000);
-      return;
-    }
-    
-    // simulate payment processing
-    const transactionId = generateTransactionId();
-    const newPayment = {
-      id: Date.now(),
-      studentId: selectedStudent.id,
-      studentName: selectedStudent.name,
-      amount: amount,
-      date: new Date().toISOString(),
-      transactionId: transactionId
-    };
-    payments.unshift(newPayment);
-    saveAll();
-    renderPaymentHistory();
-    // Clear card fields
-    document.getElementById('cardNumber').value = '';
-    document.getElementById('expiry').value = '';
-    document.getElementById('cvv').value = '';
-    showTemporaryMessage('paymentMessage', `✅ Payment successful! $${amount} received for ${selectedStudent.name}. Ref: ${transactionId}`, 4000);
-  });
-
-  // ---------- PARENT FEEDBACK SUBMISSION ----------
-  document.getElementById('feedbackForm')?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const parentName = document.getElementById('parentName').value.trim();
-    const studentSelect = document.getElementById('feedbackStudentSelect');
-    const selectedStudentName = studentSelect.value; // empty or student name
-    const rating = parseInt(document.getElementById('feedbackRating').value);
-    const comment = document.getElementById('feedbackComment').value.trim();
-    
-    if (!parentName) {
-      showTemporaryMessage('feedbackMsg', '❌ Parent name is required', 2000);
-      return;
-    }
-    if (!comment) {
-      showTemporaryMessage('feedbackMsg', '❌ Please write your feedback', 2000);
-      return;
-    }
-    const displayStudent = selectedStudentName === "" ? "General" : selectedStudentName;
-    const newFeedback = {
-      id: Date.now(),
-      parentName: parentName,
-      studentNameRef: displayStudent,
-      rating: rating,
-      comment: comment.substring(0, 300),
-      date: new Date().toISOString()
-    };
-    feedbacks.unshift(newFeedback);
-    saveAll();
-    renderFeedbackList();
-    document.getElementById('feedbackForm').reset();
-    // reset select to general
-    document.getElementById('feedbackStudentSelect').value = "";
-    document.getElementById('feedbackRating').value = "5";
-    showTemporaryMessage('feedbackMsg', '⭐ Thank you! Your feedback helps us grow.', 2500);
-  });
-
-  // ---------- INITIAL LOAD ----------
-  function init() {
-    loadData();
-    renderStudentList();
-    renderPaymentHistory();
-    renderFeedbackList();
-    updateDropdowns();
-    // re-render after any external updates 
-  }
-  init();
+  // initial load
+  loadState();
+  currentStep = getCurrentStepBasedOnProgress();
+  renderStep();
+  bindStepClicks();
 </script>
 </body>
   </html>
