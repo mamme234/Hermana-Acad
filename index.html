@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Hermana Academy | Smart Enrollment Portal</title>
-  <!-- Google Fonts + Font Awesome 6 -->
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>Hermana Academy | የኢትዮጵያ ትምህርት አስተዳደር</title>
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * {
@@ -13,645 +13,393 @@
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
-      min-height: 100vh;
-      padding: 2rem 1.5rem;
+      font-family: 'Inter', sans-serif;
+      background: #f0f4f8;
+      color: #1e2a3e;
     }
-
-    .academy-container {
-      max-width: 1300px;
-      margin: 0 auto;
-    }
-
-    /* header */
-    .hero {
-      text-align: center;
-      margin-bottom: 2.2rem;
-    }
-    .hero h1 {
-      font-size: 2.2rem;
-      font-weight: 800;
-      background: linear-gradient(120deg, #0F2B3D, #1B4A6F);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      letter-spacing: -0.5px;
-    }
-    .hero .tagline {
-      color: #2c3e66;
-      font-weight: 500;
-      margin-top: 0.4rem;
-    }
-
-    /* step indicator */
-    .step-progress {
+    /* Top Bar */
+    .topbar {
+      background: #0c2e42;
+      color: white;
+      padding: 0.8rem 2rem;
       display: flex;
       justify-content: space-between;
-      margin-bottom: 2.5rem;
-      background: white;
-      padding: 1rem 1.8rem;
-      border-radius: 80px;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.05);
+      align-items: center;
       flex-wrap: wrap;
-      gap: 0.5rem;
+      gap: 12px;
     }
-    .step-item {
-      flex: 1;
-      text-align: center;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #94a3b8;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: 0.2s;
+    .logo h2 i { margin-right: 8px; }
+    .nav-links a {
+      color: #e0f2fe;
+      margin-left: 1.5rem;
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
     }
-    .step-item.active {
-      color: #1e4a76;
-    }
-    .step-item.completed {
-      color: #15803d;
-    }
-    .step-icon {
-      background: #f1f5f9;
-      width: 32px;
-      height: 32px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 40px;
-      font-size: 0.9rem;
-    }
-    .step-item.active .step-icon {
-      background: #1e4a76;
-      color: white;
-    }
-    .step-item.completed .step-icon {
-      background: #15803d;
-      color: white;
-    }
-
-    /* main card */
-    .main-card {
+    .nav-links a:hover, .nav-links a.active { color: #ffd966; }
+    .main-container { max-width: 1400px; margin: 2rem auto; padding: 0 1.5rem; }
+    /* cards */
+    .card {
       background: white;
-      border-radius: 2rem;
-      box-shadow: 0 25px 45px -12px rgba(0,0,0,0.2);
-      padding: 2rem 2rem;
-      transition: all 0.2s;
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
     }
-
-    /* form styles */
-    .form-group {
-      margin-bottom: 1.3rem;
-    }
-    label {
-      font-weight: 600;
-      font-size: 0.85rem;
-      color: #1f3a5f;
-      margin-bottom: 0.3rem;
-      display: block;
-    }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px,1fr)); gap: 1.8rem; }
+    .form-group { margin-bottom: 1rem; }
+    label { font-weight: 600; font-size: 0.8rem; display: block; margin-bottom: 5px; color: #2c5a7a; }
     input, select, textarea {
       width: 100%;
-      padding: 0.85rem 1rem;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 1.2rem;
+      padding: 0.7rem 1rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 1rem;
       font-family: inherit;
-      transition: 0.2s;
-      background: #fefefe;
     }
-    input:focus, select:focus {
-      outline: none;
-      border-color: #2c6e9e;
-      box-shadow: 0 0 0 3px rgba(44,110,158,0.1);
-    }
-    .btn-primary {
-      background: #1f4e79;
-      border: none;
-      padding: 0.9rem 1.4rem;
-      border-radius: 2rem;
-      font-weight: 700;
+    .btn {
+      background: #1f6392;
       color: white;
-      width: 100%;
-      font-size: 1rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: 0.2s;
-    }
-    .btn-primary:hover {
-      background: #0e3b5c;
-      transform: translateY(-2px);
-    }
-    .btn-secondary {
-      background: #eef2ff;
       border: none;
-      padding: 0.8rem 1.2rem;
+      padding: 0.7rem 1.2rem;
       border-radius: 2rem;
       font-weight: 600;
-      color: #1f4e79;
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+      transition: 0.2s;
     }
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-    .exam-question {
-      background: #f8fafc;
-      padding: 1rem;
-      border-radius: 1.2rem;
-      margin-bottom: 1.2rem;
-      border-left: 5px solid #2c6e9e;
-    }
-    .options {
-      margin-top: 0.5rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-    }
-    .option-radio {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.85rem;
-    }
-    .receipt-card {
-      background: #fef9e6;
-      border-radius: 1.5rem;
-      padding: 1.5rem;
-      border: 1px solid #ffe2a4;
-      font-family: monospace;
-    }
-    .alert-badge {
-      background: #e6f7ec;
-      border-radius: 2rem;
-      padding: 0.6rem 1rem;
-      font-size: 0.8rem;
-      margin-top: 0.8rem;
-      text-align: center;
-    }
-    .flex-btns {
-      display: flex;
-      gap: 1rem;
-      margin-top: 1.5rem;
-      flex-wrap: wrap;
-    }
-    .dashboard-preview {
-      background: linear-gradient(145deg, #f0f9ff, #e9f2fa);
-      border-radius: 1.5rem;
-      padding: 1.4rem;
-    }
-    hr {
-      margin: 1rem 0;
-    }
-    @media (max-width: 680px) {
-      body { padding: 1rem; }
-      .main-card { padding: 1.2rem; }
-      .step-progress { border-radius: 2rem; }
-    }
+    .btn:hover { background: #0e4a6e; transform: translateY(-1px);}
+    .btn-outline { background: white; border: 1px solid #1f6392; color: #1f6392; }
+    .badge { padding: 4px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; }
+    .badge-paid { background: #c8f0e1; color: #166534; }
+    .badge-unpaid { background: #ffe2dd; color: #b91c1c; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e4e7eb; }
+    .profile-card { background: #f8fafc; border-radius: 1rem; padding: 1rem; margin-top: 1rem; }
+    .update-item { background: #fef9e3; border-left: 4px solid #eab308; padding: 0.7rem; margin-bottom: 0.6rem; border-radius: 1rem; }
+    @media (max-width:700px){ .topbar { flex-direction: column; } .nav-links a { margin: 0 0.7rem; } }
   </style>
 </head>
 <body>
-<div class="academy-container">
-  <div class="hero">
-    <h1><i class="fas fa-graduation-cap"></i> Hermana Academy</h1>
-    <div class="tagline">Intelligent Enrollment · Ability Exam · Secure Payment · Smart Receipt</div>
-  </div>
-
-  <!-- Step Progress -->
-  <div class="step-progress" id="stepProgress">
-    <div class="step-item" data-step="1"><span class="step-icon">1</span> Register</div>
-    <div class="step-item" data-step="2"><span class="step-icon">2</span> Ability Exam</div>
-    <div class="step-item" data-step="3"><span class="step-icon">3</span> Payment</div>
-    <div class="step-item" data-step="4"><span class="step-icon">4</span> Receipt & Bot</div>
-    <div class="step-item" data-step="5"><span class="step-icon">5</span> Enter Web</div>
-  </div>
-
-  <div class="main-card" id="appContainer">
-    <!-- DYNAMIC STEP CONTENT WILL BE RENDERED HERE -->
-    <div id="stepContent"></div>
+<div class="topbar">
+  <div class="logo"><h2><i class="fas fa-landmark"></i> Hermana Academy</h2></div>
+  <div class="nav-links" id="navLinks">
+    <a data-tab="student">👨‍🎓 Student Portal</a>
+    <a data-tab="director">📊 Director Panel</a>
+    <a data-tab="parent">👪 Parents Updates</a>
   </div>
 </div>
+<div class="main-container" id="appRoot"></div>
 
 <script>
-  // ------------------- DATA STATE -------------------
-  let studentData = null;         // { name, email, grade, parentPhone, regDate }
-  let examScore = null;           // { total, correct, percentage, answers }
-  let examQuestions = [];
-  let paymentCompleted = false;
-  let transactionId = null;
-  let receiptData = null;
+  // ----------------------- DATA STORAGE -------------------------
+  let students = [];     // each: { id, fullName, ethiopianId, idPhotoUrl, grade, regDate, examScore, examPercent, payments: { term1:bool, bus:bool, activity:bool, registrationPaid:bool }, totalFees }
+  let parentUpdates = []; // { id, date, title, description, type }
+  let directors = [{ id:1, name:"Dr. Alemu Bekele", role:"Director" }];
 
-  // Local storage persistence
-  function loadState() {
-    const saved = localStorage.getItem('hermana_enrollment');
-    if (saved) {
-      try {
-        const state = JSON.parse(saved);
-        studentData = state.studentData;
-        examScore = state.examScore;
-        examQuestions = state.examQuestions || [];
-        paymentCompleted = state.paymentCompleted || false;
-        transactionId = state.transactionId;
-        receiptData = state.receiptData;
-      } catch(e) {}
+  // Load initial data
+  function loadData() {
+    const stored = localStorage.getItem('hermana_academy_data');
+    if(stored) {
+      const data = JSON.parse(stored);
+      students = data.students || [];
+      parentUpdates = data.parentUpdates || [];
+    } else {
+      // demo students with sample
+      students = [
+        { id: 1001, fullName: "Meron Tadesse", ethiopianId: "ET1234567", idPhotoUrl: "demo_id.png", grade: "Grade 5", regDate: "2025-01-10", examScore: 85, examPercent: 85, payments: { term1: true, bus: false, activity: false, registrationPaid: true }, totalFees: 3500 },
+        { id: 1002, fullName: "Henok Desta", ethiopianId: "ET7654321", idPhotoUrl: "demo_id2.png", grade: "Grade 10", regDate: "2025-01-12", examScore: 72, examPercent: 72, payments: { term1: false, bus: true, activity: false, registrationPaid: true }, totalFees: 1000 },
+        { id: 1003, fullName: "Bethel Assefa", ethiopianId: "ET9988776", idPhotoUrl: "demo_id3.png", grade: "Grade 3", regDate: "2025-01-15", examScore: 94, examPercent: 94, payments: { term1: true, bus: true, activity: true, registrationPaid: true }, totalFees: 4500 }
+      ];
+      parentUpdates = [
+        { id: 1, date: "2025-03-20", title: "🚨 School Announcement", description: "John Demissie banned for 3 days due to bullying incident.", type: "alert" },
+        { id: 2, date: "2025-03-18", title: "📢 Mid-term Exams", description: "Mid-term exams start April 5. Prepare well!", type: "info" }
+      ];
     }
-    // ensure step integrity
   }
-  function saveState() {
-    const state = { studentData, examScore, examQuestions, paymentCompleted, transactionId, receiptData };
-    localStorage.setItem('hermana_enrollment', JSON.stringify(state));
-  }
+  function saveData() { localStorage.setItem('hermana_academy_data', JSON.stringify({ students, parentUpdates })); }
+
+  // Helper: generate ID
+  function generateId() { return Date.now() + Math.floor(Math.random()*10000); }
 
   // Helper: generate questions based on grade
-  function generateQuestionsForGrade(grade) {
-    const gradeLower = grade.toLowerCase();
-    if (gradeLower.includes('grade 1') || gradeLower.includes('grade 2') || grade === 'Grade 1' || grade === 'Grade 2') {
-      return [
-        { text: "What is 12 + 7?", options: ["18", "19", "20", "21"], correct: 1 },
-        { text: "Which animal is known as the 'King of the Jungle'?", options: ["Elephant", "Tiger", "Lion", "Giraffe"], correct: 2 },
-        { text: "What is 5 × 3?", options: ["12", "15", "18", "20"], correct: 1 },
-        { text: "What color are bananas when ripe?", options: ["Red", "Green", "Yellow", "Blue"], correct: 2 },
-        { text: "Which shape has 3 sides?", options: ["Square", "Circle", "Triangle", "Rectangle"], correct: 2 }
-      ];
-    } else if (gradeLower.includes('grade 3') || gradeLower.includes('grade 4') || gradeLower.includes('grade 5')) {
-      return [
-        { text: "Solve: 144 ÷ 12", options: ["10", "12", "14", "16"], correct: 1 },
-        { text: "What is the capital of France?", options: ["Berlin", "Madrid", "Paris", "Lisbon"], correct: 2 },
-        { text: "Fraction equivalent to 0.75?", options: ["1/4", "2/3", "3/4", "4/5"], correct: 2 },
-        { text: "'Fast' is opposite of?", options: ["Quick", "Slow", "Rapid", "Speedy"], correct: 1 },
-        { text: "Perimeter of square side 6cm?", options: ["24cm", "36cm", "12cm", "18cm"], correct: 0 }
-      ];
+  function generateExamByGrade(grade) {
+    const g = parseInt(grade.replace(/\D/g,'')) || 5;
+    if (g <= 4) return [
+      { text: "ከተከተሉት ውስጥ 7+8 ምን ያህል ነው?", options: ["14","15","16","17"], correct:1 },
+      { text: "የኢትዮጵያ ዋና ከተማ ማንነው?", options: ["ጎንደር","አዲስ አበባ","ሀዋሳ","ባህርዳር"], correct:1 },
+      { text: "ከታች 2×6=?", options: ["10","12","14","18"], correct:1 }
+    ];
+    else if (g <= 8) return [
+      { text: "Solve: 144 ÷ 12", options: ["10","12","14","16"], correct:1 },
+      { text: "What is the capital of Ethiopia?", options: ["Adama","Addis Ababa","Harar","Jimma"], correct:1 },
+      { text: "If a train moves 60km/h, distance in 2h?", options: ["100km","120km","140km","80km"], correct:1 },
+      { text: "በኢትዮጵያ ውስጥ የሚገኝ ትልቁ ወንዝ?", options: ["አዋሽ","አባይ","ተከዜ","ጊቤ"], correct:1 }
+    ];
+    else return [
+      { text: "Solve 3x - 5 = 16, x = ?", options: ["7","6","8","5"], correct:0 },
+      { text: "Which Ethiopian region is known for coffee origin?", options: ["Tigray","Amhara","Oromia (Kaffa)","Somali"], correct:2 },
+      { text: "If atomic number of Oxygen is 8, protons?", options: ["8","10","6","16"], correct:0 },
+      { text: "Who wrote 'Fikir Eske Mekabir'?", options: ["Baalu Girma","Haddis Alemayehu","Tsegaye Gabre-Medhin","Mengistu Lemma"], correct:1 }
+    ];
+  }
+
+  // ---------- RENDER LOGIC (multi-tab) ----------
+  let activeTab = "student"; // student, director, parent
+
+  function renderApp() {
+    const root = document.getElementById('appRoot');
+    if(activeTab === "student") renderStudentPortal(root);
+    else if(activeTab === "director") renderDirectorPanel(root);
+    else if(activeTab === "parent") renderParentUpdates(root);
+    // update nav active style
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      if(a.dataset.tab === activeTab) a.classList.add('active');
+      else a.classList.remove('active');
+    });
+  }
+
+  // ---------- STUDENT PORTAL: registration + exam + fee payment + profile ----------
+  function renderStudentPortal(container) {
+    // check if student logged in? We'll implement simple student session: select via dropdown or new registration
+    let currentStudentId = sessionStorage.getItem('hermana_current_student');
+    if(!currentStudentId && students.length>0) currentStudentId = students[0].id.toString();
+    if(currentStudentId && students.find(s=> s.id == currentStudentId)) {
+      showStudentDashboard(container, students.find(s=> s.id == currentStudentId));
     } else {
-      // middle/high school more advanced
-      return [
-        { text: "Solve: 3x - 7 = 11. What is x?", options: ["4", "5", "6", "7"], correct: 2 },
-        { text: "Which element has the chemical symbol 'O'?", options: ["Gold", "Oxygen", "Osmium", "Hydrogen"], correct: 1 },
-        { text: "What is the square root of 144?", options: ["10", "11", "12", "13"], correct: 2 },
-        { text: "Who wrote 'Romeo and Juliet'?", options: ["Charles Dickens", "Jane Austen", "Mark Twain", "William Shakespeare"], correct: 3 },
-        { text: "If a train travels 60 miles per hour, how far in 2.5 hours?", options: ["120 miles", "150 miles", "180 miles", "100 miles"], correct: 1 }
-      ];
+      showStudentRegistrationAndLogin(container);
     }
   }
 
-  // Render logic (step based on current progress)
-  let currentStep = 1; // 1-5
-
-  function getCurrentStepBasedOnProgress() {
-    if (!studentData) return 1;
-    if (!examScore) return 2;
-    if (!paymentCompleted) return 3;
-    if (!receiptData) return 4;
-    return 5;
-  }
-
-  function updateStepUI() {
-    const steps = document.querySelectorAll('.step-item');
-    steps.forEach((stepEl, idx) => {
-      const stepNum = idx+1;
-      stepEl.classList.remove('active', 'completed');
-      if (stepNum < currentStep) stepEl.classList.add('completed');
-      else if (stepNum === currentStep) stepEl.classList.add('active');
-    });
-  }
-
-  function renderStep() {
-    const container = document.getElementById('stepContent');
-    if (!container) return;
-    if (currentStep === 1) renderRegistrationStep(container);
-    else if (currentStep === 2) renderExamStep(container);
-    else if (currentStep === 3) renderPaymentStep(container);
-    else if (currentStep === 4) renderReceiptBotStep(container);
-    else if (currentStep === 5) renderWebDashboard(container);
-    updateStepUI();
-  }
-
-  // STEP 1: REGISTRATION
-  function renderRegistrationStep(container) {
+  function showStudentRegistrationAndLogin(container) {
     container.innerHTML = `
-      <h2 style="margin-bottom: 1rem;"><i class="fas fa-user-edit"></i> Register at Hermana Academy</h2>
-      <form id="regForm">
-        <div class="form-group">
-          <label>Full Name *</label>
-          <input type="text" id="fullName" value="${studentData?.name || ''}" placeholder="e.g., Isabella Reyes" required>
-        </div>
-        <div class="form-group">
-          <label>Email Address *</label>
-          <input type="email" id="email" value="${studentData?.email || ''}" placeholder="student@hermana.edu" required>
-        </div>
-        <div class="form-group">
-          <label>Parent/Guardian Phone</label>
-          <input type="text" id="phone" value="${studentData?.parentPhone || ''}" placeholder="+123456789">
-        </div>
-        <div class="form-group">
-          <label>Select Grade Level *</label>
-          <select id="gradeSelect">
-            <option value="Grade 1" ${studentData?.grade === 'Grade 1' ? 'selected' : ''}>Grade 1</option>
-            <option value="Grade 2" ${studentData?.grade === 'Grade 2' ? 'selected' : ''}>Grade 2</option>
-            <option value="Grade 3" ${studentData?.grade === 'Grade 3' ? 'selected' : ''}>Grade 3</option>
-            <option value="Grade 4" ${studentData?.grade === 'Grade 4' ? 'selected' : ''}>Grade 4</option>
-            <option value="Grade 5" ${studentData?.grade === 'Grade 5' ? 'selected' : ''}>Grade 5</option>
-            <option value="Middle School" ${studentData?.grade === 'Middle School' ? 'selected' : ''}>Middle School</option>
-            <option value="High School" ${studentData?.grade === 'High School' ? 'selected' : ''}>High School</option>
-          </select>
-        </div>
-        <button type="submit" class="btn-primary"><i class="fas fa-arrow-right"></i> Register & Continue</button>
-      </form>
-    `;
-    document.getElementById('regForm')?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const name = document.getElementById('fullName').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const grade = document.getElementById('gradeSelect').value;
-      if (!name || !email) {
-        alert("Please fill name and email.");
-        return;
-      }
-      if (!email.includes('@')) { alert("Valid email required"); return; }
-      studentData = { name, email, parentPhone: phone, grade, regDate: new Date().toISOString() };
-      // reset exam & payment when new registration
-      examScore = null;
-      paymentCompleted = false;
-      transactionId = null;
-      receiptData = null;
-      examQuestions = generateQuestionsForGrade(grade);
-      saveState();
-      currentStep = 2;
-      renderStep();
-    });
-  }
-
-  // STEP 2: EXAM (ability test based on grade)
-  function renderExamStep(container) {
-    if (!studentData) {
-      currentStep = 1;
-      renderStep();
-      return;
-    }
-    const questions = examQuestions.length ? examQuestions : generateQuestionsForGrade(studentData.grade);
-    examQuestions = questions;
-    saveState();
-    let answersHtml = '';
-    questions.forEach((q, idx) => {
-      answersHtml += `
-        <div class="exam-question">
-          <strong>${idx+1}. ${q.text}</strong>
-          <div class="options">
-            ${q.options.map((opt, optIdx) => `
-              <label class="option-radio">
-                <input type="radio" name="q${idx}" value="${optIdx}"> ${opt}
-              </label>
-            `).join('')}
+      <div class="card">
+        <h2><i class="fas fa-id-card"></i> Student Registration / Login</h2>
+        <div class="grid-2">
+          <div>
+            <h3>📝 New Registration (Ethiopian ID + Photo)</h3>
+            <form id="registerForm">
+              <div class="form-group"><label>Full Name</label><input id="regName" required></div>
+              <div class="form-group"><label>Ethiopian National ID (e.g., ET1234567)</label><input id="regEthiopianId" required></div>
+              <div class="form-group"><label>Upload ID Photo (URL or base64 demo)</label><input id="regPhotoUrl" placeholder="https://... or type 'demo'"></div>
+              <div class="form-group"><label>Grade (Grade 1 - Grade 12)</label><select id="regGrade">
+                ${[...Array(12)].map((_,i)=> `<option value="Grade ${i+1}">Grade ${i+1}</option>`).join('')}
+              </select></div>
+              <button type="submit" class="btn">Register & Take Exam</button>
+            </form>
+          </div>
+          <div>
+            <h3>🔐 Existing Student Login</h3>
+            <select id="studentLoginSelect">
+              <option value="">-- Select Student --</option>
+              ${students.map(s=> `<option value="${s.id}">${s.fullName} (ID: ${s.ethiopianId})</option>`).join('')}
+            </select>
+            <button id="loginBtn" class="btn" style="margin-top:1rem;">Login to Dashboard</button>
           </div>
         </div>
-      `;
-    });
-    container.innerHTML = `
-      <h2><i class="fas fa-brain"></i> Ability Assessment (${studentData.grade} level)</h2>
-      <p style="margin-bottom: 1rem;">Answer all questions to evaluate your readiness. ${examScore ? 'Your previous score: ' + examScore.percentage + '% - you can retake.' : ''}</p>
-      <form id="examForm">
-        ${answersHtml}
-        <button type="submit" class="btn-primary"><i class="fas fa-check-double"></i> Submit Exam</button>
-        ${examScore ? `<button type="button" id="retakeExamBtn" class="btn-secondary" style="margin-top: 0.6rem;"><i class="fas fa-redo-alt"></i> Retake Exam</button>` : ''}
-      </form>
-      <div id="examResultMsg" style="margin-top: 1rem;"></div>
+        <div id="examArea" style="margin-top:1rem;"></div>
+      </div>
     `;
-    const examForm = document.getElementById('examForm');
-    examForm?.addEventListener('submit', (e) => {
+    document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
       e.preventDefault();
-      let correctCount = 0;
-      for (let i = 0; i < examQuestions.length; i++) {
-        const selected = document.querySelector(`input[name="q${i}"]:checked`);
-        if (selected && parseInt(selected.value) === examQuestions[i].correct) correctCount++;
-      }
-      const total = examQuestions.length;
-      const percent = Math.round((correctCount/total)*100);
-      examScore = { total, correct: correctCount, percentage: percent, date: new Date().toISOString() };
-      saveState();
-      const msgDiv = document.getElementById('examResultMsg');
-      msgDiv.innerHTML = `<div class="alert-badge" style="background:#d9f0ec;">✅ Exam completed! Score: ${correctCount}/${total} (${percent}%). You can now proceed to payment.</div>`;
-      // auto enable step but only if exam exists.
-      setTimeout(() => {
-        currentStep = 3;
-        renderStep();
-      }, 1500);
+      const name = document.getElementById('regName').value.trim();
+      const ethId = document.getElementById('regEthiopianId').value.trim();
+      let photoUrl = document.getElementById('regPhotoUrl').value.trim() || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+      const grade = document.getElementById('regGrade').value;
+      if(!name || !ethId) return alert("Full name & Ethiopian ID required");
+      const existing = students.find(s=> s.ethiopianId === ethId);
+      if(existing) return alert("Student with this Ethiopian ID already exists! Login instead.");
+      // proceed exam
+      const questions = generateExamByGrade(grade);
+      const examHtml = `<div class="card"><h3>✍️ ${grade} Ability Exam</h3>${questions.map((q,idx)=>`<div><p><strong>${idx+1}. ${q.text}</strong></p>${q.options.map((opt,optIdx)=>`<label><input type="radio" name="q${idx}" value="${optIdx}"> ${opt}</label>&nbsp;&nbsp;</label>`).join('')}</div>`).join('')}<button id="submitExamBtn" class="btn">Submit Exam</button></div>`;
+      document.getElementById('examArea').innerHTML = examHtml;
+      const tempStudent = { name, ethId, photoUrl, grade, questions };
+      window.tempReg = tempStudent;
+      document.getElementById('submitExamBtn')?.addEventListener('click', () => {
+        let correct = 0;
+        tempStudent.questions.forEach((q,idx)=>{
+          const selected = document.querySelector(`input[name="q${idx}"]:checked`);
+          if(selected && parseInt(selected.value) === q.correct) correct++;
+        });
+        const percent = Math.round((correct / tempStudent.questions.length)*100);
+        const newStudent = {
+          id: generateId(),
+          fullName: tempStudent.name,
+          ethiopianId: tempStudent.ethId,
+          idPhotoUrl: tempStudent.photoUrl,
+          grade: tempStudent.grade,
+          regDate: new Date().toISOString(),
+          examScore: correct,
+          examPercent: percent,
+          payments: { term1: false, bus: false, activity: false, registrationPaid: false },
+          totalFees: 0
+        };
+        students.push(newStudent);
+        saveData();
+        alert(`Exam completed! Score: ${correct}/${tempStudent.questions.length} (${percent}%). Now proceed to pay registration fee (1000 Birr).`);
+        sessionStorage.setItem('hermana_current_student', newStudent.id);
+        renderApp();
+      });
     });
-    const retakeBtn = document.getElementById('retakeExamBtn');
-    if (retakeBtn) retakeBtn.addEventListener('click', () => {
-      examScore = null;
-      saveState();
-      renderExamStep(container);
-    });
-  }
-
-  // STEP 3: PAYMENT (registration fee)
-  function renderPaymentStep(container) {
-    if (!studentData || !examScore) {
-      currentStep = 2;
-      renderStep();
-      return;
-    }
-    const feeAmount = 79; // registration fee USD
-    container.innerHTML = `
-      <h2><i class="fas fa-credit-card"></i> Pay Registration Fee ($${feeAmount})</h2>
-      <p><strong>Student:</strong> ${studentData.name} | Grade: ${studentData.grade} | Exam Score: ${examScore.percentage}%</p>
-      <div class="form-group">
-        <label>Cardholder Name</label>
-        <input type="text" id="cardName" placeholder="Full name on card">
-      </div>
-      <div class="form-group">
-        <label>Card Number (demo)</label>
-        <input type="text" id="cardNumber" placeholder="4242 4242 4242 4242">
-      </div>
-      <div class="grid-2">
-        <div class="form-group"><label>Expiry (MM/YY)</label><input type="text" id="expiry" placeholder="08/28"></div>
-        <div class="form-group"><label>CVV</label><input type="text" id="cvv" placeholder="123"></div>
-      </div>
-      <button id="payNowBtn" class="btn-primary"><i class="fas fa-lock"></i> Pay $${feeAmount} & Generate Receipt</button>
-      <div id="payMsg" style="margin-top: 1rem;"></div>
-    `;
-    document.getElementById('payNowBtn')?.addEventListener('click', () => {
-      const cardName = document.getElementById('cardName').value.trim();
-      const cardNum = document.getElementById('cardNumber').value.trim();
-      if (!cardName || cardNum.length < 10) {
-        document.getElementById('payMsg').innerHTML = '<div class="alert-badge" style="background:#ffe0db;">⚠️ Fill valid card details (demo).</div>';
-        return;
-      }
-      // simulate payment
-      transactionId = 'HA-' + Date.now() + '-' + Math.floor(Math.random()*10000);
-      paymentCompleted = true;
-      // build receipt object
-      receiptData = {
-        studentName: studentData.name,
-        studentEmail: studentData.email,
-        grade: studentData.grade,
-        examPercent: examScore.percentage,
-        examCorrect: `${examScore.correct}/${examScore.total}`,
-        amountPaid: feeAmount,
-        transactionId: transactionId,
-        paymentDate: new Date().toLocaleString(),
-        academy: "Hermana Academy"
-      };
-      saveState();
-      document.getElementById('payMsg').innerHTML = '<div class="alert-badge" style="background:#c8e6df;">✓ Payment successful! Redirecting to receipt...</div>';
-      setTimeout(() => {
-        currentStep = 4;
-        renderStep();
-      }, 1200);
+    document.getElementById('loginBtn')?.addEventListener('click',()=>{
+      const selected = document.getElementById('studentLoginSelect').value;
+      if(!selected) return alert("select student");
+      sessionStorage.setItem('hermana_current_student', selected);
+      renderApp();
     });
   }
 
-  // STEP 4: RECEIPT + SEND TO BOT + SAVE
-  function renderReceiptBotStep(container) {
-    if (!receiptData || !paymentCompleted) {
-      currentStep = 3;
-      renderStep();
-      return;
-    }
-    const rec = receiptData;
-    const receiptHtml = `
-      <div class="receipt-card" id="receiptContainer">
-        <div style="text-align:center;"><i class="fas fa-scroll"></i> <strong>HERMANA ACADEMY OFFICIAL RECEIPT</strong></div>
-        <hr>
-        <p><strong>Student:</strong> ${rec.studentName}</p>
-        <p><strong>Email:</strong> ${rec.studentEmail}</p>
-        <p><strong>Grade:</strong> ${rec.grade}</p>
-        <p><strong>Ability Exam Score:</strong> ${rec.examPercent}% (${rec.examCorrect})</p>
-        <p><strong>Registration Fee:</strong> $${rec.amountPaid} USD</p>
-        <p><strong>Transaction ID:</strong> ${rec.transactionId}</p>
-        <p><strong>Date:</strong> ${rec.paymentDate}</p>
-        <hr>
-        <p style="font-size:0.7rem;">* This receipt confirms enrollment & exam. Keep for records.</p>
-      </div>
-    `;
+  function showStudentDashboard(container, student) {
+    const term1Paid = student.payments?.term1 || false;
+    const busPaid = student.payments?.bus || false;
+    const activityPaid = student.payments?.activity || false;
+    const regPaid = student.payments?.registrationPaid || false;
+    const totalDue = (term1Paid?0:2500) + (busPaid?0:1000) + (activityPaid?0:500) + (regPaid?0:1000);
     container.innerHTML = `
-      <h2><i class="fas fa-receipt"></i> Enrollment Receipt</h2>
-      ${receiptHtml}
-      <div class="flex-btns">
-        <button id="saveReceiptBtn" class="btn-secondary"><i class="fas fa-download"></i> Save Receipt (Text)</button>
-        <button id="sendToBotBtn" class="btn-primary"><i class="fab fa-telegram"></i> Send to Hermana Bot</button>
-        <button id="printReceiptBtn" class="btn-secondary"><i class="fas fa-print"></i> Print Receipt</button>
-      </div>
-      <div id="botFeedback" class="alert-badge" style="margin-top: 1rem;"></div>
-      <div style="margin-top: 1.5rem; text-align:center;">
-        <button id="proceedToWebBtn" class="btn-primary"><i class="fas fa-globe"></i> Enter Web Portal →</button>
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; flex-wrap:wrap;">
+          <h2><i class="fas fa-user-graduate"></i> Student Dashboard: ${student.fullName}</h2>
+          <button id="logoutBtn" class="btn-outline btn" style="background:#eef2ff;"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+        <div class="profile-card">
+          <p><strong>📘 Ethiopian ID:</strong> ${student.ethiopianId} &nbsp;| <strong>🎓 Grade:</strong> ${student.grade} &nbsp;| <strong>📊 Exam Score:</strong> ${student.examPercent}%</p>
+          <p><strong>🖼️ ID Photo:</strong> <img src="${student.idPhotoUrl}" style="width:50px; border-radius:50%;" onerror="this.src='https://via.placeholder.com/50'"> </p>
+        </div>
+        <h3>💰 Fee Payments (Ethiopian Birr)</h3>
+        <table>
+          <tr><th>Fee Type</th><th>Amount (ETB)</th><th>Status</th><th>Action</th></tr>
+          <tr><td>Registration Fee</td><td>1000</td><td>${regPaid ? '<span class="badge badge-paid">Paid</span>' : '<span class="badge badge-unpaid">Unpaid</span>'}</td><td>${!regPaid ? `<button class="btn-sm payBtn" data-type="registration">Pay Now</button>` : '✅'}</td></tr>
+          <tr><td>Term 1 Tuition</td><td>2500</td><td>${term1Paid ? '<span class="badge badge-paid">Paid</span>' : '<span class="badge badge-unpaid">Unpaid</span>'}</td><td>${!term1Paid ? `<button class="btn-sm payBtn" data-type="term1">Pay 2500 ETB</button>` : '✅'}</td></tr>
+          <tr><td>Bus Fee</td><td>1000</td><td>${busPaid ? '<span class="badge badge-paid">Paid</span>' : '<span class="badge badge-unpaid">Unpaid</span>'}</td><td>${!busPaid ? `<button class="btn-sm payBtn" data-type="bus">Pay 1000 ETB</button>` : '✅'}</td></tr>
+          <tr><td>Activity/Sports Fee</td><td>500</td><td>${activityPaid ? '<span class="badge badge-paid">Paid</span>' : '<span class="badge badge-unpaid">Unpaid</span>'}</td><td>${!activityPaid ? `<button class="btn-sm payBtn" data-type="activity">Pay 500 ETB</button>` : '✅'}</td></tr>
+          <tr style="font-weight:bold;"><td>Total Outstanding</td><td colspan="3">${totalDue} ETB</td></tr>
+        </table>
+        <div id="receiptDisplay" style="margin-top:1rem;"></div>
       </div>
     `;
-    // Save receipt as .txt
-    document.getElementById('saveReceiptBtn')?.addEventListener('click', () => {
-      let receiptText = `HERMANA ACADEMY RECEIPT\n----------------------\nStudent: ${rec.studentName}\nEmail: ${rec.studentEmail}\nGrade: ${rec.grade}\nExam Score: ${rec.examPercent}%\nFee Paid: $${rec.amountPaid}\nTxn ID: ${rec.transactionId}\nDate: ${rec.paymentDate}\n----------------------\nThank you for enrolling!`;
-      const blob = new Blob([receiptText], {type: "text/plain"});
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = `Hermana_Receipt_${rec.transactionId}.txt`;
-      link.click();
-      URL.revokeObjectURL(link.href);
-      document.getElementById('botFeedback').innerHTML = "✅ Receipt saved locally!";
-      setTimeout(() => document.getElementById('botFeedback').innerHTML = "", 2000);
+    // attach pay events
+    document.querySelectorAll('.payBtn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const type = btn.dataset.type;
+        let amount = 0;
+        if(type === 'registration') amount = 1000;
+        else if(type === 'term1') amount = 2500;
+        else if(type === 'bus') amount = 1000;
+        else if(type === 'activity') amount = 500;
+        if(!confirm(`Pay ${amount} ETB for ${type}? (Demo payment)`)) return;
+        // simulate payment
+        if(!student.payments) student.payments = { term1:false, bus:false, activity:false, registrationPaid:false };
+        if(type === 'registration') student.payments.registrationPaid = true;
+        if(type === 'term1') student.payments.term1 = true;
+        if(type === 'bus') student.payments.bus = true;
+        if(type === 'activity') student.payments.activity = true;
+        const transactionId = 'HMTX-'+Date.now();
+        saveData();
+        // receipt generation
+        const receiptDiv = document.getElementById('receiptDisplay');
+        receiptDiv.innerHTML = `<div style="background:#e6f7ec; border-radius:1rem; padding:1rem;"><i class="fas fa-receipt"></i> ✅ Payment successful! Receipt: ${amount} ETB for ${type} | Txn: ${transactionId} | Date: ${new Date().toLocaleString()}<br><button id="downloadReceiptBtn" class="btn-outline btn" style="margin-top:6px;">Download Receipt</button></div>`;
+        document.getElementById('downloadReceiptBtn')?.addEventListener('click',()=>{
+          const receiptText = `HERMANA ACADEMY RECEIPT\nStudent: ${student.fullName}\nID: ${student.ethiopianId}\nFee Type: ${type}\nAmount: ${amount} ETB\nTransaction: ${transactionId}\nDate: ${new Date()}\nThank you!`;
+          const blob = new Blob([receiptText], {type: 'text/plain'});
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = `receipt_${type}.txt`;
+          a.click();
+        });
+        setTimeout(()=> renderStudentPortal(container), 1500);
+      });
     });
-    // send to bot simulation
-    document.getElementById('sendToBotBtn')?.addEventListener('click', () => {
-      // simulate sending to a bot (Telegram/WhatsApp)
-      const fakeBotMessage = `📢 *Hermana Academy Bot* 📢\n✅ Receipt forwarded to official Hermana support bot.\nStudent: ${rec.studentName}\nTxn: ${rec.transactionId}\nWe'll contact you within 24h for orientation.`;
-      alert("🤖 BOT SIMULATION: " + fakeBotMessage + "\n\n[In production, this sends the receipt to Hermana Academy's enrollment bot]");
-      document.getElementById('botFeedback').innerHTML = "📨 Receipt sent to Hermana Bot! Check your linked chat.";
-      setTimeout(() => document.getElementById('botFeedback').innerHTML = "", 3000);
-    });
-    // print receipt
-    document.getElementById('printReceiptBtn')?.addEventListener('click', () => {
-      const printWindow = window.open('', '_blank');
-      printWindow.document.write(`<html><head><title>Hermana Receipt</title><style>body{font-family:sans-serif;padding:2rem}</style></head><body>${document.getElementById('receiptContainer').outerHTML}</body></html>`);
-      printWindow.document.close();
-      printWindow.print();
-    });
-    document.getElementById('proceedToWebBtn')?.addEventListener('click', () => {
-      currentStep = 5;
-      renderStep();
+    document.getElementById('logoutBtn')?.addEventListener('click',()=>{
+      sessionStorage.removeItem('hermana_current_student');
+      renderApp();
     });
   }
 
-  // STEP 5: ENTER THE WEB (Student Dashboard)
-  function renderWebDashboard(container) {
-    if (!studentData) {
-      currentStep = 1;
-      renderStep();
-      return;
-    }
+  // ---------- DIRECTOR PANEL: View students by grade sets, payment status, manage updates ----------
+  function renderDirectorPanel(container) {
+    const gradesSet = [...new Set(students.map(s=> s.grade))].sort();
     container.innerHTML = `
-      <h2><i class="fas fa-chalkboard-user"></i> Welcome to Hermana Academy Portal, ${studentData.name}!</h2>
-      <div class="dashboard-preview">
-        <p><i class="fas fa-id-card"></i> <strong>Enrollment status:</strong> Active ✅</p>
-        <p><i class="fas fa-chart-line"></i> <strong>Ability Exam:</strong> ${examScore?.percentage || 'N/A'}% - Level: ${examScore?.percentage >= 70 ? 'Advanced Track' : 'Foundation Track'}</p>
-        <p><i class="fas fa-calendar-alt"></i> <strong>Next steps:</strong> Orientation on ${new Date(Date.now() + 7*86400000).toLocaleDateString()}</p>
-        <p><i class="fas fa-book-open"></i> Learning materials & parent portal ready.</p>
-        <hr>
-        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-          <button id="resetPortalBtn" class="btn-secondary"><i class="fas fa-sync-alt"></i> Start Over (Reset)</button>
-          <button id="downloadFullRecordBtn" class="btn-secondary"><i class="fas fa-file-alt"></i> Download Enrollment Summary</button>
+      <div class="card">
+        <h2><i class="fas fa-chalkboard-user"></i> Director Panel - Student Management</h2>
+        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1rem;">
+          <button id="showAllStudentsBtn" class="btn">📋 All Students</button>
+          <button id="addSchoolUpdateBtn" class="btn-outline btn"><i class="fas fa-bullhorn"></i> Add Parent Update</button>
+        </div>
+        <div id="directorContent">
+          <h3>Filter by Grade & Payment Status</h3>
+          <div style="display:flex; gap:0.8rem; flex-wrap:wrap; margin-bottom:1rem;">
+            <select id="gradeFilter"><option value="">All Grades</option>${gradesSet.map(g=>`<option>${g}</option>`).join('')}</select>
+            <select id="paymentFilter"><option value="">All</option><option value="paid">Paid Full Fees</option><option value="unpaid">Has Unpaid</option></select>
+            <button id="applyFilter" class="btn-sm btn">Filter</button>
+          </div>
+          <div id="studentsTable"></div>
+        </div>
+        <div id="schoolUpdatesAdmin" style="margin-top:2rem;"><h3>School Updates (Visible to Parents)</h3><div id="updatesListAdmin"></div></div>
+      </div>
+    `;
+    function renderStudentsTable(gradeFilter, paymentFilter) {
+      let filtered = students;
+      if(gradeFilter) filtered = filtered.filter(s=> s.grade === gradeFilter);
+      if(paymentFilter === "paid") filtered = filtered.filter(s=> s.payments?.term1 && s.payments?.bus && s.payments?.registrationPaid);
+      else if(paymentFilter === "unpaid") filtered = filtered.filter(s=> !(s.payments?.term1 && s.payments?.bus && s.payments?.registrationPaid));
+      const tableHtml = `<table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Grade</th><th>Exam %</th><th>Registration</th><th>Term1</th><th>Bus</th><th>Activity</th><th>Status</th></tr></thead><tbody>
+        ${filtered.map(s=>`<tr><td>${s.fullName}</td><td>${s.ethiopianId}</td><td>${s.grade}</td><td>${s.examPercent}%</td><td>${s.payments?.registrationPaid?'✅':'❌'}</td><td>${s.payments?.term1?'✅':'❌'}</td><td>${s.payments?.bus?'✅':'❌'}</td><td>${s.payments?.activity?'✅':'❌'}</td><td class="${(s.payments?.term1 && s.payments?.bus && s.payments?.registrationPaid)?'badge-paid':'badge-unpaid'}">${(s.payments?.term1 && s.payments?.bus && s.payments?.registrationPaid)?'Fully Paid':'Pending'}</td></tr>`).join('')}
+      </tbody></table>`;
+      document.getElementById('studentsTable').innerHTML = tableHtml;
+    }
+    function renderUpdatesAdmin() {
+      const updatesDiv = document.getElementById('updatesListAdmin');
+      if(updatesDiv) updatesDiv.innerHTML = parentUpdates.map(u=>`<div class="update-item"><strong>${u.date}</strong> - ${u.title}<br>${u.description}</div>`).join('') || '<i>No updates</i>';
+    }
+    renderStudentsTable('','');
+    renderUpdatesAdmin();
+    document.getElementById('applyFilter')?.addEventListener('click',()=>{
+      const grade = document.getElementById('gradeFilter').value;
+      const payment = document.getElementById('paymentFilter').value;
+      renderStudentsTable(grade, payment);
+    });
+    document.getElementById('showAllStudentsBtn')?.addEventListener('click',()=> renderStudentsTable('',''));
+    document.getElementById('addSchoolUpdateBtn')?.addEventListener('click',()=>{
+      const title = prompt("Update Title (e.g., Today John banned reason...)");
+      if(!title) return;
+      const desc = prompt("Description details:");
+      parentUpdates.unshift({ id: Date.now(), date: new Date().toLocaleDateString(), title, description: desc || "", type: "alert" });
+      saveData();
+      renderUpdatesAdmin();
+      alert("Update added. Parents will see it.");
+    });
+  }
+
+  // ---------- PARENT UPDATES: view school announcements, bans, etc ----------
+  function renderParentUpdates(container) {
+    container.innerHTML = `
+      <div class="card">
+        <h2><i class="fas fa-bell"></i> Parents Information Hub</h2>
+        <p>Real-time school updates, student conduct, and announcements.</p>
+        <div id="parentNewsFeed"></div>
+        <div class="profile-card" style="margin-top:1rem;">
+          <h3>📢 Important: Hermana Code of Conduct</h3>
+          <p>Any student violating school rules may face suspension. Latest updates below:</p>
         </div>
       </div>
     `;
-    document.getElementById('resetPortalBtn')?.addEventListener('click', () => {
-      if(confirm("This will clear all enrollment data. Proceed?")) {
-        localStorage.removeItem('hermana_enrollment');
-        studentData = null; examScore = null; paymentCompleted = false; receiptData = null; transactionId = null;
-        currentStep = 1;
-        renderStep();
-      }
-    });
-    document.getElementById('downloadFullRecordBtn')?.addEventListener('click', () => {
-      let dataStr = `HERMANA ACADEMY ENROLLMENT SUMMARY\nStudent: ${studentData.name}\nEmail: ${studentData.email}\nGrade: ${studentData.grade}\nExam Score: ${examScore?.percentage || 'N/A'}%\nPayment ID: ${transactionId || 'pending'}\nReceipt: ${receiptData ? 'Completed' : 'Not paid'}`;
-      const blob = new Blob([dataStr], {type: 'text/plain'});
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'hermana_enrollment.txt';
-      a.click();
-    });
+    const feedDiv = document.getElementById('parentNewsFeed');
+    if(parentUpdates.length===0) feedDiv.innerHTML = "<div class='update-item'>No updates yet. Stay tuned.</div>";
+    else feedDiv.innerHTML = parentUpdates.map(up => `<div class="update-item"><i class="fas fa-newspaper"></i> <strong>${up.date}</strong> · ${up.title}<br><span style="font-size:0.9rem;">${up.description}</span></div>`).join('');
+    // additional demo: show banned example
   }
 
-  // main navigation check integrity
-  function navigateToStep(step) {
-    if (step === 2 && !studentData) { alert("Please complete registration first."); return; }
-    if (step === 3 && (!studentData || !examScore)) { alert("You must complete the ability exam first."); return; }
-    if (step === 4 && (!paymentCompleted || !receiptData)) { alert("Complete payment to generate receipt."); return; }
-    if (step === 5 && (!receiptData)) { alert("Please finalize receipt first."); return; }
-    currentStep = step;
-    renderStep();
-  }
-
-  // Attach step clicks (optional)
-  function bindStepClicks() {
-    const stepDivs = document.querySelectorAll('.step-item');
-    stepDivs.forEach((div, idx) => {
-      div.addEventListener('click', () => {
-        const targetStep = idx+1;
-        if (targetStep === 1) { currentStep = 1; renderStep(); }
-        else if (targetStep === 2 && studentData) navigateToStep(2);
-        else if (targetStep === 3 && examScore) navigateToStep(3);
-        else if (targetStep === 4 && paymentCompleted) navigateToStep(4);
-        else if (targetStep === 5 && receiptData) navigateToStep(5);
-        else if (targetStep === 1) navigateToStep(1);
-        else alert("Please follow the sequential enrollment process.");
+  // Set tab event listeners
+  function bindNavEvents() {
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        activeTab = link.dataset.tab;
+        renderApp();
       });
     });
   }
-
-  // initial load
-  loadState();
-  currentStep = getCurrentStepBasedOnProgress();
-  renderStep();
-  bindStepClicks();
+  loadData();
+  bindNavEvents();
+  renderApp();
 </script>
 </body>
-  </html>
+</html>
