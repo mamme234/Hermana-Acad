@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Elite Academy | School Management Portal</title>
+  <!-- Google Fonts + Font Awesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f4f7fc;
+      color: #1e293b;
+      line-height: 1.5;
+      padding: 2rem 1.5rem;
+    }
+
+    /* container */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* header */
+    .header {
+      margin-bottom: 2.5rem;
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #1E3C72, #2A5298);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: -0.3px;
+    }
+    .header .badge {
+      background: #e9f0f5;
+      display: inline-block;
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #1e4a76;
+      margin-top: 0.5rem;
+    }
+    .sub {
+      color: #5c6f87;
+      margin-top: 0.3rem;
+      font-size: 0.95rem;
+    }
+
+    /* dashboard grid */
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 1.8rem;
+      margin-bottom: 2rem;
+    }
+
+    /* cards */
+    .card {
+      background: white;
+      border-radius: 28px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(0px);
+      border: 1px solid rgba(0, 0, 0, 0.03);
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.12);
+    }
+    .card-header {
+      padding: 1.3rem 1.5rem 0.7rem 1.5rem;
+      border-bottom: 2px solid #eef2f6;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .card-header i {
+      font-size: 1.7rem;
+      color: #2a5f8a;
+      background: #eef2fa;
+      padding: 8px;
+      border-radius: 18px;
+    }
+    .card-header h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #0f2b3d;
+    }
+    .card-body {
+      padding: 1.5rem;
+      flex: 1;
+    }
+
+    /* forms */
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #4a627a;
+      margin-bottom: 0.3rem;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid #dce3ec;
+      border-radius: 18px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      transition: 0.2s;
+      background-color: #fff;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #2a6b9e;
+      box-shadow: 0 0 0 3px rgba(42, 107, 158, 0.1);
+    }
+    .btn {
+      background: #1e4a76;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.3rem;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: 0.2s;
+      width: 100%;
+      margin-top: 0.5rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn i {
+      font-size: 0.9rem;
+    }
+    .btn:hover {
+      background: #0f3b5c;
+      transform: scale(0.98);
+    }
+    .btn-outline {
+      background: white;
+      border: 1px solid #cbdde9;
+      color: #1e4a76;
+    }
+    .btn-outline:hover {
+      background: #f0f6fe;
+    }
+    .delete-btn {
+      background: #f1f3f7;
+      color: #b91c1c;
+      border: none;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 30px;
+      margin-left: 8px;
+      cursor: pointer;
+    }
+    .list-container {
+      margin-top: 1.5rem;
+      border-top: 1px solid #ecf3f9;
+      padding-top: 1rem;
+    }
+    .list-title {
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-bottom: 0.7rem;
+      color: #2c5a7a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .student-item, .payment-item, .feedback-item {
+      background: #f9fbfd;
+      border-radius: 20px;
+      padding: 0.7rem 1rem;
+      margin-bottom: 0.6rem;
+      font-size: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .student-info, .payment-info, .feedback-info {
+      flex: 1;
+    }
+    .small-badge {
+      background: #e4eef9;
+      border-radius: 50px;
+      padding: 0.2rem 0.7rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+    .stars {
+      color: #f5b042;
+      letter-spacing: 2px;
+    }
+    .alert-message {
+      background: #e5f6e9;
+      color: #1f6e43;
+      padding: 0.6rem;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      margin-top: 0.8rem;
+      text-align: center;
+    }
+    hr {
+      margin: 1rem 0;
+      border: 0;
+      height: 1px;
+      background: #e2e8f0;
+    }
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.75rem;
+      color: #6d8aac;
+    }
+    @media (max-width: 780px) {
+      body { padding: 1rem; }
+      .card-header h2 { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1><i class="fas fa-landmark"></i> Elite International Academy</h1>
+    <div class="badge"><i class="fas fa-shield-alt"></i> Secure Campus Portal</div>
+    <div class="sub">Student registration • Fee payment • Parent feedback hub</div>
+  </div>
+
+  <div class="dashboard">
+    <!-- CARD 1: STUDENT REGISTRATION -->
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-user-graduate"></i>
+        <h2>Student Registration</h2>
+      </div>
+      <div class="card-body">
+        <form id="studentForm">
+          <div class="form-group">
+            <label>Full name *</label>
+            <input type="text" id="studentName" placeholder="e.g., Olivia Chen" required>
+          </div>
+          <div class="form-group">
+            <label>Email address *</label>
+            <input type="email" id="studentEmail" placeholder="student@example.com" required>
+          </div>
+          <div class="form-group">
+            <label>Grade / Class</label>
+            <select id="studentGrade">
+              <option value="Grade 1">Grade 1</option>
+              <option value="Grade 2">Grade 2</option>
+              <option value="Grade 3">Grade 3</option>
+              <option value="Grade 4">Grade 4</option>
+              <option value="Grade 5">Grade 5</option>
+              <option value="Middle School">Middle School</option>
+              <option value="High School">High School</option>
+            </select>
+          </div>
+          <button type="submit" class="btn"><i class="fas fa-user-plus"></i> Register Student</button>
+        </form>
+        <div id="regSuccessMsg" class="alert-message" style="display: none;">✔ Student registered successfully</div>
+        
+        <div class="list-container">
+          <div class="list-title"><i class="fas fa-users"></i> Enrolled Students</div>
+          <div id="studentListContainer">
+            <!-- dynamic list -->
+            <div style="color: #9aaebf; text-align:center; padding:0.5rem;">No students yet — register above</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 2: FEE PAYMENT (Simulated) -->
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-credit-card"></i>
+        <h2>Fee Payment</h2>
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <label>Select Student *</label>
+          <select id="paymentStudentSelect">
+            <option value="">-- No students available --</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Amount (USD)</label>
+          <input type="number" id="feeAmount" value="450" step="10" min="10">
+        </div>
+        <div class="form-group">
+          <label>Card Number (demo)</label>
+          <input type="text" id="cardNumber" placeholder="4242 4242 4242 4242" maxlength="19">
+        </div>
+        <div class="form-group" style="display: flex; gap: 8px;">
+          <div style="flex:1"><label>Expiry</label><input type="text" placeholder="MM/YY" id="expiry"></div>
+          <div style="flex:1"><label>CVV</label><input type="text" placeholder="123" id="cvv" maxlength="4"></div>
+        </div>
+        <button id="payFeeBtn" class="btn"><i class="fas fa-lock"></i> Pay School Fee (Demo)</button>
+        <div id="paymentMessage" class="alert-message" style="display: none;"></div>
+        
+        <div class="list-container">
+          <div class="list-title"><i class="fas fa-history"></i> Recent Transactions</div>
+          <div id="paymentHistoryList">
+            <div style="color: #9aaebf; text-align:center;">No payments yet</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 3: PARENT FEEDBACK -->
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-comment-dots"></i>
+        <h2>Parent Feedback</h2>
+      </div>
+      <div class="card-body">
+        <form id="feedbackForm">
+          <div class="form-group">
+            <label>Parent / Guardian Name *</label>
+            <input type="text" id="parentName" placeholder="e.g., Michael Johnson" required>
+          </div>
+          <div class="form-group">
+            <label>Associated Student (optional)</label>
+            <select id="feedbackStudentSelect">
+              <option value="">— General feedback —</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Rating</label>
+            <select id="feedbackRating">
+              <option value="5">★★★★★ (5)</option>
+              <option value="4">★★★★☆ (4)</option>
+              <option value="3">★★★☆☆ (3)</option>
+              <option value="2">★★☆☆☆ (2)</option>
+              <option value="1">★☆☆☆☆ (1)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Your feedback *</label>
+            <textarea rows="2" id="feedbackComment" placeholder="Share your experience, suggestions, or concerns..."></textarea>
+          </div>
+          <button type="submit" class="btn"><i class="fas fa-paper-plane"></i> Submit Feedback</button>
+        </form>
+        <div id="feedbackMsg" class="alert-message" style="display: none;"></div>
+        <div class="list-container">
+          <div class="list-title"><i class="fas fa-star"></i> Recent Messages</div>
+          <div id="feedbackListContainer">
+            <div style="color: #9aaebf; text-align:center;">No feedback yet — be the first</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <i class="fas fa-shield-heart"></i> Demo secure environment • All payments are simulated for demonstration • Elite Academy
+  </footer>
+</div>
+
+<script>
+  // ---------- DATA MODELS (LocalStorage) ----------
+  let students = [];       // { id, name, email, grade, date }
+  let payments = [];       // { id, studentId, studentName, amount, date, transactionId }
+  let feedbacks = [];      // { id, parentName, studentNameRef, rating, comment, date }
+
+  // Helper: generate random transaction ID
+  function generateTransactionId() {
+    return 'TXN' + Date.now() + '-' + Math.floor(Math.random() * 10000);
+  }
+
+  // Load from localStorage
+  function loadData() {
+    const storedStudents = localStorage.getItem('elite_students');
+    const storedPayments = localStorage.getItem('elite_payments');
+    const storedFeedbacks = localStorage.getItem('elite_feedbacks');
+    
+    if (storedStudents) students = JSON.parse(storedStudents);
+    else {
+      // Sample initial data to make demo lively
+      students = [
+        { id: 1001, name: "Sophia Martinez", email: "sophia.m@elite.edu", grade: "Grade 5", date: new Date().toISOString() },
+        { id: 1002, name: "Liam Thompson", email: "liam.t@elite.edu", grade: "Middle School", date: new Date().toISOString() }
+      ];
+    }
+    
+    if (storedPayments) payments = JSON.parse(storedPayments);
+    else {
+      payments = [
+        { id: 5001, studentId: 1001, studentName: "Sophia Martinez", amount: 450, date: new Date(Date.now() - 86400000).toISOString(), transactionId: "ELT-9A2F1" },
+        { id: 5002, studentId: 1002, studentName: "Liam Thompson", amount: 450, date: new Date(Date.now() - 172800000).toISOString(), transactionId: "ELT-7B3D9" }
+      ];
+    }
+    
+    if (storedFeedbacks) feedbacks = JSON.parse(storedFeedbacks);
+    else {
+      feedbacks = [
+        { id: 9001, parentName: "Mrs. Davis", studentNameRef: "Sophia Martinez", rating: 5, comment: "Excellent teachers and supportive environment!", date: new Date().toISOString() },
+        { id: 9002, parentName: "Robert Chen", studentNameRef: "General", rating: 4, comment: "Great curriculum but more sports activities please.", date: new Date().toISOString() }
+      ];
+    }
+  }
+
+  function saveAll() {
+    localStorage.setItem('elite_students', JSON.stringify(students));
+    localStorage.setItem('elite_payments', JSON.stringify(payments));
+    localStorage.setItem('elite_feedbacks', JSON.stringify(feedbacks));
+  }
+
+  // ---------- RENDER FUNCTIONS ----------
+  function renderStudentList() {
+    const container = document.getElementById('studentListContainer');
+    if (!container) return;
+    if (students.length === 0) {
+      container.innerHTML = '<div style="color: #9aaebf; text-align:center;">No students yet — register above</div>';
+      return;
+    }
+    container.innerHTML = '';
+    students.forEach(student => {
+      const div = document.createElement('div');
+      div.className = 'student-item';
+      div.innerHTML = `
+        <div class="student-info">
+          <strong>${escapeHtml(student.name)}</strong><br>
+          <span class="small-badge">${escapeHtml(student.grade)}</span> • ${escapeHtml(student.email)}
+          <div style="font-size:0.7rem; color:#7b8ea0;">ID: ${student.id}</div>
+        </div>
+        <button class="delete-btn" data-id="${student.id}" data-type="student"><i class="fas fa-trash-alt"></i> Remove</button>
+      `;
+      container.appendChild(div);
+    });
+    // attach delete events
+    document.querySelectorAll('.delete-btn[data-type="student"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = parseInt(btn.getAttribute('data-id'));
+        deleteStudentById(id);
+      });
+    });
+  }
+
+  function deleteStudentById(id) {
+    if (confirm('Remove this student? All linked payment records will be erased (demo policy).')) {
+      // remove student
+      students = students.filter(s => s.id !== id);
+      // remove payments with this studentId
+      payments = payments.filter(p => p.studentId !== id);
+      // feedbacks remain with studentNameRef as text (no cascade)
+      saveAll();
+      renderStudentList();
+      updateDropdowns();        // update both payment & feedback dropdowns
+      renderPaymentHistory();
+      renderFeedbackList();
+      showTemporaryMessage('regSuccessMsg', 'Student removed successfully', 2000);
+    }
+  }
+
+  function renderPaymentHistory() {
+    const container = document.getElementById('paymentHistoryList');
+    if (!container) return;
+    if (payments.length === 0) {
+      container.innerHTML = '<div style="color: #9aaebf; text-align:center;">No payments yet</div>';
+      return;
+    }
+    container.innerHTML = '';
+    [...payments].reverse().slice(0, 8).forEach(pay => {
+      const payDiv = document.createElement('div');
+      payDiv.className = 'payment-item';
+      payDiv.innerHTML = `
+        <div class="payment-info">
+          <strong>${escapeHtml(pay.studentName)}</strong> • $${pay.amount}<br>
+          <span style="font-size:0.7rem;">${new Date(pay.date).toLocaleDateString()} | Ref: ${pay.transactionId}</span>
+        </div>
+        <i class="fas fa-check-circle" style="color:#2e7d64;"></i>
+      `;
+      container.appendChild(payDiv);
+    });
+  }
+
+  function renderFeedbackList() {
+    const container = document.getElementById('feedbackListContainer');
+    if (!container) return;
+    if (feedbacks.length === 0) {
+      container.innerHTML = '<div style="color: #9aaebf; text-align:center;">No feedback yet — be the first</div>';
+      return;
+    }
+    container.innerHTML = '';
+    [...feedbacks].reverse().slice(0, 6).forEach(fb => {
+      const stars = '★'.repeat(fb.rating) + '☆'.repeat(5-fb.rating);
+      const fbDiv = document.createElement('div');
+      fbDiv.className = 'feedback-item';
+      fbDiv.innerHTML = `
+        <div style="flex:1">
+          <div><strong>${escapeHtml(fb.parentName)}</strong> <span class="stars">${stars}</span></div>
+          <div style="font-size:0.75rem;">For: ${fb.studentNameRef === "General" ? "General / School" : escapeHtml(fb.studentNameRef)}</div>
+          <div style="font-size:0.8rem; margin-top:4px;">“${escapeHtml(fb.comment.substring(0, 100))}”</div>
+          <div style="font-size:0.65rem; color:#7f8c8d;">${new Date(fb.date).toLocaleDateString()}</div>
+        </div>
+      `;
+      container.appendChild(fbDiv);
+    });
+  }
+
+  // Update dropdowns for payment student selection & feedback student association
+  function updateDropdowns() {
+    const paymentSelect = document.getElementById('paymentStudentSelect');
+    const feedbackSelect = document.getElementById('feedbackStudentSelect');
+    if (!paymentSelect || !feedbackSelect) return;
+    
+    // payment dropdown
+    paymentSelect.innerHTML = '';
+    if (students.length === 0) {
+      paymentSelect.innerHTML = '<option value="">-- No students registered --</option>';
+      paymentSelect.disabled = true;
+    } else {
+      paymentSelect.disabled = false;
+      students.forEach(std => {
+        const option = document.createElement('option');
+        option.value = std.id;
+        option.textContent = `${std.name} (${std.grade})`;
+        paymentSelect.appendChild(option);
+      });
+    }
+    
+    // feedback dropdown: optional student selection
+    feedbackSelect.innerHTML = '<option value="">— General feedback —</option>';
+    students.forEach(std => {
+      const opt = document.createElement('option');
+      opt.value = std.name;
+      opt.textContent = std.name;
+      feedbackSelect.appendChild(opt);
+    });
+  }
+
+  // Helper: show temporary message in specific alert div
+  function showTemporaryMessage(elementId, message, duration = 3000) {
+    const msgDiv = document.getElementById(elementId);
+    if (msgDiv) {
+      msgDiv.textContent = message;
+      msgDiv.style.display = 'block';
+      setTimeout(() => { if(msgDiv) msgDiv.style.display = 'none'; }, duration);
+    }
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if(m === '&') return '&amp;';
+      if(m === '<') return '&lt;';
+      if(m === '>') return '&gt;';
+      return m;
+    }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+      return c;
+    });
+  }
+
+  // ---------- STUDENT REGISTRATION ----------
+  document.getElementById('studentForm')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('studentName').value.trim();
+    const email = document.getElementById('studentEmail').value.trim();
+    const grade = document.getElementById('studentGrade').value;
+    if (!name || !email) {
+      showTemporaryMessage('regSuccessMsg', '❌ Please fill name and email', 2000);
+      return;
+    }
+    if (!email.includes('@')) {
+      showTemporaryMessage('regSuccessMsg', '❌ Valid email required', 2000);
+      return;
+    }
+    const newId = Date.now();
+    const newStudent = {
+      id: newId,
+      name: name,
+      email: email,
+      grade: grade,
+      date: new Date().toISOString()
+    };
+    students.push(newStudent);
+    saveAll();
+    renderStudentList();
+    updateDropdowns();
+    document.getElementById('studentForm').reset();
+    showTemporaryMessage('regSuccessMsg', `✔ ${name} registered successfully!`, 2500);
+  });
+
+  // ---------- FEE PAYMENT (Simulated) ----------
+  document.getElementById('payFeeBtn')?.addEventListener('click', () => {
+    const studentSelect = document.getElementById('paymentStudentSelect');
+    const selectedStudentId = parseInt(studentSelect.value);
+    if (students.length === 0 || !selectedStudentId) {
+      showTemporaryMessage('paymentMessage', '⚠️ Please register a student or select a valid student', 2500);
+      return;
+    }
+    const selectedStudent = students.find(s => s.id === selectedStudentId);
+    if (!selectedStudent) {
+      showTemporaryMessage('paymentMessage', 'Student not found, refresh list', 2000);
+      return;
+    }
+    let amount = parseFloat(document.getElementById('feeAmount').value);
+    if (isNaN(amount) || amount <= 0) amount = 450;
+    
+    const cardNum = document.getElementById('cardNumber').value.trim();
+    const expiry = document.getElementById('expiry').value.trim();
+    const cvv = document.getElementById('cvv').value.trim();
+    // Simple demo validation (just for show)
+    if (cardNum.length < 8 || expiry.length < 3 || cvv.length < 2) {
+      showTemporaryMessage('paymentMessage', '⚠️ Please fill card details (demo: any 16-digit / any expiry)', 2000);
+      return;
+    }
+    
+    // simulate payment processing
+    const transactionId = generateTransactionId();
+    const newPayment = {
+      id: Date.now(),
+      studentId: selectedStudent.id,
+      studentName: selectedStudent.name,
+      amount: amount,
+      date: new Date().toISOString(),
+      transactionId: transactionId
+    };
+    payments.unshift(newPayment);
+    saveAll();
+    renderPaymentHistory();
+    // Clear card fields
+    document.getElementById('cardNumber').value = '';
+    document.getElementById('expiry').value = '';
+    document.getElementById('cvv').value = '';
+    showTemporaryMessage('paymentMessage', `✅ Payment successful! $${amount} received for ${selectedStudent.name}. Ref: ${transactionId}`, 4000);
+  });
+
+  // ---------- PARENT FEEDBACK SUBMISSION ----------
+  document.getElementById('feedbackForm')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const parentName = document.getElementById('parentName').value.trim();
+    const studentSelect = document.getElementById('feedbackStudentSelect');
+    const selectedStudentName = studentSelect.value; // empty or student name
+    const rating = parseInt(document.getElementById('feedbackRating').value);
+    const comment = document.getElementById('feedbackComment').value.trim();
+    
+    if (!parentName) {
+      showTemporaryMessage('feedbackMsg', '❌ Parent name is required', 2000);
+      return;
+    }
+    if (!comment) {
+      showTemporaryMessage('feedbackMsg', '❌ Please write your feedback', 2000);
+      return;
+    }
+    const displayStudent = selectedStudentName === "" ? "General" : selectedStudentName;
+    const newFeedback = {
+      id: Date.now(),
+      parentName: parentName,
+      studentNameRef: displayStudent,
+      rating: rating,
+      comment: comment.substring(0, 300),
+      date: new Date().toISOString()
+    };
+    feedbacks.unshift(newFeedback);
+    saveAll();
+    renderFeedbackList();
+    document.getElementById('feedbackForm').reset();
+    // reset select to general
+    document.getElementById('feedbackStudentSelect').value = "";
+    document.getElementById('feedbackRating').value = "5";
+    showTemporaryMessage('feedbackMsg', '⭐ Thank you! Your feedback helps us grow.', 2500);
+  });
+
+  // ---------- INITIAL LOAD ----------
+  function init() {
+    loadData();
+    renderStudentList();
+    renderPaymentHistory();
+    renderFeedbackList();
+    updateDropdowns();
+    // re-render after any external updates 
+  }
+  init();
+</script>
+</body>
+  </html>
