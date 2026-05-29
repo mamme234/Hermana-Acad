@@ -1,693 +1,419 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hermana Academy | Smart School Management System</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-    }
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .header {
-      background: white;
-      border-radius: 15px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-    }
-    .nav-tabs {
-      display: flex;
-      gap: 10px;
-      margin-top: 15px;
-      flex-wrap: wrap;
-    }
-    .tab-btn {
-      padding: 10px 20px;
-      border: none;
-      background: #f0f0f0;
-      cursor: pointer;
-      border-radius: 8px;
-      font-weight: 600;
-      transition: all 0.3s;
-    }
-    .tab-btn.active {
-      background: #667eea;
-      color: white;
-    }
-    .content-panel {
-      background: white;
-      border-radius: 15px;
-      padding: 25px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-      display: none;
-    }
-    .content-panel.active {
-      display: block;
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: 600;
-      color: #333;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 14px;
-    }
-    button {
-      background: #667eea;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s;
-    }
-    button:hover {
-      background: #5a67d8;
-      transform: translateY(-2px);
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      padding: 12px;
-      text-align: left;
-      border-bottom: 1px solid #eee;
-    }
-    th {
-      background: #f8f9fa;
-      font-weight: 600;
-    }
-    .badge {
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-    .badge-paid {
-      background: #d4edda;
-      color: #155724;
-    }
-    .badge-unpaid {
-      background: #f8d7da;
-      color: #721c24;
-    }
-    .alert {
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-    }
-    .alert-success {
-      background: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-    .alert-error {
-      background: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
-    .receipt {
-      background: #f9f9f9;
-      border: 2px dashed #667eea;
-      padding: 20px;
-      border-radius: 10px;
-      margin-top: 20px;
-    }
-    .exam-question {
-      background: #f8f9fa;
-      padding: 15px;
-      margin-bottom: 15px;
-      border-radius: 10px;
-    }
-    .options {
-      display: flex;
-      gap: 15px;
-      margin-top: 10px;
-      flex-wrap: wrap;
-    }
-    .option {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    @media (max-width: 768px) {
-      .container { padding: 10px; }
-      table { font-size: 12px; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hermana Academy - Smart School Management</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .header h1 { font-size: 2.5em; color: #333; }
+        .tabs {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 12px 30px;
+            border: none;
+            background: #e0e0e0;
+            cursor: pointer;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .tab-btn.active { background: #667eea; color: white; }
+        .panel {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .panel.active { display: block; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+        input:focus, select:focus { outline: none; border-color: #667eea; }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        button:hover { background: #5a67d8; transform: translateY(-2px); }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e0e0e0; }
+        th { background: #f8f9fa; font-weight: 600; }
+        .badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .badge-paid { background: #48bb78; color: white; }
+        .badge-unpaid { background: #f56565; color: white; }
+        .card { background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
+        .receipt { background: #fff8e7; border: 2px solid #ffd700; border-radius: 15px; padding: 20px; margin-top: 20px; }
+        .alert-success { background: #c6f6d5; color: #22543d; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+    </style>
 </head>
 <body>
 <div class="container">
-  <div class="header">
-    <h1>🏫 Hermana Academy</h1>
-    <p>Ethiopia's Premier Educational Institution</p>
-    <div class="nav-tabs">
-      <button class="tab-btn active" onclick="switchTab('student')">👨‍🎓 Student Portal</button>
-      <button class="tab-btn" onclick="switchTab('director')">📊 Director Panel</button>
-      <button class="tab-btn" onclick="switchTab('parent')">👪 Parents Hub</button>
+    <div class="header">
+        <h1>🏫 Hermana Academy</h1>
+        <p>Ethiopia's Premier Educational Institution | ኸርማና አካዳሚ</p>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('student')">👨‍🎓 Student Portal</button>
+            <button class="tab-btn" onclick="switchTab('director')">📊 Director Panel</button>
+            <button class="tab-btn" onclick="switchTab('parent')">👪 Parents Hub</button>
+        </div>
     </div>
-  </div>
 
-  <!-- Student Portal -->
-  <div id="studentPanel" class="content-panel active">
-    <div id="studentAuth">
-      <h2>Student Registration / Login</h2>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-        <div>
-          <h3>📝 New Student Registration</h3>
-          <form id="registerForm" enctype="multipart/form-data">
-            <div class="form-group">
-              <label>Full Name *</label>
-              <input type="text" id="regName" required>
+    <!-- Student Panel -->
+    <div id="studentPanel" class="panel active">
+        <div id="studentAuth">
+            <div class="grid-2">
+                <div>
+                    <h2>📝 New Student Registration</h2>
+                    <form id="registerForm">
+                        <div class="form-group"><label>Full Name *</label><input type="text" id="regName" required></div>
+                        <div class="form-group"><label>Ethiopian ID *</label><input type="text" id="regEthiopianId" placeholder="ET1234567" required></div>
+                        <div class="form-group"><label>Email</label><input type="email" id="regEmail"></div>
+                        <div class="form-group"><label>Password</label><input type="password" id="regPassword" placeholder="Leave empty for 'default'"></div>
+                        <div class="form-group"><label>Grade *</label><select id="regGrade">
+                            <option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option>
+                            <option>Grade 5</option><option>Grade 6</option><option>Grade 7</option><option>Grade 8</option>
+                            <option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option>
+                        </select></div>
+                        <div class="form-group"><label>Upload ID Photo</label><input type="file" id="regPhoto" accept="image/*"></div>
+                        <button type="submit">Register Student →</button>
+                    </form>
+                </div>
+                <div>
+                    <h2>🔐 Login to Dashboard</h2>
+                    <form id="studentLoginForm">
+                        <div class="form-group"><label>Ethiopian ID or Email</label><input type="text" id="studentIdentifier" required></div>
+                        <div class="form-group"><label>Password</label><input type="password" id="studentPassword"></div>
+                        <button type="submit">Login →</button>
+                    </form>
+                    <div class="card"><h3>📢 Demo Accounts</h3>
+                        <p><strong>Student:</strong> ET999999 / student123</p>
+                        <p><strong>Director:</strong> director@hermana.edu / director123</p>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-              <label>Ethiopian National ID *</label>
-              <input type="text" id="regEthiopianId" placeholder="ET1234567" required>
-            </div>
-            <div class="form-group">
-              <label>Email (optional)</label>
-              <input type="email" id="regEmail">
-            </div>
-            <div class="form-group">
-              <label>Password (optional, default will be 'default')</label>
-              <input type="password" id="regPassword">
-            </div>
-            <div class="form-group">
-              <label>Grade *</label>
-              <select id="regGrade">
-                <option>Grade 1</option><option>Grade 2</option><option>Grade 3</option>
-                <option>Grade 4</option><option>Grade 5</option><option>Grade 6</option>
-                <option>Grade 7</option><option>Grade 8</option><option>Grade 9</option>
-                <option>Grade 10</option><option>Grade 11</option><option>Grade 12</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Upload Ethiopian ID Photo</label>
-              <input type="file" id="regPhoto" accept="image/*">
-            </div>
-            <button type="submit">Register & Continue to Exam</button>
-          </form>
         </div>
-        <div>
-          <h3>🔐 Existing Student Login</h3>
-          <form id="studentLoginForm">
-            <div class="form-group">
-              <label>Ethiopian ID or Email</label>
-              <input type="text" id="studentIdentifier" required>
-            </div>
-            <div class="form-group">
-              <label>Password</label>
-              <input type="password" id="studentPassword">
-              <small>Default password for registered students: "default"</small>
-            </div>
-            <button type="submit">Login to Dashboard</button>
-          </form>
-        </div>
-      </div>
+        <div id="studentDashboard" style="display: none;"></div>
     </div>
-    <div id="studentDashboard" style="display: none;"></div>
-  </div>
 
-  <!-- Director Panel -->
-  <div id="directorPanel" class="content-panel">
-    <div id="directorAuth">
-      <h2>Director Login</h2>
-      <form id="directorLoginForm">
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" id="directorEmail" required>
+    <!-- Director Panel -->
+    <div id="directorPanel" class="panel">
+        <div id="directorAuth">
+            <h2>🔐 Director Login</h2>
+            <form id="directorLoginForm">
+                <div class="form-group"><label>Email</label><input type="email" id="directorEmail" required></div>
+                <div class="form-group"><label>Password</label><input type="password" id="directorPassword" required></div>
+                <button type="submit">Login →</button>
+            </form>
         </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="directorPassword" required>
-        </div>
-        <button type="submit">Login</button>
-      </form>
+        <div id="directorDashboard" style="display: none;"></div>
     </div>
-    <div id="directorDashboard" style="display: none;"></div>
-  </div>
 
-  <!-- Parents Hub -->
-  <div id="parentPanel" class="content-panel">
-    <div id="parentAuth">
-      <h2>Parent/Guardian Access</h2>
-      <form id="parentLoginForm">
-        <div class="form-group">
-          <label>Student Ethiopian ID or Email</label>
-          <input type="text" id="parentIdentifier" required>
+    <!-- Parent Panel -->
+    <div id="parentPanel" class="panel">
+        <div id="parentAuth">
+            <h2>🔐 Parent/Guardian Access</h2>
+            <form id="parentLoginForm">
+                <div class="form-group"><label>Student Ethiopian ID or Email</label><input type="text" id="parentIdentifier" required></div>
+                <div class="form-group"><label>Password</label><input type="password" id="parentPassword"></div>
+                <button type="submit">View Updates →</button>
+            </form>
         </div>
-        <div class="form-group">
-          <label>Password (use student's password or 'default')</label>
-          <input type="password" id="parentPassword">
-        </div>
-        <button type="submit">View School Updates</button>
-      </form>
+        <div id="parentDashboard" style="display: none;"></div>
     </div>
-    <div id="parentDashboard" style="display: none;"></div>
-  </div>
 </div>
 
 <script>
-  const API_URL = 'http://localhost:5000/api';
-  let currentToken = localStorage.getItem('token');
-  let currentUser = null;
+    const API_URL = 'https://your-render-backend.onrender.com/api'; // CHANGE THIS TO YOUR RENDER URL
+    let token = localStorage.getItem('token');
+    let currentUser = null;
 
-  // Helper function for API calls
-  async function apiCall(endpoint, options = {}) {
-    const headers = {
-      'Content-Type': 'application/json',
-      ...options.headers
-    };
-    if (currentToken) {
-      headers['Authorization'] = `Bearer ${currentToken}`;
-    }
-    const response = await fetch(`${API_URL}${endpoint}`, {
-      ...options,
-      headers
-    });
-    if (response.status === 401) {
-      localStorage.removeItem('token');
-      currentToken = null;
-      currentUser = null;
-      switchTab('student');
-    }
-    return response;
-  }
-
-  function switchTab(tab) {
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.content-panel').forEach(panel => panel.classList.remove('active'));
-    if (tab === 'student') {
-      document.querySelector('.tab-btn').classList.add('active');
-      document.getElementById('studentPanel').classList.add('active');
-    } else if (tab === 'director') {
-      document.querySelectorAll('.tab-btn')[1].classList.add('active');
-      document.getElementById('directorPanel').classList.add('active');
-    } else {
-      document.querySelectorAll('.tab-btn')[2].classList.add('active');
-      document.getElementById('parentPanel').classList.add('active');
-    }
-  }
-
-  // Student Registration
-  document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append('fullName', document.getElementById('regName').value);
-    formData.append('ethiopianId', document.getElementById('regEthiopianId').value);
-    formData.append('email', document.getElementById('regEmail').value);
-    formData.append('grade', document.getElementById('regGrade').value);
-    formData.append('password', document.getElementById('regPassword').value || 'default');
-    const photoFile = document.getElementById('regPhoto').files[0];
-    if (photoFile) formData.append('idPhoto', photoFile);
-    
-    const response = await fetch(`${API_URL}/auth/register`, {
-      method: 'POST',
-      body: formData
-    });
-    const data = await response.json();
-    if (response.ok) {
-      alert('Registration successful! Please login to take the exam.');
-      // Auto login and take exam
-      const loginResponse = await apiCall('/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ identifier: document.getElementById('regEthiopianId').value, password: document.getElementById('regPassword').value || 'default' })
-      });
-      const loginData = await loginResponse.json();
-      if (loginResponse.ok) {
-        currentToken = loginData.token;
-        localStorage.setItem('token', currentToken);
-        currentUser = loginData.user;
-        loadStudentDashboard();
-      }
-    } else {
-      alert('Registration failed: ' + (data.error || 'Unknown error'));
-    }
-  });
-
-  // Student Login
-  document.getElementById('studentLoginForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const response = await apiCall('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({
-        identifier: document.getElementById('studentIdentifier').value,
-        password: document.getElementById('studentPassword').value || 'default'
-      })
-    });
-    const data = await response.json();
-    if (response.ok) {
-      currentToken = data.token;
-      localStorage.setItem('token', currentToken);
-      currentUser = data.user;
-      loadStudentDashboard();
-    } else {
-      alert('Login failed: ' + data.error);
-    }
-  });
-
-  async function loadStudentDashboard() {
-    document.getElementById('studentAuth').style.display = 'none';
-    const dashboard = document.getElementById('studentDashboard');
-    dashboard.style.display = 'block';
-    
-    // Get student data
-    const studentRes = await apiCall(`/students/${currentUser.id}`);
-    const student = await studentRes.json();
-    
-    // Get payment status
-    const paymentRes = await apiCall(`/payments/student/${currentUser.id}`);
-    const paymentData = await paymentRes.json();
-    
-    // Check if exam taken
-    let examHtml = '';
-    if (!student.examPercent) {
-      const examRes = await apiCall(`/exam/${currentUser.id}`);
-      const examData = await examRes.json();
-      examHtml = `<h3>✍️ Ability Exam (${student.grade} Level)</h3>
-        <form id="examForm">
-          ${examData.questions.map((q, idx) => `
-            <div class="exam-question">
-              <strong>${idx+1}. ${q.text}</strong>
-              <div class="options">
-                ${q.options.map((opt, optIdx) => `
-                  <label class="option"><input type="radio" name="q${idx}" value="${optIdx}"> ${opt}</label>
-                `).join('')}
-              </div>
-            </div>
-          `).join('')}
-          <button type="submit">Submit Exam</button>
-        </form>`;
-    }
-    
-    const paymentStatusHtml = Object.entries(paymentData.paymentStatus).map(([type, paid]) => {
-      const prices = { registration: 1000, term1: 2500, term2: 2500, term3: 2500, bus: 1000, activity: 500, library: 300, sports: 400 };
-      const price = prices[type] || 0;
-      return `<tr>
-        <td>${type.toUpperCase()}</td>
-        <td>${price} ETB</td>
-        <td><span class="badge ${paid ? 'badge-paid' : 'badge-unpaid'}">${paid ? 'Paid' : 'Unpaid'}</span></td>
-        <td>${!paid ? `<button onclick="makePayment('${type}', ${price})">Pay Now</button>` : '✅'}</td>
-      </tr>`;
-    }).join('');
-    
-    dashboard.innerHTML = `
-      <div class="receipt">
-        <h2>👋 Welcome, ${student.fullName}</h2>
-        <p><strong>Ethiopian ID:</strong> ${student.ethiopianId}</p>
-        <p><strong>Grade:</strong> ${student.grade}</p>
-        <p><strong>Exam Score:</strong> ${student.examPercent ? student.examPercent + '%' : 'Not taken yet'}</p>
-        ${student.idPhotoUrl ? `<p><strong>ID Photo:</strong> <img src="http://localhost:5000${student.idPhotoUrl}" width="80"></p>` : ''}
-        <button onclick="logout()">Logout</button>
-      </div>
-      ${examHtml}
-      <h3>💰 Fee Payments (Ethiopian Birr)</h3>
-      <table>
-        <thead><tr><th>Fee Type</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
-        <tbody>${paymentStatusHtml}</tbody>
-      </table>
-      <div id="receiptMessage"></div>
-    `;
-    
-    if (document.getElementById('examForm')) {
-      document.getElementById('examForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const answers = [];
-        const examRes = await apiCall(`/exam/${currentUser.id}`);
-        const examData = await examRes.json();
-        for (let i = 0; i < examData.questions.length; i++) {
-          const selected = document.querySelector(`input[name="q${i}"]:checked`);
-          answers.push(selected ? parseInt(selected.value) : -1);
+    async function apiCall(endpoint, options = {}) {
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        try {
+            const res = await fetch(API_URL + endpoint, { ...options, headers });
+            if (res.status === 401) logout();
+            return res;
+        } catch (error) {
+            console.error('API Error:', error);
+            alert('Cannot connect to server. Make sure backend is running on Render.');
+            return { ok: false, json: async () => ({ error: 'Connection failed' }) };
         }
-        const submitRes = await apiCall('/exam/submit', {
-          method: 'POST',
-          body: JSON.stringify({ studentId: currentUser.id, answers })
+    }
+
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        if (tab === 'student') {
+            document.querySelector('.tab-btn').classList.add('active');
+            document.getElementById('studentPanel').classList.add('active');
+        } else if (tab === 'director') {
+            document.querySelectorAll('.tab-btn')[1].classList.add('active');
+            document.getElementById('directorPanel').classList.add('active');
+        } else {
+            document.querySelectorAll('.tab-btn')[2].classList.add('active');
+            document.getElementById('parentPanel').classList.add('active');
+        }
+    }
+
+    // Registration
+    document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('fullName', document.getElementById('regName').value);
+        formData.append('ethiopianId', document.getElementById('regEthiopianId').value);
+        formData.append('email', document.getElementById('regEmail').value);
+        formData.append('grade', document.getElementById('regGrade').value);
+        formData.append('password', document.getElementById('regPassword').value || 'default');
+        const photo = document.getElementById('regPhoto').files[0];
+        if (photo) formData.append('idPhoto', photo);
+        
+        const res = await fetch(API_URL + '/auth/register', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (res.ok) {
+            alert('✅ Registration successful! Please login.');
+            document.getElementById('registerForm').reset();
+        } else {
+            alert('❌ Error: ' + data.error);
+        }
+    });
+
+    // Student Login
+    document.getElementById('studentLoginForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const res = await fetch(API_URL + '/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                identifier: document.getElementById('studentIdentifier').value,
+                password: document.getElementById('studentPassword').value || 'default'
+            })
         });
-        const result = await submitRes.json();
-        alert(`Exam completed! Score: ${result.score}/${result.total} (${result.percentage}%)`);
-        loadStudentDashboard();
-      });
-    }
-  }
-
-  window.makePayment = async (type, amount) => {
-    if (!confirm(`Pay ${amount} ETB for ${type}?`)) return;
-    const response = await apiCall('/payment', {
-      method: 'POST',
-      body: JSON.stringify({ studentId: currentUser.id, paymentType: type })
+        const data = await res.json();
+        if (res.ok) {
+            token = data.token;
+            currentUser = data.user;
+            localStorage.setItem('token', token);
+            loadStudentDashboard();
+        } else {
+            alert('Login failed: ' + data.error);
+        }
     });
-    const data = await response.json();
-    if (response.ok) {
-      const receiptDiv = document.getElementById('receiptMessage');
-      receiptDiv.innerHTML = `
-        <div class="alert alert-success">
-          <h4>✅ Payment Successful!</h4>
-          <p>Amount: ${data.receipt.amount} ETB</p>
-          <p>Transaction ID: ${data.receipt.transactionId}</p>
-          <p>Date: ${new Date(data.receipt.date).toLocaleString()}</p>
-          <button onclick="downloadReceipt('${data.receipt.transactionId}')">Download Receipt</button>
-        </div>
-      `;
-      setTimeout(() => loadStudentDashboard(), 2000);
-    } else {
-      alert('Payment failed: ' + data.error);
-    }
-  };
 
-  window.downloadReceipt = async (transactionId) => {
-    const response = await apiCall(`/receipt/${transactionId}`);
-    const receipt = await response.json();
-    const receiptText = `HERMANA ACADEMY RECEIPT
-========================
-Student: ${receipt.fullName}
-Ethiopian ID: ${receipt.ethiopianId}
-Payment Type: ${receipt.paymentType}
-Amount: ${receipt.amount} ETB
-Transaction ID: ${receipt.transactionId}
-Date: ${new Date(receipt.paymentDate).toLocaleString()}
-========================
-Thank you for choosing Hermana Academy!`;
-    const blob = new Blob([receiptText], { type: 'text/plain' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `receipt_${transactionId}.txt`;
-    a.click();
-  };
-
-  // Director Login
-  document.getElementById('directorLoginForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const response = await apiCall('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({
-        identifier: document.getElementById('directorEmail').value,
-        password: document.getElementById('directorPassword').value
-      })
+    // Director Login
+    document.getElementById('directorLoginForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const res = await fetch(API_URL + '/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                identifier: document.getElementById('directorEmail').value,
+                password: document.getElementById('directorPassword').value
+            })
+        });
+        const data = await res.json();
+        if (res.ok) {
+            token = data.token;
+            currentUser = data.user;
+            localStorage.setItem('token', token);
+            loadDirectorDashboard();
+        } else {
+            alert('Login failed: ' + data.error);
+        }
     });
-    const data = await response.json();
-    if (response.ok) {
-      currentToken = data.token;
-      localStorage.setItem('token', currentToken);
-      currentUser = data.user;
-      loadDirectorDashboard();
-    } else {
-      alert('Login failed: ' + data.error);
-    }
-  });
 
-  async function loadDirectorDashboard() {
-    document.getElementById('directorAuth').style.display = 'none';
-    const dashboard = document.getElementById('directorDashboard');
-    dashboard.style.display = 'block';
-    
-    const studentsRes = await apiCall('/director/students');
-    const students = await studentsRes.json();
-    
-    const gradesRes = await apiCall('/director/students/by-grade');
-    const gradeStats = await gradesRes.json();
-    
-    dashboard.innerHTML = `
-      <h2>📊 Director Dashboard</h2>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 15px; margin-bottom: 20px;">
-        ${Object.entries(gradeStats).map(([grade, count]) => `
-          <div style="background: #f0f0f0; padding: 15px; border-radius: 10px;">
-            <h3>${grade}</h3>
-            <p>${count} Students</p>
-          </div>
-        `).join('')}
-      </div>
-      <div class="form-group">
-        <label>Filter by Grade:</label>
-        <select id="gradeFilter" onchange="filterStudents()">
-          <option value="">All Grades</option>
-          <option>Grade 1</option><option>Grade 2</option><option>Grade 3</option>
-          <option>Grade 4</option><option>Grade 5</option><option>Grade 6</option>
-          <option>Grade 7</option><option>Grade 8</option><option>Grade 9</option>
-          <option>Grade 10</option><option>Grade 11</option><option>Grade 12</option>
-        </select>
-        <label>Payment Status:</label>
-        <select id="paymentFilter" onchange="filterStudents()">
-          <option value="">All</option>
-          <option value="paid">Fully Paid</option>
-          <option value="unpaid">Has Unpaid Fees</option>
-        </select>
-      </div>
-      <button onclick="createUpdate()">📢 Post School Update</button>
-      <div id="studentsTable"></div>
-    `;
-    displayStudents(students);
-  }
-
-  window.filterStudents = async () => {
-    const grade = document.getElementById('gradeFilter')?.value;
-    const paymentStatus = document.getElementById('paymentFilter')?.value;
-    let url = '/director/students';
-    const params = new URLSearchParams();
-    if (grade) params.append('grade', grade);
-    if (paymentStatus) params.append('paymentStatus', paymentStatus);
-    if (params.toString()) url += '?' + params.toString();
-    const response = await apiCall(url);
-    const students = await response.json();
-    displayStudents(students);
-  };
-
-  function displayStudents(students) {
-    const tableHtml = `
-      <table>
-        <thead>
-          <tr><th>Name</th><th>Ethiopian ID</th><th>Grade</th><th>Exam %</th><th>Registration</th><th>Term1</th><th>Bus</th><th>Status</th></tr>
-        </thead>
-        <tbody>
-          ${students.map(s => `
-            <tr>
-              <td>${s.fullName}</td>
-              <td>${s.ethiopianId}</td>
-              <td>${s.grade}</td>
-              <td>${s.examPercent || 'N/A'}%</td>
-              <td>${s.paymentStatus?.registration ? '✅' : '❌'}</td>
-              <td>${s.paymentStatus?.term1 ? '✅' : '❌'}</td>
-              <td>${s.paymentStatus?.bus ? '✅' : '❌'}</td>
-              <td class="${s.hasUnpaid ? 'badge-unpaid' : 'badge-paid'}">${s.hasUnpaid ? 'Pending' : 'Fully Paid'}</td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    `;
-    document.getElementById('studentsTable').innerHTML = tableHtml;
-  }
-
-  window.createUpdate = async () => {
-    const title = prompt("Update Title (e.g., Today John banned reason...):");
-    if (!title) return;
-    const description = prompt("Description details:");
-    const type = prompt("Type (alert/info/event/ban):", "alert");
-    const response = await apiCall('/director/updates', {
-      method: 'POST',
-      body: JSON.stringify({ title, description, type })
+    // Parent Login
+    document.getElementById('parentLoginForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const res = await fetch(API_URL + '/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                identifier: document.getElementById('parentIdentifier').value,
+                password: document.getElementById('parentPassword').value || 'default'
+            })
+        });
+        const data = await res.json();
+        if (res.ok) {
+            token = data.token;
+            currentUser = data.user;
+            localStorage.setItem('token', token);
+            loadParentDashboard();
+        } else {
+            alert('Login failed: ' + data.error);
+        }
     });
-    if (response.ok) {
-      alert("Update posted successfully! Parents will see it.");
-    } else {
-      alert("Failed to post update.");
+
+    async function loadStudentDashboard() {
+        document.getElementById('studentAuth').style.display = 'none';
+        const dashboard = document.getElementById('studentDashboard');
+        dashboard.style.display = 'block';
+        
+        const studentRes = await apiCall(`/students/${currentUser.id}`);
+        const student = await studentRes.json();
+        
+        let examHtml = '';
+        if (!student.examPercent) {
+            const examRes = await apiCall(`/exam/${currentUser.id}`);
+            const exam = await examRes.json();
+            examHtml = `<div class="card"><h3>✍️ Ability Exam (Required)</h3><form id="examForm">
+                ${exam.questions.map((q, i) => `<div style="margin-bottom:20px"><p><strong>${i+1}. ${q.text}</strong></p>
+                ${q.options.map((opt, oi) => `<label style="margin-right:15px"><input type="radio" name="q${i}" value="${oi}"> ${opt}</label>`).join('')}</div>`).join('')}
+                <button type="submit">Submit Exam</button></form></div>`;
+        }
+        
+        const payRes = await apiCall(`/payments/student/${currentUser.id}`);
+        const payments = await payRes.json();
+        
+        dashboard.innerHTML = `
+            <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:25px;border-radius:15px;margin-bottom:20px">
+                <h2>Welcome, ${student.fullName}!</h2>
+                <p>Ethiopian ID: ${student.ethiopianId} | Grade: ${student.grade}</p>
+                <p>Exam Score: ${student.examPercent || 0}%</p>
+                <button onclick="logout()" style="background:white;color:#667eea">Logout</button>
+            </div>
+            ${examHtml}
+            <h3>💰 Fee Payments (Ethiopian Birr)</h3>
+            <div style="overflow-x:auto"><table><thead><tr><th>Package</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody>
+                <tr><td>Registration Fee</td><td>1000 ETB</td><td><span class="badge ${payments.paymentStatus?.registration ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.registration ? 'Paid' : 'Unpaid'}</span></td>
+                <td>${!payments.paymentStatus?.registration ? `<button onclick="makePayment('registration',1000)">Pay Now</button>` : '✅'}</td></tr>
+                <tr><td><strong>📚 Term 1 + Bus Fee</strong><br><small>(Term1: 2500 + Bus: 1000)</small></td><td>3500 ETB</td><td><span class="badge ${payments.paymentStatus?.term1Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term1Bus ? 'Paid' : 'Unpaid'}</span></td>
+                <td>${!payments.paymentStatus?.term1Bus ? `<button onclick="makePayment('term1Bus',3500)">Pay Package</button>` : '✅'}</td></tr>
+                <tr><td><strong>📚 Term 2 + Bus Fee</strong><br><small>(Term2: 2500 + Bus: 1000)</small></td><td>3500 ETB</td><td><span class="badge ${payments.paymentStatus?.term2Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term2Bus ? 'Paid' : 'Unpaid'}</span></td>
+                <td>${!payments.paymentStatus?.term2Bus ? `<button onclick="makePayment('term2Bus',3500)">Pay Package</button>` : '✅'}</td></tr>
+                <tr><td><strong>📚 Term 3 + Bus Fee</strong><br><small>(Term3: 2500 + Bus: 1000)</small></td><td>3500 ETB</td><td><span class="badge ${payments.paymentStatus?.term3Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term3Bus ? 'Paid' : 'Unpaid'}</span></td>
+                <td>${!payments.paymentStatus?.term3Bus ? `<button onclick="makePayment('term3Bus',3500)">Pay Package</button>` : '✅'}</td></tr>
+            </tbody></table></div>
+            <div id="paymentMsg"></div>`;
+        
+        if (document.getElementById('examForm')) {
+            document.getElementById('examForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const examRes = await apiCall(`/exam/${currentUser.id}`);
+                const exam = await examRes.json();
+                const answers = [];
+                for (let i = 0; i < exam.questions.length; i++) {
+                    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                    answers.push(selected ? parseInt(selected.value) : -1);
+                }
+                const submitRes = await apiCall('/exam/submit', {
+                    method: 'POST',
+                    body: JSON.stringify({ studentId: currentUser.id, answers })
+                });
+                const result = await submitRes.json();
+                alert(`Exam completed! Score: ${result.score}/${result.total} (${result.percentage}%)`);
+                loadStudentDashboard();
+            });
+        }
     }
-  };
 
-  // Parent Login
-  document.getElementById('parentLoginForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const response = await apiCall('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({
-        identifier: document.getElementById('parentIdentifier').value,
-        password: document.getElementById('parentPassword').value || 'default'
-      })
-    });
-    const data = await response.json();
-    if (response.ok) {
-      currentToken = data.token;
-      localStorage.setItem('token', currentToken);
-      currentUser = data.user;
-      loadParentDashboard();
-    } else {
-      alert('Login failed: ' + data.error);
+    window.makePayment = async (type, amount) => {
+        if (!confirm(`Pay ${amount} ETB for ${type}?`)) return;
+        const res = await apiCall('/payment', {
+            method: 'POST',
+            body: JSON.stringify({ studentId: currentUser.id, paymentType: type })
+        });
+        const data = await res.json();
+        if (res.ok) {
+            document.getElementById('paymentMsg').innerHTML = `<div class="receipt"><strong>✅ Payment Successful!</strong><br>Transaction: ${data.receipt.transactionId}<br>Amount: ${data.receipt.amount} ETB<br><button onclick="downloadReceipt('${data.receipt.transactionId}')">Download Receipt</button></div>`;
+            setTimeout(() => loadStudentDashboard(), 2000);
+        } else {
+            alert('Payment failed: ' + data.error);
+        }
+    };
+
+    window.downloadReceipt = (txn) => {
+        const text = `HERMANA ACADEMY RECEIPT\nTransaction: ${txn}\nDate: ${new Date()}\nThank you for your payment!`;
+        const blob = new Blob([text], { type: 'text/plain' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `receipt_${txn}.txt`;
+        a.click();
+    };
+
+    async function loadDirectorDashboard() {
+        document.getElementById('directorAuth').style.display = 'none';
+        const dashboard = document.getElementById('directorDashboard');
+        dashboard.style.display = 'block';
+        const res = await apiCall('/director/students');
+        const students = await res.json();
+        dashboard.innerHTML = `<h2>📊 Director Dashboard</h2><button onclick="createUpdate()">📢 Post Update</button>
+            <div style="overflow-x:auto"><tr><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Grade</th><th>Exam%</th><th>Reg</th><th>Term1+Bus</th><th>Term2+Bus</th><th>Term3+Bus</th></tr></thead><tbody>
+            ${students.map(s => `<tr><td>${s.fullName}</td><td>${s.ethiopianId}</td><td>${s.grade}</td><td>${s.examPercent||0}%</td>
+            <td>${s.paidRegistration ? '✅' : '❌'}</td><td>${s.paidTerm1Bus ? '✅' : '❌'}</td>
+            <td>${s.paidTerm2Bus ? '✅' : '❌'}</td><td>${s.paidTerm3Bus ? '✅' : '❌'}</td></tr>`).join('')}
+            </tbody></table><button onclick="logout()">Logout</button>`;
     }
-  });
 
-  async function loadParentDashboard() {
-    document.getElementById('parentAuth').style.display = 'none';
-    const dashboard = document.getElementById('parentDashboard');
-    dashboard.style.display = 'block';
-    
-    const updatesRes = await apiCall('/parent/updates');
-    const updates = await updatesRes.json();
-    
-    const studentsRes = await apiCall('/parent/students');
-    const students = await studentsRes.json();
-    
-    dashboard.innerHTML = `
-      <h2>👪 Parent Information Hub</h2>
-      <div class="receipt">
-        <h3>📢 School Updates & Announcements</h3>
-        ${updates.map(u => `
-          <div style="background: ${u.type === 'ban' ? '#f8d7da' : '#e7f3ff'}; padding: 15px; margin-bottom: 15px; border-radius: 10px;">
-            <strong>${u.title}</strong><br>
-            <small>${new Date(u.createdAt).toLocaleDateString()}</small>
-            <p>${u.description}</p>
-          </div>
-        `).join('')}
-      </div>
-      <h3>📚 Student Directory</h3>
-      <table>
-        <thead><tr><th>Student Name</th><th>Grade</th></tr></thead>
-        <tbody>${students.map(s => `<tr><td>${s.fullName}</td><td>${s.grade}</td></tr>`).join('')}</tbody>
-      </table>
-      <button onclick="logout()" style="margin-top: 20px;">Logout</button>
-    `;
-  }
+    window.createUpdate = async () => {
+        const title = prompt('Update Title:');
+        if (!title) return;
+        const desc = prompt('Description:');
+        await apiCall('/director/updates', { method: 'POST', body: JSON.stringify({ title, description: desc, type: 'alert' }) });
+        alert('Update posted!');
+    };
 
-  function logout() {
-    localStorage.removeItem('token');
-    currentToken = null;
-    currentUser = null;
-    location.reload();
-  }
-
-  // Check if already logged in
-  if (currentToken) {
-    // Try to restore session (simplified)
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      currentUser = JSON.parse(userData);
-      if (currentUser.role === 'student') loadStudentDashboard();
-      else if (currentUser.role === 'director') loadDirectorDashboard();
+    async function loadParentDashboard() {
+        document.getElementById('parentAuth').style.display = 'none';
+        const dashboard = document.getElementById('parentDashboard');
+        dashboard.style.display = 'block';
+        const updatesRes = await apiCall('/parent/updates');
+        const updates = await updatesRes.json();
+        const studentsRes = await apiCall('/parent/students');
+        const students = await studentsRes.json();
+        dashboard.innerHTML = `<h2>👪 Parent Hub</h2><h3>📢 Updates</h3>
+            ${updates.map(u => `<div style="background:#f0f0f0;padding:15px;margin:10px 0"><strong>${u.title}</strong><br><small>${new Date(u.createdAt).toLocaleDateString()}</small><p>${u.description}</p></div>`).join('')}
+            <h3>📚 Students</h3><table><tr><th>Name</th><th>Grade</th></tr>${students.map(s => `<tr><td>${s.fullName}</td><td>${s.grade}</td></tr>`).join('')}</table>
+            <button onclick="logout()">Logout</button>`;
     }
-  }
 
-  window.switchTab = switchTab;
-  window.logout = logout;
+    function logout() { localStorage.removeItem('token'); token = null; location.reload(); }
+    if (token) {
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            currentUser = { id: payload.id, role: payload.role, name: payload.name };
+            if (currentUser.role === 'student') loadStudentDashboard();
+            else if (currentUser.role === 'director') loadDirectorDashboard();
+        } catch(e) { logout(); }
+    }
+    window.switchTab = switchTab;
 </script>
 </body>
   </html>
