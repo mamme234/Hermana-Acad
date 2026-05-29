@@ -52,7 +52,7 @@ db.serialize(() => {
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
 
-  // Insert director
+  // Insert default director
   db.get("SELECT * FROM users WHERE role = 'director'", (err, row) => {
     if (!row) {
       const hashed = bcrypt.hashSync('director123', 10);
@@ -61,23 +61,50 @@ db.serialize(() => {
     }
   });
 
-  // Insert sample student for testing
+  // Insert test student
   db.get("SELECT * FROM users WHERE ethiopianId = 'ET999999'", (err, row) => {
     if (!row) {
       const hashed = bcrypt.hashSync('student123', 10);
       db.run(`INSERT INTO users (fullName, email, ethiopianId, password, grade, role) VALUES (?, ?, ?, ?, ?, ?)`,
-        ['Test Student', 'test@hermana.edu', 'ET999999', hashed, 'Grade 5', 'student']);
+        ['Test Student', 'test@hermana.edu', 'ET999999', hashed, 'Grade 10', 'student']);
+    }
+  });
+
+  // Insert sample updates
+  db.get("SELECT * FROM updates LIMIT 1", (err, row) => {
+    if (!row) {
+      db.run(`INSERT INTO updates (title, description, type) VALUES (?, ?, ?)`,
+        ['🚨 Student Conduct Notice', 'John Demissie has been banned for 3 days due to bullying. Parents please discuss school rules.', 'ban']);
+      db.run(`INSERT INTO updates (title, description, type) VALUES (?, ?, ?)`,
+        ['📢 Mid-Term Exams', 'Mid-term exams start on April 5th. All students must prepare well.', 'info']);
+      db.run(`INSERT INTO updates (title, description, type) VALUES (?, ?, ?)`,
+        ['🎓 Parent-Teacher Conference', 'Meeting on March 30th at 9:00 AM in the main hall.', 'event']);
     }
   });
 });
 
 // Helper: Generate exam questions
 function getExamQuestions(grade) {
-  return [
-    { id: 1, text: "What is 12 + 7?", options: ["18", "19", "20", "21"], correct: 1 },
-    { id: 2, text: "አዲስ አበባ የምትገኘው በኢትዮጵያ ውስጥ ነው?", options: ["አዎ", "አይ", "አላውቅም"], correct: 0 },
-    { id: 3, text: "5 × 3 = ?", options: ["12", "15", "18", "20"], correct: 1 }
-  ];
+  const gradeNum = parseInt(grade.match(/\d+/)[0]);
+  if (gradeNum <= 4) {
+    return [
+      { id: 1, text: "What is 12 + 7?", options: ["18", "19", "20", "21"], correct: 1 },
+      { id: 2, text: "የኢትዮጵያ ዋና ከተማ ማንነው?", options: ["ጎንደር", "አዲስ አበባ", "ሀዋሳ", "ባህርዳር"], correct: 1 },
+      { id: 3, text: "5 × 3 = ?", options: ["12", "15", "18", "20"], correct: 1 }
+    ];
+  } else if (gradeNum <= 8) {
+    return [
+      { id: 1, text: "144 ÷ 12 = ?", options: ["10", "12", "14", "16"], correct: 1 },
+      { id: 2, text: "Capital of Ethiopia?", options: ["Adama", "Addis Ababa", "Harar", "Jimma"], correct: 1 },
+      { id: 3, text: "60 km/h for 2.5 hours = ? km", options: ["120", "150", "180", "100"], correct: 1 }
+    ];
+  } else {
+    return [
+      { id: 1, text: "Solve: 3x - 7 = 11, x = ?", options: ["4", "5", "6", "7"], correct: 2 },
+      { id: 2, text: "Oxygen atomic number?", options: ["6", "7", "8", "9"], correct: 2 },
+      { id: 3, text: "What is √169?", options: ["11", "12", "13", "14"], correct: 2 }
+    ];
+  }
 }
 
 // Middleware
@@ -174,24 +201,46 @@ app.get('/api/students/:id', auth, (req, res) => {
 // ============= GET PAYMENTS =============
 app.get('/api/payments/student/:studentId', auth, (req, res) => {
   db.all(`SELECT paymentType, amount, transactionId FROM payments WHERE studentId = ?`, [req.params.studentId], (err, payments) => {
-    const status = { registration: false, term1: false, bus: false, activity: false };
-    payments.forEach(p => { status[p.paymentType] = true; });
+    const status = { 
+      registration: false, 
+      term1: false, term1Bus: false,
+      term2: false, term2Bus: false,
+      term3: false, term3Bus: false,
+      bus: false 
+    };
+    payments.forEach(p => { 
+      status[p.paymentType] = true; 
+    });
     res.json({ paymentStatus: status });
   });
 });
 
-// ============= MAKE PAYMENT =============
-const PRICES = { registration: 1000, term1: 2500, bus: 1000, activity: 500 };
+// ============= MAKE PAYMENT (Updated: Term + Bus combined) =============
+const PRICES = { 
+  registration: 1000,
+  term1: 2500, term1Bus: 3500,  // Term1 + Bus = 2500 + 1000
+  term2: 2500, term2Bus: 3500,
+  term3: 2500, term3Bus: 3500
+};
+
 app.post('/api/payment', auth, (req, res) => {
   const { studentId, paymentType } = req.body;
   const amount = PRICES[paymentType];
+  
+  if (!amount) return res.status(400).json({ error: 'Invalid payment type' });
+  
   const transactionId = 'TXN-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6);
   
-  db.run(`INSERT INTO payments (studentId, paymentType, amount, transactionId) VALUES (?,?,?,?)`,
-    [studentId, paymentType, amount, transactionId], function(err) {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json({ success: true, receipt: { transactionId, amount, paymentType } });
-    });
+  // Check if already paid
+  db.get(`SELECT id FROM payments WHERE studentId = ? AND paymentType = ?`, [studentId, paymentType], (err, existing) => {
+    if (existing) return res.status(400).json({ error: 'Payment already made for this type' });
+    
+    db.run(`INSERT INTO payments (studentId, paymentType, amount, transactionId) VALUES (?,?,?,?)`,
+      [studentId, paymentType, amount, transactionId], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, receipt: { transactionId, amount, paymentType } });
+      });
+  });
 });
 
 // ============= DIRECTOR: GET ALL STUDENTS =============
@@ -202,9 +251,14 @@ app.get('/api/director/students', auth, (req, res) => {
     const promises = students.map(s => {
       return new Promise((resolve) => {
         db.all(`SELECT paymentType FROM payments WHERE studentId = ?`, [s.id], (err, payments) => {
-          const status = { registration: false, term1: false, bus: false };
-          payments.forEach(p => { status[p.paymentType] = true; });
-          s.paymentStatus = status;
+          const paidTypes = payments.map(p => p.paymentType);
+          s.paidRegistration = paidTypes.includes('registration');
+          s.paidTerm1 = paidTypes.includes('term1');
+          s.paidTerm1Bus = paidTypes.includes('term1Bus');
+          s.paidTerm2 = paidTypes.includes('term2');
+          s.paidTerm2Bus = paidTypes.includes('term2Bus');
+          s.paidTerm3 = paidTypes.includes('term3');
+          s.paidTerm3Bus = paidTypes.includes('term3Bus');
           resolve(s);
         });
       });
@@ -217,7 +271,7 @@ app.get('/api/director/students', auth, (req, res) => {
 app.post('/api/director/updates', auth, (req, res) => {
   if (req.user.role !== 'director') return res.status(403).json({ error: 'Forbidden' });
   const { title, description, type } = req.body;
-  db.run(`INSERT INTO updates (title, description, type) VALUES (?,?,?)`, [title, description, type]);
+  db.run(`INSERT INTO updates (title, description, type) VALUES (?,?,?)`, [title, description, type || 'alert']);
   res.json({ message: 'Update posted' });
 });
 
@@ -236,7 +290,5 @@ app.get('/api/parent/students', auth, (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`\n✅ Hermana Academy Server running on http://localhost:${PORT}`);
-  console.log(`📝 Test Student Login: ET999999 / student123`);
-  console.log(`👨‍💼 Director Login: director@hermana.edu / director123\n`);
+  console.log(`✅ Hermana Academy Server running on port ${PORT}`);
 });
