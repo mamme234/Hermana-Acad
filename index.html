@@ -23,73 +23,34 @@
             text-align: center;
         }
         
-        /* ========== YOUR TORCH LOGO ========== */
-        .torch-logo {
-            width: 200px;
-            margin: 0 auto 15px auto;
+        /* ========== PUT YOUR LOGO HERE ========== */
+        .school-logo {
+            margin-bottom: 15px;
         }
-        
-        .torch-logo svg {
-            width: 100%;
+        .school-logo img {
+            max-width: 120px;
+            height: auto;
+            border-radius: 50%;
         }
-        
-        .outline {
-            stroke: #1a3c34;
-            stroke-width: 8;
-            stroke-linecap: round;
-            stroke-linejoin: round;
+        /* Or use text logo if no image */
+        .text-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
         }
-        
-        .leaf {
-            fill: #2d6a4f;
-        }
-        
-        .torch {
-            fill: #e67e22;
-        }
-        
-        .hands {
-            fill: #d4a574;
-            opacity: .95;
-        }
-        /* =================================== */
+        /* ======================================= */
         
         .header h1 {
             font-size: 2em;
             color: #333;
             margin: 10px 0 5px;
         }
-        
-        .header .ethiopia {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin: 8px 0;
-        }
-        
-        .flag {
-            display: inline-flex;
-            gap: 3px;
-        }
-        
-        .flag span {
-            width: 22px;
-            height: 15px;
-            display: inline-block;
-        }
-        
-        .flag .green { background: #078930; }
-        .flag .yellow { background: #fcdd09; }
-        .flag .red { background: #da121a; }
-        
-        .motto {
-            font-style: italic;
-            color: #667eea;
-            font-size: 0.85em;
-            margin-top: 5px;
-        }
-        
         .header p {
             color: #666;
         }
@@ -157,80 +118,26 @@
         
         @media (max-width: 768px) { 
             .grid-2 { grid-template-columns: 1fr; }
-            .torch-logo { width: 150px; }
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <!-- YOUR TORCH LOGO -->
-        <div class="torch-logo">
-            <svg viewBox="0 0 600 600">
-                <!-- LEFT LEAVES -->
-                <ellipse class="leaf outline" cx="80" cy="180" rx="22" ry="40" transform="rotate(-50 80 180)"/>
-                <ellipse class="leaf outline" cx="120" cy="140" rx="22" ry="40" transform="rotate(-30 120 140)"/>
-                <ellipse class="leaf outline" cx="90" cy="250" rx="22" ry="40" transform="rotate(-60 90 250)"/>
-                <ellipse class="leaf outline" cx="105" cy="340" rx="22" ry="40" transform="rotate(-70 105 340)"/>
-                <ellipse class="leaf outline" cx="125" cy="430" rx="22" ry="40" transform="rotate(-80 125 430)"/>
-
-                <!-- RIGHT LEAVES -->
-                <ellipse class="leaf outline" cx="520" cy="180" rx="22" ry="40" transform="rotate(50 520 180)"/>
-                <ellipse class="leaf outline" cx="480" cy="140" rx="22" ry="40" transform="rotate(30 480 140)"/>
-                <ellipse class="leaf outline" cx="510" cy="250" rx="22" ry="40" transform="rotate(60 510 250)"/>
-                <ellipse class="leaf outline" cx="495" cy="340" rx="22" ry="40" transform="rotate(70 495 340)"/>
-                <ellipse class="leaf outline" cx="475" cy="430" rx="22" ry="40" transform="rotate(80 475 430)"/>
-
-                <!-- LEFT ARC -->
-                <path d="M160 150 Q120 300 160 450" fill="none" class="outline"/>
-
-                <!-- RIGHT ARC -->
-                <path d="M440 150 Q480 300 440 450" fill="none" class="outline"/>
-
-                <!-- FLAME -->
-                <path class="torch outline"
-                    d="M300 50
-                       Q360 120 320 170
-                       Q310 130 290 170
-                       Q250 120 300 50 Z"/>
-
-                <!-- TORCH TOP -->
-                <rect x="210" y="210" width="180" height="35" rx="8" class="torch outline"/>
-
-                <!-- TORCH MIDDLE -->
-                <rect x="230" y="255" width="140" height="25" rx="5" class="torch outline"/>
-
-                <!-- TORCH HANDLE -->
-                <path class="torch outline"
-                    d="M280 280
-                       L330 280
-                       L315 480
-                       L265 480 Z"/>
-
-                <!-- HANDS -->
-                <path class="hands"
-                    d="M150 500
-                       Q180 430 210 500
-                       Q240 420 270 500
-                       Q300 430 330 500
-                       Q360 430 390 500
-                       Q420 440 450 500
-                       L450 600
-                       L150 600 Z"/>
-            </svg>
+        <!-- ========== REPLACE THIS SECTION WITH YOUR LOGO ========== -->
+        <div class="school-logo">
+            <!-- OPTION 1: Use image logo (uncomment and add your image path) -->
+            <!-- <img src="your-logo.png" alt="Hermana Academy Logo"> -->
+            
+            <!-- OPTION 2: Use text/icon logo (default) -->
+            <div class="text-logo">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
         </div>
+        <!-- ======================================================= -->
         
         <h1>🏫 Hermana Academy</h1>
-        <div class="ethiopia">
-            <div class="flag">
-                <span class="green"></span>
-                <span class="yellow"></span>
-                <span class="red"></span>
-            </div>
-            <span>Ethiopia's Premier Educational Institution</span>
-        </div>
-        <div class="motto">"እውቀት ብርሃን ነው | Quality Education for Future Leaders"</div>
-        <p>ኸርማና አካዳሚ | የኢትዮጵያ መሪ ትምህርት ተቋም</p>
+        <p>Ethiopia's Premier Educational Institution | ኸርማና አካዳሚ</p>
         
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('student')">👨‍🎓 Student Portal</button>
@@ -303,6 +210,9 @@
         <div id="parentDashboard" style="display: none;"></div>
     </div>
 </div>
+
+<!-- Font Awesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 <script>
     // ==================== CONFIGURATION ====================
@@ -636,4 +546,4 @@
     window.logout = logout;
 </script>
 </body>
-    </html>
+                                                                                                                       </html>
