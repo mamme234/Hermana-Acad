@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hermana Academy - Smart School Management</title>
+    <title>Hermana Academy - Smart School Management System</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -22,6 +22,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
         .header h1 { font-size: 2.5em; color: #333; }
+        .header p { color: #666; margin-top: 10px; }
         .tabs {
             display: flex;
             gap: 15px;
@@ -79,7 +80,10 @@
         .badge-unpaid { background: #f56565; color: white; }
         .card { background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
         .receipt { background: #fff8e7; border: 2px solid #ffd700; border-radius: 15px; padding: 20px; margin-top: 20px; }
-        .alert-success { background: #c6f6d5; color: #22543d; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .status-paid { background: #c6f6d5; color: #22543d; }
+        .status-unpaid { background: #fed7d7; color: #742a2a; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
         @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -122,7 +126,8 @@
                         <div class="form-group"><label>Password</label><input type="password" id="studentPassword"></div>
                         <button type="submit">Login →</button>
                     </form>
-                    <div class="card"><h3>📢 Demo Accounts</h3>
+                    <div class="card">
+                        <h3>📢 Demo Accounts</h3>
                         <p><strong>Student:</strong> ET999999 / student123</p>
                         <p><strong>Director:</strong> director@hermana.edu / director123</p>
                     </div>
@@ -160,27 +165,34 @@
 </div>
 
 <script>
-    const API_URL = 'https://your-render-backend.onrender.com/api'; // CHANGE THIS TO YOUR RENDER URL
+    // ==================== CONFIGURATION ====================
+    const API_URL = 'https://hermana-acad.onrender.com/api';
     let token = localStorage.getItem('token');
     let currentUser = null;
 
+    // ==================== API HELPER ====================
     async function apiCall(endpoint, options = {}) {
         const headers = { 'Content-Type': 'application/json' };
         if (token) headers['Authorization'] = `Bearer ${token}`;
+        
         try {
             const res = await fetch(API_URL + endpoint, { ...options, headers });
-            if (res.status === 401) logout();
+            if (res.status === 401) {
+                logout();
+                throw new Error('Session expired. Please login again.');
+            }
             return res;
         } catch (error) {
             console.error('API Error:', error);
-            alert('Cannot connect to server. Make sure backend is running on Render.');
-            return { ok: false, json: async () => ({ error: 'Connection failed' }) };
+            throw error;
         }
     }
 
+    // ==================== UI HELPERS ====================
     function switchTab(tab) {
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        
         if (tab === 'student') {
             document.querySelector('.tab-btn').classList.add('active');
             document.getElementById('studentPanel').classList.add('active');
@@ -193,7 +205,15 @@
         }
     }
 
-    // Registration
+    function showMessage(elementId, message, isError = false) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.innerHTML = `<div class="${isError ? 'alert-error' : 'alert-success'}" style="padding:15px;border-radius:10px;margin-top:15px;">${message}</div>`;
+            setTimeout(() => element.innerHTML = '', 5000);
+        }
+    }
+
+    // ==================== REGISTRATION ====================
     document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData();
@@ -205,215 +225,404 @@
         const photo = document.getElementById('regPhoto').files[0];
         if (photo) formData.append('idPhoto', photo);
         
-        const res = await fetch(API_URL + '/auth/register', { method: 'POST', body: formData });
-        const data = await res.json();
-        if (res.ok) {
-            alert('✅ Registration successful! Please login.');
-            document.getElementById('registerForm').reset();
-        } else {
-            alert('❌ Error: ' + data.error);
+        try {
+            const res = await fetch(API_URL + '/auth/register', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (res.ok) {
+                alert('✅ Registration successful! Please login.');
+                document.getElementById('registerForm').reset();
+            } else {
+                alert('❌ Error: ' + data.error);
+            }
+        } catch (error) {
+            alert('Connection error: Make sure backend is running');
         }
     });
 
-    // Student Login
+    // ==================== LOGIN HANDLERS ====================
     document.getElementById('studentLoginForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const res = await fetch(API_URL + '/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                identifier: document.getElementById('studentIdentifier').value,
-                password: document.getElementById('studentPassword').value || 'default'
-            })
-        });
-        const data = await res.json();
-        if (res.ok) {
-            token = data.token;
-            currentUser = data.user;
-            localStorage.setItem('token', token);
-            loadStudentDashboard();
-        } else {
-            alert('Login failed: ' + data.error);
+        try {
+            const res = await fetch(API_URL + '/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    identifier: document.getElementById('studentIdentifier').value,
+                    password: document.getElementById('studentPassword').value || 'default'
+                })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                token = data.token;
+                currentUser = data.user;
+                localStorage.setItem('token', token);
+                await loadStudentDashboard();
+            } else {
+                alert('Login failed: ' + data.error);
+            }
+        } catch (error) {
+            alert('Cannot connect to server. Please check your connection.');
         }
     });
 
-    // Director Login
     document.getElementById('directorLoginForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const res = await fetch(API_URL + '/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                identifier: document.getElementById('directorEmail').value,
-                password: document.getElementById('directorPassword').value
-            })
-        });
-        const data = await res.json();
-        if (res.ok) {
-            token = data.token;
-            currentUser = data.user;
-            localStorage.setItem('token', token);
-            loadDirectorDashboard();
-        } else {
-            alert('Login failed: ' + data.error);
+        try {
+            const res = await fetch(API_URL + '/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    identifier: document.getElementById('directorEmail').value,
+                    password: document.getElementById('directorPassword').value
+                })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                token = data.token;
+                currentUser = data.user;
+                localStorage.setItem('token', token);
+                await loadDirectorDashboard();
+            } else {
+                alert('Login failed: ' + data.error);
+            }
+        } catch (error) {
+            alert('Cannot connect to server.');
         }
     });
 
-    // Parent Login
     document.getElementById('parentLoginForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const res = await fetch(API_URL + '/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                identifier: document.getElementById('parentIdentifier').value,
-                password: document.getElementById('parentPassword').value || 'default'
-            })
-        });
-        const data = await res.json();
-        if (res.ok) {
-            token = data.token;
-            currentUser = data.user;
-            localStorage.setItem('token', token);
-            loadParentDashboard();
-        } else {
-            alert('Login failed: ' + data.error);
+        try {
+            const res = await fetch(API_URL + '/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    identifier: document.getElementById('parentIdentifier').value,
+                    password: document.getElementById('parentPassword').value || 'default'
+                })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                token = data.token;
+                currentUser = data.user;
+                localStorage.setItem('token', token);
+                await loadParentDashboard();
+            } else {
+                alert('Login failed: ' + data.error);
+            }
+        } catch (error) {
+            alert('Cannot connect to server.');
         }
     });
 
+    // ==================== STUDENT DASHBOARD ====================
     async function loadStudentDashboard() {
         document.getElementById('studentAuth').style.display = 'none';
         const dashboard = document.getElementById('studentDashboard');
         dashboard.style.display = 'block';
         
-        const studentRes = await apiCall(`/students/${currentUser.id}`);
-        const student = await studentRes.json();
-        
-        let examHtml = '';
-        if (!student.examPercent) {
-            const examRes = await apiCall(`/exam/${currentUser.id}`);
-            const exam = await examRes.json();
-            examHtml = `<div class="card"><h3>✍️ Ability Exam (Required)</h3><form id="examForm">
-                ${exam.questions.map((q, i) => `<div style="margin-bottom:20px"><p><strong>${i+1}. ${q.text}</strong></p>
-                ${q.options.map((opt, oi) => `<label style="margin-right:15px"><input type="radio" name="q${i}" value="${oi}"> ${opt}</label>`).join('')}</div>`).join('')}
-                <button type="submit">Submit Exam</button></form></div>`;
-        }
-        
-        const payRes = await apiCall(`/payments/student/${currentUser.id}`);
-        const payments = await payRes.json();
-        
-        dashboard.innerHTML = `
-            <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:25px;border-radius:15px;margin-bottom:20px">
-                <h2>Welcome, ${student.fullName}!</h2>
-                <p>Ethiopian ID: ${student.ethiopianId} | Grade: ${student.grade}</p>
-                <p>Exam Score: ${student.examPercent || 0}%</p>
-                <button onclick="logout()" style="background:white;color:#667eea">Logout</button>
-            </div>
-            ${examHtml}
-            <h3>💰 Fee Payments (Ethiopian Birr)</h3>
-            <div style="overflow-x:auto"><table><thead><tr><th>Package</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody>
-                <tr><td>Registration Fee</td><td>1000 ETB</td><td><span class="badge ${payments.paymentStatus?.registration ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.registration ? 'Paid' : 'Unpaid'}</span></td>
-                <td>${!payments.paymentStatus?.registration ? `<button onclick="makePayment('registration',1000)">Pay Now</button>` : '✅'}</td></tr>
-                <tr><td><strong>📚 Term 1 + Bus Fee</strong><br><small>(Term1: 2500 + Bus: 1000)</small></td><td>3500 ETB</td><td><span class="badge ${payments.paymentStatus?.term1Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term1Bus ? 'Paid' : 'Unpaid'}</span></td>
-                <td>${!payments.paymentStatus?.term1Bus ? `<button onclick="makePayment('term1Bus',3500)">Pay Package</button>` : '✅'}</td></tr>
-                <tr><td><strong>📚 Term 2 + Bus Fee</strong><br><small>(Term2: 2500 + Bus: 1000)</small></td><td>3500 ETB</td><td><span class="badge ${payments.paymentStatus?.term2Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term2Bus ? 'Paid' : 'Unpaid'}</span></td>
-                <td>${!payments.paymentStatus?.term2Bus ? `<button onclick="makePayment('term2Bus',3500)">Pay Package</button>` : '✅'}</td></tr>
-                <tr><td><strong>📚 Term 3 + Bus Fee</strong><br><small>(Term3: 2500 + Bus: 1000)</small></td><td>3500 ETB</td><td><span class="badge ${payments.paymentStatus?.term3Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term3Bus ? 'Paid' : 'Unpaid'}</span></td>
-                <td>${!payments.paymentStatus?.term3Bus ? `<button onclick="makePayment('term3Bus',3500)">Pay Package</button>` : '✅'}</td></tr>
-            </tbody></table></div>
-            <div id="paymentMsg"></div>`;
-        
-        if (document.getElementById('examForm')) {
-            document.getElementById('examForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
+        try {
+            // Get student data
+            const studentRes = await apiCall(`/students/${currentUser.id}`);
+            const student = await studentRes.json();
+            
+            // Check if exam needed
+            let examHtml = '';
+            if (!student.examPercent) {
                 const examRes = await apiCall(`/exam/${currentUser.id}`);
                 const exam = await examRes.json();
-                const answers = [];
-                for (let i = 0; i < exam.questions.length; i++) {
-                    const selected = document.querySelector(`input[name="q${i}"]:checked`);
-                    answers.push(selected ? parseInt(selected.value) : -1);
-                }
-                const submitRes = await apiCall('/exam/submit', {
-                    method: 'POST',
-                    body: JSON.stringify({ studentId: currentUser.id, answers })
+                examHtml = `
+                    <div class="card">
+                        <h3>✍️ Ability Exam (Required - ${student.grade} Level)</h3>
+                        <form id="examForm">
+                            ${exam.questions.map((q, i) => `
+                                <div style="margin-bottom:20px; padding:15px; background:#f0f0f0; border-radius:10px;">
+                                    <p><strong>${i+1}. ${q.text}</strong></p>
+                                    <div style="margin-top:10px;">
+                                        ${q.options.map((opt, oi) => `
+                                            <label style="margin-right:15px; display:inline-block;">
+                                                <input type="radio" name="q${i}" value="${oi}"> ${opt}
+                                            </label>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `).join('')}
+                            <button type="submit">Submit Exam</button>
+                        </form>
+                    </div>
+                `;
+            }
+            
+            // Get payment status
+            const payRes = await apiCall(`/payments/student/${currentUser.id}`);
+            const payments = await payRes.json();
+            
+            dashboard.innerHTML = `
+                <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:25px;border-radius:15px;margin-bottom:20px">
+                    <div class="navbar">
+                        <div>
+                            <h2>Welcome, ${student.fullName}!</h2>
+                            <p>Ethiopian ID: ${student.ethiopianId} | Grade: ${student.grade}</p>
+                            <p>Exam Score: ${student.examPercent || 0}%</p>
+                        </div>
+                        <button onclick="logout()" style="background:white;color:#667eea">Logout</button>
+                    </div>
+                </div>
+                ${examHtml}
+                <h3>💰 Fee Payments (Ethiopian Birr)</h3>
+                <div style="overflow-x:auto">
+                    <table>
+                        <thead>
+                            <tr><th>Package</th><th>Description</th><th>Amount</th><th>Status</th><th>Action</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Registration Fee</td>
+                                <td>One-time registration fee</td>
+                                <td>1000 ETB</td>
+                                <td><span class="badge ${payments.paymentStatus?.registration ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.registration ? 'Paid' : 'Unpaid'}</span></td>
+                                <td>${!payments.paymentStatus?.registration ? `<button onclick="makePayment('registration',1000)">Pay Now</button>` : '✅'}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>📚 Term 1 Package</strong></td>
+                                <td>Term1 (2500) + Bus Fee (1000)</td>
+                                <td>3500 ETB</td>
+                                <td><span class="badge ${payments.paymentStatus?.term1Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term1Bus ? 'Paid' : 'Unpaid'}</span></td>
+                                <td>${!payments.paymentStatus?.term1Bus ? `<button onclick="makePayment('term1Bus',3500)">Pay Package</button>` : '✅'}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>📚 Term 2 Package</strong></td>
+                                <td>Term2 (2500) + Bus Fee (1000)</td>
+                                <td>3500 ETB</td>
+                                <td><span class="badge ${payments.paymentStatus?.term2Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term2Bus ? 'Paid' : 'Unpaid'}</span></td>
+                                <td>${!payments.paymentStatus?.term2Bus ? `<button onclick="makePayment('term2Bus',3500)">Pay Package</button>` : '✅'}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>📚 Term 3 Package</strong></td>
+                                <td>Term3 (2500) + Bus Fee (1000)</td>
+                                <td>3500 ETB</td>
+                                <td><span class="badge ${payments.paymentStatus?.term3Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term3Bus ? 'Paid' : 'Unpaid'}</span></td>
+                                <td>${!payments.paymentStatus?.term3Bus ? `<button onclick="makePayment('term3Bus',3500)">Pay Package</button>` : '✅'}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="paymentMsg"></div>
+            `;
+            
+            // Handle exam submission
+            if (document.getElementById('examForm')) {
+                document.getElementById('examForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const examRes = await apiCall(`/exam/${currentUser.id}`);
+                    const exam = await examRes.json();
+                    const answers = [];
+                    for (let i = 0; i < exam.questions.length; i++) {
+                        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                        answers.push(selected ? parseInt(selected.value) : -1);
+                    }
+                    const submitRes = await apiCall('/exam/submit', {
+                        method: 'POST',
+                        body: JSON.stringify({ studentId: currentUser.id, answers })
+                    });
+                    const result = await submitRes.json();
+                    alert(`Exam completed!\nScore: ${result.score}/${result.total} (${result.percentage}%)\n${result.percentage >= 50 ? 'You passed!' : 'Please study more and retake.'}`);
+                    loadStudentDashboard();
                 });
-                const result = await submitRes.json();
-                alert(`Exam completed! Score: ${result.score}/${result.total} (${result.percentage}%)`);
-                loadStudentDashboard();
-            });
+            }
+        } catch (error) {
+            console.error('Error loading dashboard:', error);
+            alert('Error loading dashboard. Please refresh.');
         }
     }
 
+    // ==================== PAYMENT ====================
     window.makePayment = async (type, amount) => {
         if (!confirm(`Pay ${amount} ETB for ${type}?`)) return;
-        const res = await apiCall('/payment', {
-            method: 'POST',
-            body: JSON.stringify({ studentId: currentUser.id, paymentType: type })
-        });
-        const data = await res.json();
-        if (res.ok) {
-            document.getElementById('paymentMsg').innerHTML = `<div class="receipt"><strong>✅ Payment Successful!</strong><br>Transaction: ${data.receipt.transactionId}<br>Amount: ${data.receipt.amount} ETB<br><button onclick="downloadReceipt('${data.receipt.transactionId}')">Download Receipt</button></div>`;
-            setTimeout(() => loadStudentDashboard(), 2000);
-        } else {
-            alert('Payment failed: ' + data.error);
+        
+        try {
+            const res = await apiCall('/payment', {
+                method: 'POST',
+                body: JSON.stringify({ studentId: currentUser.id, paymentType: type })
+            });
+            const data = await res.json();
+            
+            if (res.ok) {
+                document.getElementById('paymentMsg').innerHTML = `
+                    <div class="receipt">
+                        <h3>✅ Payment Successful!</h3>
+                        <p><strong>Transaction ID:</strong> ${data.receipt.transactionId}</p>
+                        <p><strong>Amount:</strong> ${data.receipt.amount} ETB</p>
+                        <p><strong>Payment Type:</strong> ${data.receipt.paymentType}</p>
+                        <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
+                        <button onclick="downloadReceipt('${data.receipt.transactionId}')">Download Receipt</button>
+                    </div>
+                `;
+                setTimeout(() => loadStudentDashboard(), 2000);
+            } else {
+                alert('Payment failed: ' + data.error);
+            }
+        } catch (error) {
+            alert('Error processing payment');
         }
     };
 
     window.downloadReceipt = (txn) => {
-        const text = `HERMANA ACADEMY RECEIPT\nTransaction: ${txn}\nDate: ${new Date()}\nThank you for your payment!`;
-        const blob = new Blob([text], { type: 'text/plain' });
+        const receiptText = `
+╔══════════════════════════════════════════╗
+║         HERMANA ACADEMY                  ║
+║         OFFICIAL RECEIPT                 ║
+╠══════════════════════════════════════════╣
+║ Transaction ID: ${txn}
+║ Student: ${currentUser?.name}
+║ Date: ${new Date().toLocaleString()}
+║
+║ Thank you for your payment!
+╚══════════════════════════════════════════╝
+        `;
+        const blob = new Blob([receiptText], { type: 'text/plain' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
         a.download = `receipt_${txn}.txt`;
         a.click();
     };
 
+    // ==================== DIRECTOR DASHBOARD ====================
     async function loadDirectorDashboard() {
         document.getElementById('directorAuth').style.display = 'none';
         const dashboard = document.getElementById('directorDashboard');
         dashboard.style.display = 'block';
-        const res = await apiCall('/director/students');
-        const students = await res.json();
-        dashboard.innerHTML = `<h2>📊 Director Dashboard</h2><button onclick="createUpdate()">📢 Post Update</button>
-            <div style="overflow-x:auto"><tr><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Grade</th><th>Exam%</th><th>Reg</th><th>Term1+Bus</th><th>Term2+Bus</th><th>Term3+Bus</th></tr></thead><tbody>
-            ${students.map(s => `<tr><td>${s.fullName}</td><td>${s.ethiopianId}</td><td>${s.grade}</td><td>${s.examPercent||0}%</td>
-            <td>${s.paidRegistration ? '✅' : '❌'}</td><td>${s.paidTerm1Bus ? '✅' : '❌'}</td>
-            <td>${s.paidTerm2Bus ? '✅' : '❌'}</td><td>${s.paidTerm3Bus ? '✅' : '❌'}</td></tr>`).join('')}
-            </tbody></table><button onclick="logout()">Logout</button>`;
+        
+        try {
+            const res = await apiCall('/director/students');
+            const students = await res.json();
+            
+            dashboard.innerHTML = `
+                <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:25px;border-radius:15px;margin-bottom:20px">
+                    <div class="navbar">
+                        <div><h2>📊 Director Dashboard</h2><p>Welcome, ${currentUser?.name}</p></div>
+                        <button onclick="logout()" style="background:white;color:#667eea">Logout</button>
+                    </div>
+                </div>
+                <button onclick="createUpdate()" style="margin-bottom:20px">📢 Post School Update</button>
+                <div style="overflow-x:auto">
+                    <table>
+                        <thead>
+                            <tr><th>Name</th><th>Ethiopian ID</th><th>Grade</th><th>Exam%</th><th>Registration</th><th>Term1+Bus</th><th>Term2+Bus</th><th>Term3+Bus</th><th>Status</th></tr>
+                        </thead>
+                        <tbody>
+                            ${students.map(s => `
+                                <tr>
+                                    <td>${s.fullName}</td>
+                                    <td>${s.ethiopianId}</td>
+                                    <td>${s.grade}</td>
+                                    <td>${s.examPercent || 0}%</td>
+                                    <td>${s.paidRegistration ? '✅' : '❌'}</td>
+                                    <td>${s.paidTerm1Bus ? '✅' : '❌'}</td>
+                                    <td>${s.paidTerm2Bus ? '✅' : '❌'}</td>
+                                    <td>${s.paidTerm3Bus ? '✅' : '❌'}</td>
+                                    <td class="${(s.paidRegistration && s.paidTerm1Bus) ? 'status-paid' : 'status-unpaid'}">
+                                        ${(s.paidRegistration && s.paidTerm1Bus) ? 'Good Standing' : 'Payment Due'}
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        } catch (error) {
+            console.error('Error loading director dashboard:', error);
+        }
     }
 
     window.createUpdate = async () => {
-        const title = prompt('Update Title:');
+        const title = prompt('Update Title (e.g., Student banned for fighting):');
         if (!title) return;
-        const desc = prompt('Description:');
-        await apiCall('/director/updates', { method: 'POST', body: JSON.stringify({ title, description: desc, type: 'alert' }) });
-        alert('Update posted!');
+        const desc = prompt('Description details:');
+        if (!desc) return;
+        const type = prompt('Type (alert/info/event/ban):', 'alert');
+        
+        try {
+            await apiCall('/director/updates', {
+                method: 'POST',
+                body: JSON.stringify({ title, description: desc, type })
+            });
+            alert('✅ Update posted successfully! Parents will see it.');
+        } catch (error) {
+            alert('Error posting update');
+        }
     };
 
+    // ==================== PARENT DASHBOARD ====================
     async function loadParentDashboard() {
         document.getElementById('parentAuth').style.display = 'none';
         const dashboard = document.getElementById('parentDashboard');
         dashboard.style.display = 'block';
-        const updatesRes = await apiCall('/parent/updates');
-        const updates = await updatesRes.json();
-        const studentsRes = await apiCall('/parent/students');
-        const students = await studentsRes.json();
-        dashboard.innerHTML = `<h2>👪 Parent Hub</h2><h3>📢 Updates</h3>
-            ${updates.map(u => `<div style="background:#f0f0f0;padding:15px;margin:10px 0"><strong>${u.title}</strong><br><small>${new Date(u.createdAt).toLocaleDateString()}</small><p>${u.description}</p></div>`).join('')}
-            <h3>📚 Students</h3><table><tr><th>Name</th><th>Grade</th></tr>${students.map(s => `<tr><td>${s.fullName}</td><td>${s.grade}</td></tr>`).join('')}</table>
-            <button onclick="logout()">Logout</button>`;
+        
+        try {
+            const [updatesRes, studentsRes] = await Promise.all([
+                apiCall('/parent/updates'),
+                apiCall('/parent/students')
+            ]);
+            const updates = await updatesRes.json();
+            const students = await studentsRes.json();
+            
+            dashboard.innerHTML = `
+                <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:25px;border-radius:15px;margin-bottom:20px">
+                    <div class="navbar">
+                        <div><h2>👪 Parent Information Hub</h2><p>Welcome to Hermana Academy</p></div>
+                        <button onclick="logout()" style="background:white;color:#667eea">Logout</button>
+                    </div>
+                </div>
+                <h3>📢 School Updates & Announcements</h3>
+                ${updates.map(u => `
+                    <div style="background:#f0f0f0;padding:15px;margin:10px 0;border-radius:10px;border-left:4px solid ${u.type === 'ban' ? '#e53e3e' : '#667eea'}">
+                        <strong>${u.title}</strong><br>
+                        <small>${new Date(u.createdAt).toLocaleDateString()}</small>
+                        <p style="margin-top:8px">${u.description}</p>
+                    </div>
+                `).join('')}
+                <h3 style="margin-top:20px">📚 Student Directory</h3>
+                <div style="overflow-x:auto">
+                    <table>
+                        <thead><tr><th>Student Name</th><th>Grade</th></tr></thead>
+                        <tbody>
+                            ${students.map(s => `<tr><td>${s.fullName}</td><td>${s.grade}</td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        } catch (error) {
+            console.error('Error loading parent dashboard:', error);
+        }
     }
 
-    function logout() { localStorage.removeItem('token'); token = null; location.reload(); }
+    // ==================== LOGOUT ====================
+    function logout() {
+        localStorage.removeItem('token');
+        token = null;
+        currentUser = null;
+        location.reload();
+    }
+
+    // ==================== AUTO-LOGIN CHECK ====================
     if (token) {
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));
             currentUser = { id: payload.id, role: payload.role, name: payload.name };
             if (currentUser.role === 'student') loadStudentDashboard();
             else if (currentUser.role === 'director') loadDirectorDashboard();
-        } catch(e) { logout(); }
+        } catch(e) {
+            logout();
+        }
     }
+
+    // Make functions global
     window.switchTab = switchTab;
+    window.logout = logout;
+    window.makePayment = makePayment;
+    window.downloadReceipt = downloadReceipt;
+    window.createUpdate = createUpdate;
 </script>
 </body>
-  </html>
+                                            </html>
