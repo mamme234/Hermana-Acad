@@ -13,16 +13,87 @@
             padding: 20px;
         }
         .container { max-width: 1400px; margin: 0 auto; }
+        
         .header {
             background: white;
             border-radius: 20px;
             padding: 25px;
             margin-bottom: 25px;
-            text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
         }
-        .header h1 { font-size: 2.5em; color: #333; }
-        .header p { color: #666; margin-top: 10px; }
+        
+        /* ========== YOUR TORCH LOGO ========== */
+        .torch-logo {
+            width: 200px;
+            margin: 0 auto 15px auto;
+        }
+        
+        .torch-logo svg {
+            width: 100%;
+        }
+        
+        .outline {
+            stroke: #1a3c34;
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+        .leaf {
+            fill: #2d6a4f;
+        }
+        
+        .torch {
+            fill: #e67e22;
+        }
+        
+        .hands {
+            fill: #d4a574;
+            opacity: .95;
+        }
+        /* =================================== */
+        
+        .header h1 {
+            font-size: 2em;
+            color: #333;
+            margin: 10px 0 5px;
+        }
+        
+        .header .ethiopia {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 8px 0;
+        }
+        
+        .flag {
+            display: inline-flex;
+            gap: 3px;
+        }
+        
+        .flag span {
+            width: 22px;
+            height: 15px;
+            display: inline-block;
+        }
+        
+        .flag .green { background: #078930; }
+        .flag .yellow { background: #fcdd09; }
+        .flag .red { background: #da121a; }
+        
+        .motto {
+            font-style: italic;
+            color: #667eea;
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+        
+        .header p {
+            color: #666;
+        }
+        
         .tabs {
             display: flex;
             gap: 15px;
@@ -30,6 +101,7 @@
             margin-top: 20px;
             flex-wrap: wrap;
         }
+        
         .tab-btn {
             padding: 12px 30px;
             border: none;
@@ -40,6 +112,7 @@
             font-weight: 600;
             transition: all 0.3s;
         }
+        
         .tab-btn.active { background: #667eea; color: white; }
         .panel {
             background: white;
@@ -80,18 +153,85 @@
         .badge-unpaid { background: #f56565; color: white; }
         .card { background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
         .receipt { background: #fff8e7; border: 2px solid #ffd700; border-radius: 15px; padding: 20px; margin-top: 20px; }
-        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-        .status-paid { background: #c6f6d5; color: #22543d; }
-        .status-unpaid { background: #fed7d7; color: #742a2a; }
         .navbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-        @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+        
+        @media (max-width: 768px) { 
+            .grid-2 { grid-template-columns: 1fr; }
+            .torch-logo { width: 150px; }
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
+        <!-- YOUR TORCH LOGO -->
+        <div class="torch-logo">
+            <svg viewBox="0 0 600 600">
+                <!-- LEFT LEAVES -->
+                <ellipse class="leaf outline" cx="80" cy="180" rx="22" ry="40" transform="rotate(-50 80 180)"/>
+                <ellipse class="leaf outline" cx="120" cy="140" rx="22" ry="40" transform="rotate(-30 120 140)"/>
+                <ellipse class="leaf outline" cx="90" cy="250" rx="22" ry="40" transform="rotate(-60 90 250)"/>
+                <ellipse class="leaf outline" cx="105" cy="340" rx="22" ry="40" transform="rotate(-70 105 340)"/>
+                <ellipse class="leaf outline" cx="125" cy="430" rx="22" ry="40" transform="rotate(-80 125 430)"/>
+
+                <!-- RIGHT LEAVES -->
+                <ellipse class="leaf outline" cx="520" cy="180" rx="22" ry="40" transform="rotate(50 520 180)"/>
+                <ellipse class="leaf outline" cx="480" cy="140" rx="22" ry="40" transform="rotate(30 480 140)"/>
+                <ellipse class="leaf outline" cx="510" cy="250" rx="22" ry="40" transform="rotate(60 510 250)"/>
+                <ellipse class="leaf outline" cx="495" cy="340" rx="22" ry="40" transform="rotate(70 495 340)"/>
+                <ellipse class="leaf outline" cx="475" cy="430" rx="22" ry="40" transform="rotate(80 475 430)"/>
+
+                <!-- LEFT ARC -->
+                <path d="M160 150 Q120 300 160 450" fill="none" class="outline"/>
+
+                <!-- RIGHT ARC -->
+                <path d="M440 150 Q480 300 440 450" fill="none" class="outline"/>
+
+                <!-- FLAME -->
+                <path class="torch outline"
+                    d="M300 50
+                       Q360 120 320 170
+                       Q310 130 290 170
+                       Q250 120 300 50 Z"/>
+
+                <!-- TORCH TOP -->
+                <rect x="210" y="210" width="180" height="35" rx="8" class="torch outline"/>
+
+                <!-- TORCH MIDDLE -->
+                <rect x="230" y="255" width="140" height="25" rx="5" class="torch outline"/>
+
+                <!-- TORCH HANDLE -->
+                <path class="torch outline"
+                    d="M280 280
+                       L330 280
+                       L315 480
+                       L265 480 Z"/>
+
+                <!-- HANDS -->
+                <path class="hands"
+                    d="M150 500
+                       Q180 430 210 500
+                       Q240 420 270 500
+                       Q300 430 330 500
+                       Q360 430 390 500
+                       Q420 440 450 500
+                       L450 600
+                       L150 600 Z"/>
+            </svg>
+        </div>
+        
         <h1>🏫 Hermana Academy</h1>
-        <p>Ethiopia's Premier Educational Institution | ኸርማና አካዳሚ</p>
+        <div class="ethiopia">
+            <div class="flag">
+                <span class="green"></span>
+                <span class="yellow"></span>
+                <span class="red"></span>
+            </div>
+            <span>Ethiopia's Premier Educational Institution</span>
+        </div>
+        <div class="motto">"እውቀት ብርሃን ነው | Quality Education for Future Leaders"</div>
+        <p>ኸርማና አካዳሚ | የኢትዮጵያ መሪ ትምህርት ተቋም</p>
+        
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('student')">👨‍🎓 Student Portal</button>
             <button class="tab-btn" onclick="switchTab('director')">📊 Director Panel</button>
@@ -170,17 +310,12 @@
     let token = localStorage.getItem('token');
     let currentUser = null;
 
-    // ==================== API HELPER ====================
     async function apiCall(endpoint, options = {}) {
         const headers = { 'Content-Type': 'application/json' };
         if (token) headers['Authorization'] = `Bearer ${token}`;
-        
         try {
             const res = await fetch(API_URL + endpoint, { ...options, headers });
-            if (res.status === 401) {
-                logout();
-                throw new Error('Session expired. Please login again.');
-            }
+            if (res.status === 401) logout();
             return res;
         } catch (error) {
             console.error('API Error:', error);
@@ -188,11 +323,9 @@
         }
     }
 
-    // ==================== UI HELPERS ====================
     function switchTab(tab) {
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        
         if (tab === 'student') {
             document.querySelector('.tab-btn').classList.add('active');
             document.getElementById('studentPanel').classList.add('active');
@@ -205,15 +338,7 @@
         }
     }
 
-    function showMessage(elementId, message, isError = false) {
-        const element = document.getElementById(elementId);
-        if (element) {
-            element.innerHTML = `<div class="${isError ? 'alert-error' : 'alert-success'}" style="padding:15px;border-radius:10px;margin-top:15px;">${message}</div>`;
-            setTimeout(() => element.innerHTML = '', 5000);
-        }
-    }
-
-    // ==================== REGISTRATION ====================
+    // Registration
     document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData();
@@ -239,7 +364,7 @@
         }
     });
 
-    // ==================== LOGIN HANDLERS ====================
+    // Student Login
     document.getElementById('studentLoginForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         try {
@@ -261,10 +386,11 @@
                 alert('Login failed: ' + data.error);
             }
         } catch (error) {
-            alert('Cannot connect to server. Please check your connection.');
+            alert('Cannot connect to server.');
         }
     });
 
+    // Director Login
     document.getElementById('directorLoginForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         try {
@@ -290,6 +416,7 @@
         }
     });
 
+    // Parent Login
     document.getElementById('parentLoginForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         try {
@@ -315,18 +442,15 @@
         }
     });
 
-    // ==================== STUDENT DASHBOARD ====================
     async function loadStudentDashboard() {
         document.getElementById('studentAuth').style.display = 'none';
         const dashboard = document.getElementById('studentDashboard');
         dashboard.style.display = 'block';
         
         try {
-            // Get student data
             const studentRes = await apiCall(`/students/${currentUser.id}`);
             const student = await studentRes.json();
             
-            // Check if exam needed
             let examHtml = '';
             if (!student.examPercent) {
                 const examRes = await apiCall(`/exam/${currentUser.id}`);
@@ -353,7 +477,6 @@
                 `;
             }
             
-            // Get payment status
             const payRes = await apiCall(`/payments/student/${currentUser.id}`);
             const payments = await payRes.json();
             
@@ -376,41 +499,24 @@
                             <tr><th>Package</th><th>Description</th><th>Amount</th><th>Status</th><th>Action</th></tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Registration Fee</td>
-                                <td>One-time registration fee</td>
-                                <td>1000 ETB</td>
-                                <td><span class="badge ${payments.paymentStatus?.registration ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.registration ? 'Paid' : 'Unpaid'}</span></td>
-                                <td>${!payments.paymentStatus?.registration ? `<button onclick="makePayment('registration',1000)">Pay Now</button>` : '✅'}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>📚 Term 1 Package</strong></td>
-                                <td>Term1 (2500) + Bus Fee (1000)</td>
-                                <td>3500 ETB</td>
-                                <td><span class="badge ${payments.paymentStatus?.term1Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term1Bus ? 'Paid' : 'Unpaid'}</span></td>
-                                <td>${!payments.paymentStatus?.term1Bus ? `<button onclick="makePayment('term1Bus',3500)">Pay Package</button>` : '✅'}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>📚 Term 2 Package</strong></td>
-                                <td>Term2 (2500) + Bus Fee (1000)</td>
-                                <td>3500 ETB</td>
-                                <td><span class="badge ${payments.paymentStatus?.term2Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term2Bus ? 'Paid' : 'Unpaid'}</span></td>
-                                <td>${!payments.paymentStatus?.term2Bus ? `<button onclick="makePayment('term2Bus',3500)">Pay Package</button>` : '✅'}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>📚 Term 3 Package</strong></td>
-                                <td>Term3 (2500) + Bus Fee (1000)</td>
-                                <td>3500 ETB</td>
-                                <td><span class="badge ${payments.paymentStatus?.term3Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term3Bus ? 'Paid' : 'Unpaid'}</span></td>
-                                <td>${!payments.paymentStatus?.term3Bus ? `<button onclick="makePayment('term3Bus',3500)">Pay Package</button>` : '✅'}</td>
-                            </tr>
+                            <tr><td>Registration Fee</td><td>One-time registration fee</td><td>1000 ETB</td>
+                            <td><span class="badge ${payments.paymentStatus?.registration ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.registration ? 'Paid' : 'Unpaid'}</span></td>
+                            <td>${!payments.paymentStatus?.registration ? `<button onclick="makePayment('registration',1000)">Pay Now</button>` : '✅'}</td></tr>
+                            <tr><td><strong>📚 Term 1 Package</strong></td><td>Term1 (2500) + Bus Fee (1000)</td><td>3500 ETB</td>
+                            <td><span class="badge ${payments.paymentStatus?.term1Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term1Bus ? 'Paid' : 'Unpaid'}</span></td>
+                            <td>${!payments.paymentStatus?.term1Bus ? `<button onclick="makePayment('term1Bus',3500)">Pay Package</button>` : '✅'}</td></tr>
+                            <tr><td><strong>📚 Term 2 Package</strong></td><td>Term2 (2500) + Bus Fee (1000)</td><td>3500 ETB</td>
+                            <td><span class="badge ${payments.paymentStatus?.term2Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term2Bus ? 'Paid' : 'Unpaid'}</span></td>
+                            <td>${!payments.paymentStatus?.term2Bus ? `<button onclick="makePayment('term2Bus',3500)">Pay Package</button>` : '✅'}</td></tr>
+                            <tr><td><strong>📚 Term 3 Package</strong></td><td>Term3 (2500) + Bus Fee (1000)</td><td>3500 ETB</td>
+                            <td><span class="badge ${payments.paymentStatus?.term3Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term3Bus ? 'Paid' : 'Unpaid'}</span></td>
+                            <td>${!payments.paymentStatus?.term3Bus ? `<button onclick="makePayment('term3Bus',3500)">Pay Package</button>` : '✅'}</td></tr>
                         </tbody>
                     </table>
                 </div>
                 <div id="paymentMsg"></div>
             `;
             
-            // Handle exam submission
             if (document.getElementById('examForm')) {
                 document.getElementById('examForm').addEventListener('submit', async (e) => {
                     e.preventDefault();
@@ -426,35 +532,29 @@
                         body: JSON.stringify({ studentId: currentUser.id, answers })
                     });
                     const result = await submitRes.json();
-                    alert(`Exam completed!\nScore: ${result.score}/${result.total} (${result.percentage}%)\n${result.percentage >= 50 ? 'You passed!' : 'Please study more and retake.'}`);
+                    alert(`Exam completed!\nScore: ${result.score}/${result.total} (${result.percentage}%)\n${result.percentage >= 50 ? 'You passed!' : 'Please study more.'}`);
                     loadStudentDashboard();
                 });
             }
         } catch (error) {
             console.error('Error loading dashboard:', error);
-            alert('Error loading dashboard. Please refresh.');
         }
     }
 
-    // ==================== PAYMENT ====================
     window.makePayment = async (type, amount) => {
         if (!confirm(`Pay ${amount} ETB for ${type}?`)) return;
-        
         try {
             const res = await apiCall('/payment', {
                 method: 'POST',
                 body: JSON.stringify({ studentId: currentUser.id, paymentType: type })
             });
             const data = await res.json();
-            
             if (res.ok) {
                 document.getElementById('paymentMsg').innerHTML = `
                     <div class="receipt">
                         <h3>✅ Payment Successful!</h3>
                         <p><strong>Transaction ID:</strong> ${data.receipt.transactionId}</p>
                         <p><strong>Amount:</strong> ${data.receipt.amount} ETB</p>
-                        <p><strong>Payment Type:</strong> ${data.receipt.paymentType}</p>
-                        <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
                         <button onclick="downloadReceipt('${data.receipt.transactionId}')">Download Receipt</button>
                     </div>
                 `;
@@ -468,18 +568,7 @@
     };
 
     window.downloadReceipt = (txn) => {
-        const receiptText = `
-╔══════════════════════════════════════════╗
-║         HERMANA ACADEMY                  ║
-║         OFFICIAL RECEIPT                 ║
-╠══════════════════════════════════════════╣
-║ Transaction ID: ${txn}
-║ Student: ${currentUser?.name}
-║ Date: ${new Date().toLocaleString()}
-║
-║ Thank you for your payment!
-╚══════════════════════════════════════════╝
-        `;
+        const receiptText = `HERMANA ACADEMY RECEIPT\nTransaction: ${txn}\nDate: ${new Date().toLocaleString()}\nThank you!`;
         const blob = new Blob([receiptText], { type: 'text/plain' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
@@ -487,142 +576,64 @@
         a.click();
     };
 
-    // ==================== DIRECTOR DASHBOARD ====================
     async function loadDirectorDashboard() {
         document.getElementById('directorAuth').style.display = 'none';
         const dashboard = document.getElementById('directorDashboard');
         dashboard.style.display = 'block';
-        
         try {
             const res = await apiCall('/director/students');
             const students = await res.json();
-            
             dashboard.innerHTML = `
                 <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:25px;border-radius:15px;margin-bottom:20px">
-                    <div class="navbar">
-                        <div><h2>📊 Director Dashboard</h2><p>Welcome, ${currentUser?.name}</p></div>
-                        <button onclick="logout()" style="background:white;color:#667eea">Logout</button>
-                    </div>
+                    <div class="navbar"><div><h2>📊 Director Dashboard</h2></div><button onclick="logout()" style="background:white;color:#667eea">Logout</button></div>
                 </div>
                 <button onclick="createUpdate()" style="margin-bottom:20px">📢 Post School Update</button>
-                <div style="overflow-x:auto">
-                    <table>
-                        <thead>
-                            <tr><th>Name</th><th>Ethiopian ID</th><th>Grade</th><th>Exam%</th><th>Registration</th><th>Term1+Bus</th><th>Term2+Bus</th><th>Term3+Bus</th><th>Status</th></tr>
-                        </thead>
-                        <tbody>
-                            ${students.map(s => `
-                                <tr>
-                                    <td>${s.fullName}</td>
-                                    <td>${s.ethiopianId}</td>
-                                    <td>${s.grade}</td>
-                                    <td>${s.examPercent || 0}%</td>
-                                    <td>${s.paidRegistration ? '✅' : '❌'}</td>
-                                    <td>${s.paidTerm1Bus ? '✅' : '❌'}</td>
-                                    <td>${s.paidTerm2Bus ? '✅' : '❌'}</td>
-                                    <td>${s.paidTerm3Bus ? '✅' : '❌'}</td>
-                                    <td class="${(s.paidRegistration && s.paidTerm1Bus) ? 'status-paid' : 'status-unpaid'}">
-                                        ${(s.paidRegistration && s.paidTerm1Bus) ? 'Good Standing' : 'Payment Due'}
-                                    </td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            `;
-        } catch (error) {
-            console.error('Error loading director dashboard:', error);
-        }
+                <div style="overflow-x:auto"><table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Grade</th><th>Exam%</th><th>Reg</th><th>Term1+Bus</th><th>Term2+Bus</th><th>Term3+Bus</th></tr></thead><tbody>
+                ${students.map(s => `<tr><td>${s.fullName}</td><td>${s.ethiopianId}</td><td>${s.grade}</td><td>${s.examPercent||0}%</td>
+                <td>${s.paidRegistration ? '✅' : '❌'}</td><td>${s.paidTerm1Bus ? '✅' : '❌'}</td>
+                <td>${s.paidTerm2Bus ? '✅' : '❌'}</td><td>${s.paidTerm3Bus ? '✅' : '❌'}</td></tr>`).join('')}
+                </tbody></table></div>`;
+        } catch (error) { console.error(error); }
     }
 
     window.createUpdate = async () => {
-        const title = prompt('Update Title (e.g., Student banned for fighting):');
+        const title = prompt('Update Title:');
         if (!title) return;
-        const desc = prompt('Description details:');
-        if (!desc) return;
-        const type = prompt('Type (alert/info/event/ban):', 'alert');
-        
-        try {
-            await apiCall('/director/updates', {
-                method: 'POST',
-                body: JSON.stringify({ title, description: desc, type })
-            });
-            alert('✅ Update posted successfully! Parents will see it.');
-        } catch (error) {
-            alert('Error posting update');
-        }
+        const desc = prompt('Description:');
+        await apiCall('/director/updates', { method: 'POST', body: JSON.stringify({ title, description: desc, type: 'alert' }) });
+        alert('Update posted!');
     };
 
-    // ==================== PARENT DASHBOARD ====================
     async function loadParentDashboard() {
         document.getElementById('parentAuth').style.display = 'none';
         const dashboard = document.getElementById('parentDashboard');
         dashboard.style.display = 'block';
-        
         try {
-            const [updatesRes, studentsRes] = await Promise.all([
-                apiCall('/parent/updates'),
-                apiCall('/parent/students')
-            ]);
+            const [updatesRes, studentsRes] = await Promise.all([apiCall('/parent/updates'), apiCall('/parent/students')]);
             const updates = await updatesRes.json();
             const students = await studentsRes.json();
-            
             dashboard.innerHTML = `
                 <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:25px;border-radius:15px;margin-bottom:20px">
-                    <div class="navbar">
-                        <div><h2>👪 Parent Information Hub</h2><p>Welcome to Hermana Academy</p></div>
-                        <button onclick="logout()" style="background:white;color:#667eea">Logout</button>
-                    </div>
+                    <div class="navbar"><div><h2>👪 Parent Hub</h2></div><button onclick="logout()" style="background:white;color:#667eea">Logout</button></div>
                 </div>
-                <h3>📢 School Updates & Announcements</h3>
-                ${updates.map(u => `
-                    <div style="background:#f0f0f0;padding:15px;margin:10px 0;border-radius:10px;border-left:4px solid ${u.type === 'ban' ? '#e53e3e' : '#667eea'}">
-                        <strong>${u.title}</strong><br>
-                        <small>${new Date(u.createdAt).toLocaleDateString()}</small>
-                        <p style="margin-top:8px">${u.description}</p>
-                    </div>
-                `).join('')}
-                <h3 style="margin-top:20px">📚 Student Directory</h3>
-                <div style="overflow-x:auto">
-                    <table>
-                        <thead><tr><th>Student Name</th><th>Grade</th></tr></thead>
-                        <tbody>
-                            ${students.map(s => `<tr><td>${s.fullName}</td><td>${s.grade}</td></tr>`).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            `;
-        } catch (error) {
-            console.error('Error loading parent dashboard:', error);
-        }
+                <h3>📢 Updates</h3>${updates.map(u => `<div style="background:#f0f0f0;padding:15px;margin:10px 0;border-radius:10px"><strong>${u.title}</strong><br><small>${new Date(u.createdAt).toLocaleDateString()}</small><p>${u.description}</p></div>`).join('')}
+                <h3>📚 Students</h3><table><thead><tr><th>Name</th><th>Grade</th></tr></thead><tbody>${students.map(s => `<tr><td>${s.fullName}</td><td>${s.grade}</td></tr>`).join('')}</tbody></table>`;
+        } catch (error) { console.error(error); }
     }
 
-    // ==================== LOGOUT ====================
-    function logout() {
-        localStorage.removeItem('token');
-        token = null;
-        currentUser = null;
-        location.reload();
-    }
+    function logout() { localStorage.removeItem('token'); token = null; location.reload(); }
 
-    // ==================== AUTO-LOGIN CHECK ====================
     if (token) {
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));
             currentUser = { id: payload.id, role: payload.role, name: payload.name };
             if (currentUser.role === 'student') loadStudentDashboard();
             else if (currentUser.role === 'director') loadDirectorDashboard();
-        } catch(e) {
-            logout();
-        }
+        } catch(e) { logout(); }
     }
 
-    // Make functions global
     window.switchTab = switchTab;
     window.logout = logout;
-    window.makePayment = makePayment;
-    window.downloadReceipt = downloadReceipt;
-    window.createUpdate = createUpdate;
 </script>
 </body>
-                                            </html>
+    </html>
