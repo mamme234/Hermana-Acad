@@ -23,34 +23,56 @@
             text-align: center;
         }
         
-        /* ========== PUT YOUR LOGO HERE ========== */
+        /* ========== LOGO STYLES ========== */
         .school-logo {
             margin-bottom: 15px;
         }
+        
         .school-logo img {
             max-width: 120px;
             height: auto;
             border-radius: 50%;
+            object-fit: contain;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-        /* Or use text logo if no image */
-        .text-logo {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            color: white;
-        }
-        /* ======================================= */
+        /* ================================= */
         
         .header h1 {
             font-size: 2em;
             color: #333;
             margin: 10px 0 5px;
         }
+        
+        .header .ethiopia {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 8px 0;
+        }
+        
+        .flag {
+            display: inline-flex;
+            gap: 3px;
+        }
+        
+        .flag span {
+            width: 22px;
+            height: 15px;
+            display: inline-block;
+        }
+        
+        .flag .green { background: #078930; }
+        .flag .yellow { background: #fcdd09; }
+        .flag .red { background: #da121a; }
+        
+        .motto {
+            font-style: italic;
+            color: #667eea;
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+        
         .header p {
             color: #666;
         }
@@ -118,26 +140,30 @@
         
         @media (max-width: 768px) { 
             .grid-2 { grid-template-columns: 1fr; }
+            .school-logo img { max-width: 80px; }
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <!-- ========== REPLACE THIS SECTION WITH YOUR LOGO ========== -->
+        <!-- ========== YOUR LOGO IMAGE ========== -->
         <div class="school-logo">
-            <!-- OPTION 1: Use image logo (uncomment and add your image path) -->
-            <!-- <img src="your-logo.png" alt="Hermana Academy Logo"> -->
-            
-            <!-- OPTION 2: Use text/icon logo (default) -->
-            <div class="text-logo">
-                <i class="fas fa-graduation-cap"></i>
-            </div>
+            <img src="logo.png" alt="Hermana Academy Logo">
         </div>
-        <!-- ======================================================= -->
+        <!-- ==================================== -->
         
         <h1>🏫 Hermana Academy</h1>
-        <p>Ethiopia's Premier Educational Institution | ኸርማና አካዳሚ</p>
+        <div class="ethiopia">
+            <div class="flag">
+                <span class="green"></span>
+                <span class="yellow"></span>
+                <span class="red"></span>
+            </div>
+            <span>Ethiopia's Premier Educational Institution</span>
+        </div>
+        <div class="motto">"እውቀት ብርሃን ነው | Quality Education for Future Leaders"</div>
+        <p>ኸርማና አካዳሚ | የኢትዮጵያ መሪ ትምህርት ተቋም</p>
         
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('student')">👨‍🎓 Student Portal</button>
@@ -210,9 +236,6 @@
         <div id="parentDashboard" style="display: none;"></div>
     </div>
 </div>
-
-<!-- Font Awesome Icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 <script>
     // ==================== CONFIGURATION ====================
@@ -546,4 +569,4 @@
     window.logout = logout;
 </script>
 </body>
-                                                                                                                       </html>
+    </html>
