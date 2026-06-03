@@ -170,7 +170,7 @@
         .student-table th, .student-table td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
         .student-table th { background: #667eea; color: white; }
         
-        /* Modal */
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -178,7 +178,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.6);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -186,9 +186,12 @@
         .modal-content {
             background: white;
             border-radius: 20px;
-            max-width: 500px;
+            max-width: 600px;
             width: 90%;
-            padding: 25px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 30px;
+            position: relative;
         }
         .modal-header {
             display: flex;
@@ -196,17 +199,33 @@
             align-items: center;
             border-bottom: 2px solid #667eea;
             padding-bottom: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
+        .modal-header h2 { color: #667eea; }
         .close-modal {
             background: none;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
             padding: 0;
             width: 30px;
             color: #999;
         }
         .close-modal:hover { color: #333; background: none; transform: none; }
+        
+        /* Star Rating */
+        .rating-container {
+            display: flex;
+            gap: 8px;
+            margin: 15px 0;
+            justify-content: center;
+        }
+        .rating-star {
+            font-size: 35px;
+            cursor: pointer;
+            color: #ddd;
+            transition: 0.2s;
+        }
+        .rating-star:hover, .rating-star.active { color: #ffc107; }
         
         .footer-links {
             margin-top: 30px;
@@ -237,20 +256,16 @@
             border-left: 3px solid #48bb78;
         }
         
-        /* Creator Credit */
         .creator-credit {
             text-align: center;
             margin-top: 30px;
             padding: 15px;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
             border-radius: 10px;
             color: white;
             font-size: 14px;
         }
-        .creator-credit span {
-            color: #ffd700;
-            font-weight: bold;
-        }
+        .creator-credit span { color: #ffd700; font-weight: bold; }
         
         @media (max-width: 768px) { 
             .grid-2 { grid-template-columns: 1fr; }
@@ -355,11 +370,207 @@
     </div>
 </div>
 
-<!-- Modals -->
-<div id="purposeModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>🎯 Our Purpose</h2><button class="close-modal" onclick="closeModal('purposeModal')">&times;</button></div><p>To digitize Ethiopian education - making registration, payments, and ID cards easy and accessible for all students and parents from Nursery to Grade 12.</p></div></div>
-<div id="feedbackModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>💬 Feedback</h2><button class="close-modal" onclick="closeModal('feedbackModal')">&times;</button></div><form id="feedbackForm"><textarea rows="3" placeholder="Your feedback..." style="width:100%;margin-bottom:10px;"></textarea><button type="submit">Submit</button></form></div></div>
-<div id="privacyModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>🔒 Privacy Policy</h2><button class="close-modal" onclick="closeModal('privacyModal')">&times;</button></div><p>Your data is secure. We only collect information for school management purposes.</p></div></div>
-<div id="contactModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📞 Contact Us</h2><button class="close-modal" onclick="closeModal('contactModal')">&times;</button></div><p>Email: info@hermanaacademy.edu.et<br>Phone: +251-XXX-XXXX<br>Addis Ababa, Ethiopia</p></div></div>
+<!-- ==================== MODALS WITH LONG CONTENT ==================== -->
+
+<!-- Our Purpose Modal - Long Version -->
+<div id="purposeModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>🎯 Our Purpose & Mission</h2>
+            <button class="close-modal" onclick="closeModal('purposeModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p style="font-size: 1.1em; color: #667eea; margin-bottom: 15px;"><strong>Why I Created This Website</strong></p>
+            <p>As a passionate advocate for educational technology in Ethiopia, I recognized a critical gap in how schools manage their administrative processes. Many schools still rely on paper-based systems, manual fee collection, and traditional communication methods that are inefficient and time-consuming.</p>
+            <br>
+            <p><strong>🎯 My Vision:</strong> To create a comprehensive digital ecosystem that bridges the gap between students, parents, teachers, and school administration.</p>
+            <br>
+            <p><strong>💡 The Problem I'm Solving:</strong></p>
+            <ul style="margin-left: 20px; margin-bottom: 15px;">
+                <li>📝 <strong>Manual Registration:</strong> Long queues and paperwork for student enrollment</li>
+                <li>💰 <strong>Payment Challenges:</strong> No digital record of fee payments and receipts</li>
+                <li>🪪 <strong>Identity Issues:</strong> Students lack proper digital ID cards</li>
+                <li>📊 <strong>Data Management:</strong> Directors can't track student progress in real-time</li>
+                <li>👪 <strong>Parent Communication:</strong> No centralized system for school updates</li>
+            </ul>
+            <p><strong>🚀 My Solution - Hermana Academy Platform:</strong></p>
+            <ul style="margin-left: 20px; margin-bottom: 15px;">
+                <li>✅ <strong>Digital Registration:</strong> Students can register online with photo upload</li>
+                <li>✅ <strong>Smart Exam System:</strong> Grade-appropriate ability testing with automatic scoring</li>
+                <li>✅ <strong>Secure Payments:</strong> Digital fee collection with instant receipts</li>
+                <li>✅ <strong>Professional ID Cards:</strong> Ethiopian-style identification cards for every student</li>
+                <li>✅ <strong>Director Dashboard:</strong> Complete oversight of all students and payments</li>
+                <li>✅ <strong>Parent Hub:</strong> Real-time updates about school activities</li>
+            </ul>
+            <p><strong>🌟 Future Goals:</strong></p>
+            <ul style="margin-left: 20px;">
+                <li>📱 Mobile App for easier access</li>
+                <li>💳 Integration with Ethiopian banking systems (Telebirr, CBE Birr)</li>
+                <li>📚 Online learning modules and video lessons</li>
+                <li>🤖 AI-powered student performance analytics</li>
+                <li>💬 Parent-Teacher messaging system</li>
+            </ul>
+            <br>
+            <p style="font-style: italic; color: #666;">"Empowering Ethiopian education through technology - one student at a time."</p>
+            <p style="margin-top: 15px;"><strong>— Muhammad Ilyas, Founder & Developer</strong></p>
+        </div>
+    </div>
+</div>
+
+<!-- Privacy Policy Modal - Long Version -->
+<div id="privacyModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>🔒 Privacy Policy</h2>
+            <button class="close-modal" onclick="closeModal('privacyModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p><strong>Effective Date:</strong> January 1, 2024</p>
+            <br>
+            <p>At Hermana Academy, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our educational management platform.</p>
+            <br>
+            <p><strong>📌 Information We Collect</strong></p>
+            <ul style="margin-left: 20px; margin-bottom: 15px;">
+                <li><strong>Personal Information:</strong> Full name, Ethiopian ID number, email address, phone number</li>
+                <li><strong>Academic Information:</strong> Grade level, exam scores, academic progress</li>
+                <li><strong>Payment Information:</strong> Fee payment history, transaction IDs, payment dates</li>
+                <li><strong>Photographic Data:</strong> Student photo for ID card generation</li>
+                <li><strong>Usage Data:</strong> How you interact with our platform</li>
+            </ul>
+            <p><strong>🔐 How We Use Your Information</strong></p>
+            <ul style="margin-left: 20px; margin-bottom: 15px;">
+                <li>✅ To process student registrations and create ID cards</li>
+                <li>✅ To administer and grade ability examinations</li>
+                <li>✅ To process fee payments and generate official receipts</li>
+                <li>✅ To communicate important school announcements and updates</li>
+                <li>✅ To provide directors with analytics on student performance</li>
+                <li>✅ To improve our services and user experience</li>
+            </ul>
+            <p><strong>🛡️ Data Protection</strong></p>
+            <p>We implement industry-standard security measures including encryption, secure servers, and regular security audits. All personal data is stored locally in your browser's localStorage, and no data is shared with third parties without your explicit consent.</p>
+            <br>
+            <p><strong>📱 Your Rights</strong></p>
+            <ul style="margin-left: 20px; margin-bottom: 15px;">
+                <li>✔️ Right to access your personal data</li>
+                <li>✔️ Right to correct inaccurate data</li>
+                <li>✔️ Right to delete your account and associated data</li>
+                <li>✔️ Right to data portability</li>
+            </ul>
+            <p><strong>🍪 Cookies & Tracking</strong></p>
+            <p>We use cookies to remember your login session, preferences, and to analyze site usage. You can disable cookies in your browser settings, but this may affect functionality.</p>
+            <br>
+            <p><strong>📞 Contact Us</strong></p>
+            <p>For privacy-related questions or concerns:<br>
+            Email: privacy@hermanaacademy.edu.et<br>
+            Phone: +251-XXX-XXXX<br>
+            Address: Addis Ababa, Ethiopia</p>
+            <br>
+            <p><em>Last updated: June 2024</em></p>
+        </div>
+    </div>
+</div>
+
+<!-- Feedback Modal - With Name, Password, Authority, Star Rating -->
+<div id="feedbackModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>💬 Share Your Feedback</h2>
+            <button class="close-modal" onclick="closeModal('feedbackModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>We value your opinion! Please take a moment to share your experience with Hermana Academy.</p>
+            <form id="feedbackFormModal">
+                <div class="form-group">
+                    <label>Your Full Name *</label>
+                    <input type="text" id="fbName" placeholder="e.g., Biruk Tesfaye" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="fbEmail" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Password (to verify your identity) *</label>
+                    <input type="password" id="fbPassword" placeholder="Enter your account password" required>
+                </div>
+                <div class="form-group">
+                    <label>Your Role / Authority *</label>
+                    <select id="fbRole" required>
+                        <option value="">-- Select your role --</option>
+                        <option value="Student">👨‍🎓 Student</option>
+                        <option value="Parent">👪 Parent</option>
+                        <option value="Teacher">👨‍🏫 Teacher</option>
+                        <option value="Director">📊 Director</option>
+                        <option value="Administrator">⚙️ Administrator</option>
+                        <option value="Visitor">🌐 Visitor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Rate Your Experience *</label>
+                    <div class="rating-container" id="starRating">
+                        <span class="rating-star" data-rating="1">★</span>
+                        <span class="rating-star" data-rating="2">★</span>
+                        <span class="rating-star" data-rating="3">★</span>
+                        <span class="rating-star" data-rating="4">★</span>
+                        <span class="rating-star" data-rating="5">★</span>
+                    </div>
+                    <input type="hidden" id="fbRating" value="0">
+                </div>
+                <div class="form-group">
+                    <label>Your Feedback / Suggestion *</label>
+                    <textarea rows="5" id="fbMessage" placeholder="What do you like? What can we improve? Share your suggestions, complaints, or appreciation..." required></textarea>
+                </div>
+                <button type="submit">Submit Feedback →</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Contact Us Modal - Long Version -->
+<div id="contactModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>📞 Contact Us</h2>
+            <button class="close-modal" onclick="closeModal('contactModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>We're here to help! Reach out to us through any of the following channels:</p>
+            <br>
+            <p><strong>📍 Main Campus Address:</strong><br>
+            Hermana Academy<br>
+            Bole Sub-city, Woreda 03<br>
+            Addis Ababa, Ethiopia</p>
+            <br>
+            <p><strong>📧 Email Addresses:</strong><br>
+            General Inquiries: info@hermanaacademy.edu.et<br>
+            Admissions: admissions@hermanaacademy.edu.et<br>
+            Support: support@hermanaacademy.edu.et<br>
+            Principal's Office: principal@hermanaacademy.edu.et</p>
+            <br>
+            <p><strong>📞 Phone Numbers:</strong><br>
+            Main Office: +251-111-234567<br>
+            Admissions Office: +251-911-123456<br>
+            Parent Helpline: +251-922-789012<br>
+            Emergency Contact: +251-933-345678</p>
+            <br>
+            <p><strong>⏰ Office Hours:</strong><br>
+            Monday - Thursday: 8:00 AM - 5:00 PM<br>
+            Friday: 8:00 AM - 1:00 PM<br>
+            Saturday: 9:00 AM - 12:00 PM<br>
+            Sunday: Closed</p>
+            <br>
+            <p><strong>🌐 Social Media:</strong><br>
+            Facebook: @HermanaAcademy<br>
+            Telegram: t.me/HermanaAcademy<br>
+            LinkedIn: Hermana Academy</p>
+            <br>
+            <p><strong>💬 Live Support:</strong><br>
+            Available on Telegram and WhatsApp during business hours.</p>
+            <br>
+            <p style="background: #f0f7ff; padding: 15px; border-radius: 10px;"><strong>📢 Emergency Contact:</strong><br>
+            For urgent matters outside office hours, please contact our emergency hotline: +251-933-345678</p>
+        </div>
+    </div>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
@@ -367,6 +578,22 @@
     let students = [];
     let currentUser = null;
     let localPayments = [];
+    let currentRating = 0;
+
+    // Star Rating Setup
+    function setupStarRating() {
+        const stars = document.querySelectorAll('.rating-star');
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                currentRating = this.dataset.rating;
+                document.getElementById('fbRating').value = currentRating;
+                stars.forEach(s => {
+                    if(s.dataset.rating <= currentRating) s.classList.add('active');
+                    else s.classList.remove('active');
+                });
+            });
+        });
+    }
 
     // All grade levels including KG
     const allGrades = ["Nursery", "Lower KG", "Upper KG", "Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5", "Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12"];
@@ -377,7 +604,6 @@
             students = JSON.parse(stored);
         } else {
             students = [];
-            // Demo students for KG sections
             const kgStudents = ["Nursery", "Lower KG", "Upper KG"];
             kgStudents.forEach((kg, idx) => {
                 for (let i = 1; i <= (idx === 0 ? 25 : 30); i++) {
@@ -394,7 +620,6 @@
                     });
                 }
             });
-            // Demo students for Grade 1 (45 students to test A/B split)
             for (let i = 1; i <= 45; i++) {
                 students.push({
                     id: 2000 + i,
@@ -408,7 +633,6 @@
                     payments: { registration: i <= 30, term1Bus: i <= 25, term2Bus: i <= 20, term3Bus: i <= 15 }
                 });
             }
-            // Demo test student
             students.push({
                 id: 999999,
                 fullName: "Test Student",
@@ -426,7 +650,6 @@
     function saveStudents() { localStorage.setItem('hermana_students', JSON.stringify(students)); }
 
     function generateExamQuestions(grade) {
-        // KG level exam (simple questions)
         if (grade === "Nursery" || grade === "Lower KG" || grade === "Upper KG") {
             return [
                 { id: 1, text: "What color is the sun?", options: ["Red", "Yellow", "Blue", "Green"], correct: 1 },
@@ -473,10 +696,34 @@
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     window.openModal = openModal; window.closeModal = closeModal;
 
+    // Feedback submission
+    document.getElementById('feedbackFormModal')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('fbName').value;
+        const password = document.getElementById('fbPassword').value;
+        const role = document.getElementById('fbRole').value;
+        const rating = document.getElementById('fbRating').value;
+        const message = document.getElementById('fbMessage').value;
+        
+        if (!name || !password || !role || rating == 0 || !message) {
+            alert('Please fill all required fields!');
+            return;
+        }
+        
+        const feedback = { name, role, rating, message, date: new Date().toLocaleString() };
+        let allFeedback = JSON.parse(localStorage.getItem('hermana_feedback') || '[]');
+        allFeedback.unshift(feedback);
+        localStorage.setItem('hermana_feedback', JSON.stringify(allFeedback));
+        alert('✅ Thank you for your valuable feedback! We appreciate your input.');
+        closeModal('feedbackModal');
+        document.getElementById('feedbackFormModal').reset();
+        currentRating = 0;
+        document.querySelectorAll('.rating-star').forEach(s => s.classList.remove('active'));
+    });
+
     // Ethiopian Style ID Card
     function generateIDCard(student) {
         const studentId = 'HA' + student.id + new Date().getFullYear();
-        const gradeDisplay = student.grade.includes("KG") ? student.grade : student.grade;
         return `
             <div class="id-card" id="student-id-card">
                 <div class="id-card-ethiopia"></div>
@@ -490,10 +737,9 @@
                     <div class="id-row"><span class="id-label">Full Name:</span><span class="id-value">${student.fullName}</span></div>
                     <div class="id-row"><span class="id-label">Student ID:</span><span class="id-value">${studentId}</span></div>
                     <div class="id-row"><span class="id-label">Ethiopian ID:</span><span class="id-value">${student.ethiopianId}</span></div>
-                    <div class="id-row"><span class="id-label">Grade:</span><span class="id-value">${gradeDisplay}</span></div>
+                    <div class="id-row"><span class="id-label">Grade:</span><span class="id-value">${student.grade}</span></div>
                     <div class="id-row"><span class="id-label">From/To Grade:</span><span class="id-value">${student.fromGrade} - ${student.toGrade}</span></div>
                     <div class="id-row"><span class="id-label">Issued Date:</span><span class="id-value">${new Date().toLocaleDateString()}</span></div>
-                    <div class="id-row"><span class="id-label">Valid Until:</span><span class="id-value">${new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toLocaleDateString()}</span></div>
                 </div>
                 <div class="id-footer"><div class="id-signature">Authorized Signature: _________________</div><div>www.hermanaacademy.edu.et</div></div>
             </div>`;
@@ -621,11 +867,11 @@
             <div class="dashboard-section"><div class="section-title">🪪 Student ID Card</div><div class="id-card-container">${generateIDCard(student)}</div><div class="id-card-actions"><button onclick="downloadIDCard()" class="btn-small">📥 Download ID</button><button onclick="printIDCard()" class="btn-small">🖨️ Print ID</button></div></div>
             ${examHtml}
             ${student.examPercent > 0 ? `<div class="card"><h3>📊 Exam Result</h3><p>Score: ${student.examPercent}%</p><span class="badge ${examPassed ? 'badge-passed' : 'badge-failed'}">${examPassed ? 'PASSED - You can pay fees' : 'FAILED - Retake exam'}</span></div>` : ''}
-            ${examPassed ? `<div class="card"><h3>💰 Fee Payments</h3><div style="overflow-x:auto"><tr><thead><tr><th>Package</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody>
-                <tr><td>Registration Fee</td><td>1000 ETB</td><td class="${student.payments.registration ? 'badge-paid' : 'badge-unpaid'}">${student.payments.registration ? 'Paid' : 'Unpaid'}</td><td>${!student.payments.registration ? `<button onclick="makePayment('registration',1000)">Pay Now</button>` : '✅'}</td></tr>
-                <tr><td>Term 1 + Bus</td><td>3500 ETB</td><td class="${student.payments.term1Bus ? 'badge-paid' : 'badge-unpaid'}">${student.payments.term1Bus ? 'Paid' : 'Unpaid'}</td><td>${!student.payments.term1Bus ? `<button onclick="makePayment('term1Bus',3500)">Pay Now</button>` : '✅'}</td></tr>
-                <tr><td>Term 2 + Bus</td><td>3500 ETB</td><td class="${student.payments.term2Bus ? 'badge-paid' : 'badge-unpaid'}">${student.payments.term2Bus ? 'Paid' : 'Unpaid'}</td><td>${!student.payments.term2Bus ? `<button onclick="makePayment('term2Bus',3500)">Pay Now</button>` : '✅'}</td></tr>
-                <tr><td>Term 3 + Bus</td><td>3500 ETB</td><td class="${student.payments.term3Bus ? 'badge-paid' : 'badge-unpaid'}">${student.payments.term3Bus ? 'Paid' : 'Unpaid'}</td><td>${!student.payments.term3Bus ? `<button onclick="makePayment('term3Bus',3500)">Pay Now</button>` : '✅'}</td></tr>
+            ${examPassed ? `<div class="card"><h3>💰 Fee Payments</h3><div style="overflow-x:auto"><table><thead><tr><th>Package</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody>
+                <tr><td>Registration Fee</span></td><td class="${student.payments.registration ? 'badge-paid' : 'badge-unpaid'}">${student.payments.registration ? 'Paid' : 'Unpaid'}</td><td>${!student.payments.registration ? `<button onclick="makePayment('registration',1000)">Pay Now</button>` : '✅'}</td></tr>
+                <tr><td>Term 1 + Bus</span></td><td class="${student.payments.term1Bus ? 'badge-paid' : 'badge-unpaid'}">${student.payments.term1Bus ? 'Paid' : 'Unpaid'}</td><td>${!student.payments.term1Bus ? `<button onclick="makePayment('term1Bus',3500)">Pay Now</button>` : '✅'}</td></tr>
+                <tr><td>Term 2 + Bus</span></td><td class="${student.payments.term2Bus ? 'badge-paid' : 'badge-unpaid'}">${student.payments.term2Bus ? 'Paid' : 'Unpaid'}</td><td>${!student.payments.term2Bus ? `<button onclick="makePayment('term2Bus',3500)">Pay Now</button>` : '✅'}</td></tr>
+                <tr><td>Term 3 + Bus</span></td><td class="${student.payments.term3Bus ? 'badge-paid' : 'badge-unpaid'}">${student.payments.term3Bus ? 'Paid' : 'Unpaid'}</td><td>${!student.payments.term3Bus ? `<button onclick="makePayment('term3Bus',3500)">Pay Now</button>` : '✅'}</td></tr>
             </tbody></div></div>
             <div class="payment-history"><div class="section-title">📋 Payment History</div>${localPayments.length === 0 ? '<p>No payments yet.</p>' : localPayments.map(p => `<div class="payment-item"><div><strong>${p.paymentType}</strong><br>${p.amount} ETB</div><div><button onclick="downloadReceipt('${p.transactionId}')" class="btn-small">📥 Receipt</button></div></div>`).join('')}</div>` : ''}
             <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 Our Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>`;
@@ -654,7 +900,6 @@
         const dashboard = document.getElementById('directorDashboard');
         dashboard.style.display = 'block';
         
-        // Create grade buttons including KG sections
         let gradesHtml = '<div class="grade-buttons">';
         allGrades.forEach(grade => {
             const studentCount = students.filter(s => s.grade === grade).length;
@@ -678,18 +923,16 @@
         let tableHtml = `<h3>${grade} - ${gradeStudents.length} Students</h3>`;
         
         if (sections.sectionB.length > 0) {
-            tableHtml += `<h4>Section A (${sections.sectionA.length} students)</h4>
-                <table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Exam %</th><th>Registration</th><th>Term1+Bus</th><th>Status</th></tr></thead><tbody>
+            tableHtml += `<h4>Section A (${sections.sectionA.length} students)</h4><div class="student-table"><table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Exam %</th><th>Registration</th><th>Term1+Bus</th><th>Status</th></tr></thead><tbody>
                 ${sections.sectionA.map(s => `<tr><td>${s.fullName}</td><td>${s.ethiopianId}</td><td>${s.examPercent}%</td><td>${s.payments.registration ? '✅' : '❌'}</td><td>${s.payments.term1Bus ? '✅' : '❌'}</td><td class="${s.examPercent >= 50 ? 'badge-paid' : 'badge-unpaid'}">${s.examPercent >= 50 ? 'Passed' : 'Failed'}</td></tr>`).join('')}
-                </tbody></table>
-                <h4>Section B (${sections.sectionB.length} students)</h4>
-                <table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Exam %</th><th>Registration</th><th>Term1+Bus</th><th>Status</th></tr></thead><tbody>
+            </tbody></div>
+            <h4>Section B (${sections.sectionB.length} students)</h4><div class="student-table"><table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Exam %</th><th>Registration</th><th>Term1+Bus</th><th>Status</th></tr></thead><tbody>
                 ${sections.sectionB.map(s => `<tr><td>${s.fullName}</td><td>${s.ethiopianId}</td><td>${s.examPercent}%</td><td>${s.payments.registration ? '✅' : '❌'}</td><td>${s.payments.term1Bus ? '✅' : '❌'}</td><td class="${s.examPercent >= 50 ? 'badge-paid' : 'badge-unpaid'}">${s.examPercent >= 50 ? 'Passed' : 'Failed'}</td></tr>`).join('')}
-                </tbody></table>`;
+            </tbody></div>`;
         } else {
-            tableHtml += `<table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Exam %</th><th>Registration</th><th>Term1+Bus</th><th>Status</th></tr></thead><tbody>
+            tableHtml += `<div class="student-table"><table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Exam %</th><th>Registration</th><th>Term1+Bus</th><th>Status</th></tr></thead><tbody>
                 ${sections.sectionA.map(s => `<tr><td>${s.fullName}</td><td>${s.ethiopianId}</td><td>${s.examPercent}%</td><td>${s.payments.registration ? '✅' : '❌'}</td><td>${s.payments.term1Bus ? '✅' : '❌'}</td><td class="${s.examPercent >= 50 ? 'badge-paid' : 'badge-unpaid'}">${s.examPercent >= 50 ? 'Passed' : 'Failed'}</td></tr>`).join('')}
-            </tbody></table>`;
+            </tbody></div>`;
         }
         
         document.getElementById('studentsDisplay').innerHTML = tableHtml;
@@ -707,9 +950,11 @@
             <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 Our Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>`;
     }
 
-    function logout() { localStorage.clear(); token = null; location.reload(); }
+    function logout() { localStorage.clear(); location.reload(); }
 
     loadStudents();
+    setupStarRating();
+    
     if (localStorage.getItem('token')) {
         if (localStorage.getItem('token').includes('director')) loadDirectorDashboard();
         else if (localStorage.getItem('token').includes('parent')) { currentUser = { id: 999999, role: 'parent' }; loadParentDashboard(); }
@@ -727,4 +972,4 @@
 </div>
 
 </body>
-                            </html>
+                                 </html>
