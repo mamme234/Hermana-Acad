@@ -24,27 +24,70 @@
         }
         
         .school-logo { margin-bottom: 15px; }
-        .school-logo img { max-width: 120px; height: auto; border-radius: 50%; object-fit: contain; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .header h1 { font-size: 2em; color: #333; margin: 10px 0 5px; }
+        .school-logo img {
+            max-width: 120px;
+            height: auto;
+            border-radius: 50%;
+            object-fit: contain;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
         
-        .ethiopia { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 8px 0; }
+        .header h1 { font-size: 2em; color: #333; margin: 10px 0 5px; }
+        .header .ethiopia { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 8px 0; }
         .flag { display: inline-flex; gap: 3px; }
         .flag span { width: 22px; height: 15px; display: inline-block; }
         .flag .green { background: #078930; }
         .flag .yellow { background: #fcdd09; }
         .flag .red { background: #da121a; }
-        
         .motto { font-style: italic; color: #667eea; font-size: 0.85em; margin-top: 5px; }
-        .tabs { display: flex; gap: 15px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
-        .tab-btn { padding: 12px 30px; border: none; background: #e0e0e0; cursor: pointer; border-radius: 10px; font-size: 16px; font-weight: 600; transition: all 0.3s; }
+        
+        .tabs {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 12px 30px;
+            border: none;
+            background: #e0e0e0;
+            cursor: pointer;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
         .tab-btn.active { background: #667eea; color: white; }
-        .panel { background: white; border-radius: 20px; padding: 30px; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .panel {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
         .panel.active { display: block; }
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
-        input, select, textarea { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 14px; }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+        }
         input:focus, select:focus { outline: none; border-color: #667eea; }
-        button { background: #667eea; color: white; border: none; padding: 12px 30px; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: 600; transition: all 0.3s; }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
         button:hover { background: #5a67d8; transform: translateY(-2px); }
         .btn-small { padding: 8px 16px; font-size: 14px; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
@@ -55,7 +98,14 @@
         .badge-paid { background: #48bb78; color: white; }
         .badge-unpaid { background: #f56565; color: white; }
         .card { background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
-        .receipt { background: #fff8e7; border: 2px solid #ffd700; border-radius: 15px; padding: 20px; margin-top: 20px; font-family: monospace; }
+        .receipt {
+            background: #fff8e7;
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: monospace;
+        }
         
         /* ID Card Styles */
         .id-card-container { display: flex; justify-content: center; margin: 20px 0; }
@@ -67,6 +117,7 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.2);
             border: 1px solid #ddd;
             position: relative;
+            overflow: hidden;
         }
         .id-card::before {
             content: "HERMANA ACADEMY";
@@ -80,7 +131,18 @@
         }
         .id-header { text-align: center; border-bottom: 2px solid #667eea; padding-bottom: 10px; margin-bottom: 15px; }
         .id-header h3 { color: #667eea; font-size: 18px; }
-        .id-photo { width: 120px; height: 120px; margin: 0 auto 15px; border-radius: 50%; overflow: hidden; border: 3px solid #667eea; background: #f0f0f0; display: flex; align-items: center; justify-content: center; }
+        .id-photo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid #667eea;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         .id-photo img { width: 100%; height: 100%; object-fit: cover; }
         .id-details { margin: 15px 0; }
         .id-detail-row { display: flex; margin-bottom: 8px; font-size: 12px; }
@@ -91,8 +153,98 @@
         .id-card-actions { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
         
         .payment-history { margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 15px; }
-        .payment-item { background: white; padding: 12px; margin-bottom: 10px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-left: 4px solid #48bb78; }
+        .payment-item {
+            background: white;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-left: 4px solid #48bb78;
+        }
         .navbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .dashboard-section { margin-bottom: 30px; }
+        .section-title { font-size: 1.3em; color: #333; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #667eea; }
+        
+        /* Footer Links */
+        .footer-links {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        .footer-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .footer-links a:hover { text-decoration: underline; }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 30px;
+            position: relative;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        .modal-header h2 { color: #667eea; }
+        .close-modal {
+            background: none;
+            color: #999;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+        }
+        .close-modal:hover { color: #333; background: none; transform: none; }
+        .feedback-rating { display: flex; gap: 10px; margin: 15px 0; }
+        .star { font-size: 30px; cursor: pointer; color: #ccc; transition: 0.2s; }
+        .star:hover, .star.active { color: #ffc107; }
+        .purpose-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .purpose-card {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+        .purpose-card i { font-size: 40px; color: #667eea; margin-bottom: 15px; }
+        .purpose-card h4 { margin-bottom: 10px; color: #333; }
         
         @media (max-width: 768px) { 
             .grid-2 { grid-template-columns: 1fr; }
@@ -156,6 +308,7 @@
                 </div>
             </div>
         </div>
+        
         <div id="studentDashboard" style="display: none;"></div>
     </div>
 
@@ -186,12 +339,237 @@
     </div>
 </div>
 
+<!-- Modals -->
+<!-- About Us Modal -->
+<div id="aboutModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>📖 About Hermana Academy</h2>
+            <button class="close-modal" onclick="closeModal('aboutModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p><strong>Hermana Academy</strong> is a premier educational institution in Ethiopia, dedicated to providing quality education and fostering academic excellence.</p>
+            <br>
+            <h3>🏫 Our History</h3>
+            <p>Founded in 2015, Hermana Academy has grown from a small community school to one of Ethiopia's most respected educational institutions, serving over 2,000 students across all grade levels.</p>
+            <br>
+            <h3>🎯 Our Mission</h3>
+            <p>To empower students with knowledge, skills, and values that prepare them for success in higher education and life, while preserving Ethiopian cultural heritage.</p>
+            <br>
+            <h3>🌟 Our Vision</h3>
+            <p>To become Ethiopia's leading educational institution, recognized for academic excellence, innovation, and character development.</p>
+            <br>
+            <h3>🏆 Achievements</h3>
+            <ul style="margin-left: 20px;">
+                <li>Top 3 in National Exam Results (2022, 2023, 2024)</li>
+                <li>Best Digital School Award 2024</li>
+                <li>95% University Admission Rate</li>
+                <li>Ethiopian Green School Certification</li>
+            </ul>
+            <br>
+            <h3>👨‍🏫 Our Team</h3>
+            <p>We have 150+ qualified teachers, 30 administrative staff, and a dedicated leadership team committed to student success.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Our Purpose Modal -->
+<div id="purposeModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>🎯 Our Purpose - Why I Created This Website</h2>
+            <button class="close-modal" onclick="closeModal('purposeModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p style="font-size: 1.1em; margin-bottom: 20px;"><strong>Hello! I created this website with a clear vision and purpose:</strong></p>
+            
+            <div class="purpose-grid">
+                <div class="purpose-card">
+                    <i class="fas fa-chalkboard-user"></i>
+                    <h4>Digital Transformation</h4>
+                    <p>To bring Ethiopian education into the digital age by providing an online platform for student management, registration, and payments.</p>
+                </div>
+                <div class="purpose-card">
+                    <i class="fas fa-hand-holding-heart"></i>
+                    <h4>Accessibility</h4>
+                    <p>To make school administration accessible to all parents and students, reducing paperwork and saving time.</p>
+                </div>
+                <div class="purpose-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h4>Transparency</h4>
+                    <p>To create transparency in fee payments, student progress tracking, and school communications.</p>
+                </div>
+                <div class="purpose-card">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h4>Empower Students</h4>
+                    <p>To give students a digital identity with ID cards, exam tracking, and easy access to their academic records.</p>
+                </div>
+                <div class="purpose-card">
+                    <i class="fas fa-users"></i>
+                    <h4>Parent Engagement</h4>
+                    <p>To keep parents informed about school updates, student conduct, and important announcements in real-time.</p>
+                </div>
+                <div class="purpose-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h4>Data-Driven Decisions</h4>
+                    <p>To provide directors with real-time data on student enrollment, payment status, and academic performance.</p>
+                </div>
+            </div>
+            
+            <div style="background: #f0f7ff; padding: 20px; border-radius: 15px; margin: 20px 0;">
+                <h3>💡 My Inspiration</h3>
+                <p>As someone who believes in the power of education, I saw the need for a modern, efficient school management system in Ethiopia. Many schools still rely on paper records, manual fee collection, and parent-teacher meetings as the only communication channel. This website bridges that gap by bringing everything online - registration, payments, ID cards, and updates - all in one place.</p>
+            </div>
+            
+            <div style="background: #e8f5e9; padding: 20px; border-radius: 15px;">
+                <h3>🚀 Future Goals</h3>
+                <ul style="margin-left: 20px;">
+                    <li>Add mobile app for easier access</li>
+                    <li>Integrate with Ethiopian banking systems for real payments</li>
+                    <li>Add online learning modules and video lessons</li>
+                    <li>Implement AI-powered student performance analytics</li>
+                    <li>Create parent-teacher messaging system</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Feedback Modal -->
+<div id="feedbackModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>💬 Share Your Feedback</h2>
+            <button class="close-modal" onclick="closeModal('feedbackModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="feedbackFormModal">
+                <div class="form-group">
+                    <label>Your Name *</label>
+                    <input type="text" id="fbName" required>
+                </div>
+                <div class="form-group">
+                    <label>Email (optional)</label>
+                    <input type="email" id="fbEmail">
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select id="fbRole">
+                        <option>Student</option><option>Parent</option><option>Teacher</option><option>Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Rating</label>
+                    <div class="feedback-rating" id="starRating">
+                        <span class="star" data-rating="1">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="5">★</span>
+                    </div>
+                    <input type="hidden" id="fbRating" value="5">
+                </div>
+                <div class="form-group">
+                    <label>Your Feedback *</label>
+                    <textarea rows="4" id="fbMessage" placeholder="Share your experience, suggestions, or concerns..." required></textarea>
+                </div>
+                <button type="submit">Submit Feedback</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Privacy Policy Modal -->
+<div id="privacyModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>🔒 Privacy Policy</h2>
+            <button class="close-modal" onclick="closeModal('privacyModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p><strong>Effective Date:</strong> January 1, 2024</p>
+            <br>
+            <h3>📌 Information We Collect</h3>
+            <p>We collect personal information including: full name, Ethiopian ID, email, grade level, payment records, and student photo for ID cards.</p>
+            <br>
+            <h3>🔐 How We Use Your Information</h3>
+            <ul style="margin-left: 20px;">
+                <li>Student registration and identification</li>
+                <li>Processing fee payments and generating receipts</li>
+                <li>Creating student ID cards</li>
+                <li>Communicating school updates and announcements</li>
+                <li>Academic tracking and exam results</li>
+            </ul>
+            <br>
+            <h3>🛡️ Data Protection</h3>
+            <p>All data is encrypted and stored securely. Only authorized school personnel have access to student information. We do not share your personal data with third parties.</p>
+            <br>
+            <h3>📱 Your Rights</h3>
+            <p>You have the right to access, correct, or delete your personal information. Contact the school administration for any data-related requests.</p>
+            <br>
+            <h3>🍪 Cookies</h3>
+            <p>This website uses cookies to remember your login session and preferences. You can disable cookies in your browser settings.</p>
+            <br>
+            <h3>📞 Contact Us</h3>
+            <p>For privacy concerns: privacy@hermanaacademy.edu.et or +251-XXX-XXXX</p>
+        </div>
+    </div>
+</div>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 <script>
     // ==================== CONFIGURATION ====================
     const API_URL = 'https://hermana-acad.onrender.com/api';
     let token = localStorage.getItem('token');
     let currentUser = null;
     let localPayments = [];
+    let currentRating = 5;
+
+    // Star rating setup
+    document.querySelectorAll('.star').forEach(star => {
+        star.addEventListener('click', function() {
+            currentRating = this.dataset.rating;
+            document.querySelectorAll('.star').forEach(s => {
+                if(s.dataset.rating <= currentRating) s.classList.add('active');
+                else s.classList.remove('active');
+            });
+            document.getElementById('fbRating').value = currentRating;
+        });
+    });
+
+    // Modal functions
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = 'flex';
+    }
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+    window.openModal = openModal;
+    window.closeModal = closeModal;
+
+    // Feedback submission
+    document.getElementById('feedbackFormModal')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const feedback = {
+            name: document.getElementById('fbName').value,
+            email: document.getElementById('fbEmail').value,
+            role: document.getElementById('fbRole').value,
+            rating: currentRating,
+            message: document.getElementById('fbMessage').value,
+            date: new Date().toISOString()
+        };
+        // Save to localStorage
+        let allFeedback = JSON.parse(localStorage.getItem('hermana_feedback') || '[]');
+        allFeedback.unshift(feedback);
+        localStorage.setItem('hermana_feedback', JSON.stringify(allFeedback));
+        alert('✅ Thank you for your feedback! We appreciate your input.');
+        closeModal('feedbackModal');
+        this.reset();
+        currentRating = 5;
+        document.querySelectorAll('.star').forEach((s,i) => i<5 ? s.classList.remove('active') : null);
+    });
 
     async function apiCall(endpoint, options = {}) {
         const headers = { 'Content-Type': 'application/json' };
@@ -233,8 +611,8 @@
         const photo = document.getElementById('regPhoto').files[0];
         if (photo) {
             const reader = new FileReader();
-            reader.onloadend = function() {
-                localStorage.setItem(`reg_photo_${document.getElementById('regEthiopianId').value}`, reader.result);
+            reader.onload = function(e) {
+                localStorage.setItem(`student_photo_${Date.now()}`, e.target.result);
             };
             reader.readAsDataURL(photo);
             formData.append('idPhoto', photo);
@@ -271,7 +649,7 @@
                 token = data.token;
                 currentUser = data.user;
                 localStorage.setItem('token', token);
-                loadStudentDashboard();
+                await loadStudentDashboard();
             } else {
                 alert('Login failed: ' + data.error);
             }
@@ -297,7 +675,7 @@
                 token = data.token;
                 currentUser = data.user;
                 localStorage.setItem('token', token);
-                loadDirectorDashboard();
+                await loadDirectorDashboard();
             } else {
                 alert('Login failed: ' + data.error);
             }
@@ -323,7 +701,7 @@
                 token = data.token;
                 currentUser = data.user;
                 localStorage.setItem('token', token);
-                loadParentDashboard();
+                await loadParentDashboard();
             } else {
                 alert('Login failed: ' + data.error);
             }
@@ -332,6 +710,7 @@
         }
     });
 
+    // Generate Student ID Card HTML
     function generateIDCard(student, photoUrl) {
         const studentId = 'HA-' + student.id + '-' + new Date().getFullYear();
         const expiryDate = new Date();
@@ -362,13 +741,11 @@
         `;
     }
 
-    window.downloadIDCard = () => {
+    window.downloadIDCard = async () => {
         const idCardElement = document.getElementById('student-id-card');
-        if (!idCardElement) { alert('ID Card not found!'); return; }
-        
-        const htmlContent = idCardElement.outerHTML;
+        if (!idCardElement) return alert('ID Card not found!');
         const styles = document.querySelector('style').innerHTML;
-        const fullHtml = `<!DOCTYPE html><html><head><title>Hermana Academy - Student ID Card</title><style>${styles} body { background: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; } .id-card { margin: 20px; }</style></head><body>${htmlContent}</body></html>`;
+        const fullHtml = `<!DOCTYPE html><html><head><title>Hermana Academy - Student ID Card</title><style>*{margin:0;padding:0;box-sizing:border-box;}body{background:white;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}${styles}.id-card{margin:20px;box-shadow:0 15px 35px rgba(0,0,0,0.2);}</style></head><body>${idCardElement.outerHTML}</body></html>`;
         const blob = new Blob([fullHtml], { type: 'text/html' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -381,49 +758,34 @@
 
     window.printIDCard = () => {
         const idCardElement = document.getElementById('student-id-card');
-        if (!idCardElement) { alert('ID Card not found!'); return; }
-        const printWindow = window.open('', '_blank');
+        if (!idCardElement) return alert('ID Card not found!');
         const styles = document.querySelector('style').innerHTML;
-        printWindow.document.write(`<!DOCTYPE html><html><head><title>Hermana Academy ID Card</title><style>${styles} body { background: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; }</style></head><body>${idCardElement.outerHTML}<script>window.onload = () => { window.print(); setTimeout(() => window.close(), 500); }<\/script></body></html>`);
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`<!DOCTYPE html><html><head><title>Student ID Card</title><style>${styles}body{background:white;display:flex;justify-content:center;align-items:center;min-height:100vh;}.id-card-actions{display:none;}</style></head><body>${idCardElement.outerHTML}<script>window.onload=()=>{window.print();setTimeout(()=>window.close(),500);}<\/script></body></html>`);
         printWindow.document.close();
     };
 
     function generateReceiptHTML(payment) {
-        return `
-            <div class="receipt" id="receipt-${payment.transactionId}">
-                <h3>🏫 HERMANA ACADEMY - OFFICIAL RECEIPT</h3>
-                <div style="border-top: 1px dashed #ffd700; margin: 15px 0;"></div>
-                <p><strong>Receipt No:</strong> ${payment.transactionId}</p>
-                <p><strong>Date:</strong> ${new Date(payment.date).toLocaleString()}</p>
-                <p><strong>Student Name:</strong> ${payment.studentName}</p>
-                <p><strong>Amount:</strong> ${payment.amount} ETB</p>
-                <p><strong>Payment Type:</strong> ${payment.paymentType}</p>
-                <div style="border-top: 1px dashed #ffd700; margin: 15px 0;"></div>
-                <p><strong>Status:</strong> ✅ PAID</p>
-                <p><em>Thank you for choosing Hermana Academy!</em></p>
-                <button onclick="downloadReceipt('${payment.transactionId}')" class="btn-small">📥 Download Receipt</button>
-                <button onclick="printReceipt('${payment.transactionId}')" class="btn-small">🖨️ Print Receipt</button>
-            </div>
-        `;
+        return `<div class="receipt" id="receipt-${payment.transactionId}"><h3>🏫 HERMANA ACADEMY - OFFICIAL RECEIPT</h3><div style="border-top:1px dashed #ffd700;margin:15px 0;"></div><p><strong>Receipt No:</strong> ${payment.transactionId}</p><p><strong>Date:</strong> ${new Date(payment.date).toLocaleString()}</p><p><strong>Student Name:</strong> ${payment.studentName}</p><p><strong>Payment Type:</strong> ${payment.paymentType}</p><p><strong>Amount:</strong> ${payment.amount} ETB</p><div style="border-top:1px dashed #ffd700;margin:15px 0;"></div><p><strong>Status:</strong> ✅ PAID</p><p><em>Thank you for choosing Hermana Academy!</em></p><button onclick="downloadReceipt('${payment.transactionId}')" class="btn-small" style="margin-top:10px;">📥 Download Receipt</button><button onclick="printReceipt('${payment.transactionId}')" class="btn-small" style="margin-top:10px;margin-left:10px;">🖨️ Print Receipt</button></div>`;
     }
 
     window.downloadReceipt = (transactionId) => {
         const payment = localPayments.find(p => p.transactionId === transactionId);
-        if (!payment) { alert('Receipt not found!'); return; }
-        const receiptText = `HERMANA ACADEMY RECEIPT\nReceipt No: ${payment.transactionId}\nDate: ${new Date(payment.date).toLocaleString()}\nStudent: ${payment.studentName}\nAmount: ${payment.amount} ETB\nPayment Type: ${payment.paymentType}\nStatus: PAID\nThank you!`;
+        if (!payment) return alert('Receipt not found!');
+        const receiptText = `HERMANA ACADEMY RECEIPT\nReceipt No: ${payment.transactionId}\nDate: ${new Date(payment.date).toLocaleString()}\nStudent: ${payment.studentName}\nPayment Type: ${payment.paymentType}\nAmount: ${payment.amount} ETB\nStatus: PAID\nThank you!`;
         const blob = new Blob([receiptText], { type: 'text/plain' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `Hermana_Receipt_${payment.transactionId}.txt`;
+        a.download = `Receipt_${payment.transactionId}.txt`;
         a.click();
         alert('✅ Receipt downloaded!');
     };
 
     window.printReceipt = (transactionId) => {
         const receiptElement = document.getElementById(`receipt-${transactionId}`);
-        if (!receiptElement) { alert('Receipt not found!'); return; }
+        if (!receiptElement) return alert('Receipt not found!');
         const printWindow = window.open('', '_blank');
-        printWindow.document.write(`<html><head><title>Receipt</title><style>body { font-family: monospace; padding: 40px; }</style></head><body>${receiptElement.outerHTML}</body></html>`);
+        printWindow.document.write(`<html><head><title>Receipt</title><style>body{font-family:monospace;padding:40px;}.receipt{max-width:500px;margin:auto;}</style></head><body>${receiptElement.outerHTML}</body></html>`);
         printWindow.document.close();
         printWindow.print();
     };
@@ -437,41 +799,37 @@
     };
 
     async function loadStudentDashboard() {
-        // Hide login form, show dashboard
         document.getElementById('studentAuth').style.display = 'none';
-        const dashboardDiv = document.getElementById('studentDashboard');
-        dashboardDiv.style.display = 'block';
+        const dashboard = document.getElementById('studentDashboard');
+        dashboard.style.display = 'block';
         
         try {
             const studentRes = await apiCall(`/students/${currentUser.id}`);
             const student = await studentRes.json();
+            const photoUrl = 'https://via.placeholder.com/120?text=Photo';
             
-            // Get photo
-            const savedPhoto = localStorage.getItem(`reg_photo_${student.ethiopianId}`);
-            const photoUrl = savedPhoto || null;
+            let examHtml = '';
+            if (!student.examPercent) {
+                const examRes = await apiCall(`/exam/${currentUser.id}`);
+                const exam = await examRes.json();
+                examHtml = `<div class="card"><h3>✍️ Ability Exam (Required - ${student.grade} Level)</h3><form id="examForm">${exam.questions.map((q, i) => `<div style="margin-bottom:20px;padding:15px;background:#f0f0f0;border-radius:10px;"><p><strong>${i+1}. ${q.text}</strong></p><div>${q.options.map((opt, oi) => `<label style="margin-right:15px;"><input type="radio" name="q${i}" value="${oi}"> ${opt}</label>`).join('')}</div></div>`).join('')}<button type="submit">Submit Exam</button></form></div>`;
+            }
             
-            // Get payment status
             const payRes = await apiCall(`/payments/student/${currentUser.id}`);
             const payments = await payRes.json();
-            
-            // Load saved receipts
             const savedReceipts = localStorage.getItem(`receipts_${currentUser.id}`);
             if (savedReceipts) localPayments = JSON.parse(savedReceipts);
             
-            dashboardDiv.innerHTML = `
+            dashboard.innerHTML = `
                 <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:25px;border-radius:15px;margin-bottom:20px">
                     <div class="navbar">
-                        <div>
-                            <h2>Welcome, ${student.fullName}!</h2>
-                            <p>Ethiopian ID: ${student.ethiopianId} | Grade: ${student.grade}</p>
-                            <p>Exam Score: ${student.examPercent || 0}%</p>
-                        </div>
+                        <div><h2>Welcome, ${student.fullName}!</h2><p>Ethiopian ID: ${student.ethiopianId} | Grade: ${student.grade} | Exam Score: ${student.examPercent || 0}%</p></div>
                         <button onclick="logout()" style="background:white;color:#667eea">Logout</button>
                     </div>
                 </div>
                 
-                <div class="card">
-                    <h3>🪪 Your Student ID Card</h3>
+                <div class="dashboard-section">
+                    <div class="section-title">🪪 Your Student ID Card</div>
                     <div class="id-card-container">${generateIDCard(student, photoUrl)}</div>
                     <div class="id-card-actions">
                         <button onclick="downloadIDCard()" class="btn-small">📥 Download ID Card</button>
@@ -479,72 +837,68 @@
                     </div>
                 </div>
                 
-                <h3>💰 Fee Payments (Ethiopian Birr)</h3>
-                <div style="overflow-x:auto">
-                    <table>
-                        <thead><tr><th>Package</th><th>Description</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
-                        <tbody>
-                            <tr><td>Registration Fee</td><td>One-time registration fee</td><td>1000 ETB</td>
-                            <td><span class="badge ${payments.paymentStatus?.registration ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.registration ? 'Paid' : 'Unpaid'}</span></td>
-                            <td>${!payments.paymentStatus?.registration ? `<button onclick="makePayment('registration',1000)">Pay Now</button>` : '✅'}</td></tr>
-                            <tr><td>📚 Term 1 Package</td><td>Term1 (2500) + Bus Fee (1000)</td><td>3500 ETB</td>
-                            <td><span class="badge ${payments.paymentStatus?.term1Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term1Bus ? 'Paid' : 'Unpaid'}</span></td>
-                            <td>${!payments.paymentStatus?.term1Bus ? `<button onclick="makePayment('term1Bus',3500)">Pay Package</button>` : '✅'}</td></tr>
-                            <tr><td>📚 Term 2 Package</td><td>Term2 (2500) + Bus Fee (1000)</td><td>3500 ETB</td>
-                            <td><span class="badge ${payments.paymentStatus?.term2Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term2Bus ? 'Paid' : 'Unpaid'}</span></td>
-                            <td>${!payments.paymentStatus?.term2Bus ? `<button onclick="makePayment('term2Bus',3500)">Pay Package</button>` : '✅'}</td></tr>
-                            <tr><td>📚 Term 3 Package</td><td>Term3 (2500) + Bus Fee (1000)</td><td>3500 ETB</td>
-                            <td><span class="badge ${payments.paymentStatus?.term3Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term3Bus ? 'Paid' : 'Unpaid'}</span></td>
-                            <td>${!payments.paymentStatus?.term3Bus ? `<button onclick="makePayment('term3Bus',3500)">Pay Package</button>` : '✅'}</td></tr>
-                        </tbody>
-                    </table>
+                ${examHtml}
+                
+                <div class="dashboard-section">
+                    <div class="section-title">💰 Fee Payments (Ethiopian Birr)</div>
+                    <div style="overflow-x:auto"><tr><thead><tr><th>Package</th><th>Description</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody>
+                        <tr><td>Registration Fee</td><td>One-time registration fee</td><td>1000 ETB</td><td><span class="badge ${payments.paymentStatus?.registration ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.registration ? 'Paid' : 'Unpaid'}</span></td><td>${!payments.paymentStatus?.registration ? `<button onclick="makePayment('registration',1000)">Pay Now</button>` : '✅'}</td></tr>
+                        <tr><td><strong>📚 Term 1 Package</strong></td><td>Term1 (2500) + Bus Fee (1000)</td><td>3500 ETB</td><td><span class="badge ${payments.paymentStatus?.term1Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term1Bus ? 'Paid' : 'Unpaid'}</span></td><td>${!payments.paymentStatus?.term1Bus ? `<button onclick="makePayment('term1Bus',3500)">Pay Package</button>` : '✅'}</td></tr>
+                        <tr><td><strong>📚 Term 2 Package</strong></td><td>Term2 (2500) + Bus Fee (1000)</td><td>3500 ETB</td><td><span class="badge ${payments.paymentStatus?.term2Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term2Bus ? 'Paid' : 'Unpaid'}</span></td><td>${!payments.paymentStatus?.term2Bus ? `<button onclick="makePayment('term2Bus',3500)">Pay Package</button>` : '✅'}</td></tr>
+                        <tr><td><strong>📚 Term 3 Package</strong></td><td>Term3 (2500) + Bus Fee (1000)</td><td>3500 ETB</td><td><span class="badge ${payments.paymentStatus?.term3Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term3Bus ? 'Paid' : 'Unpaid'}</span></td><td>${!payments.paymentStatus?.term3Bus ? `<button onclick="makePayment('term3Bus',3500)">Pay Package</button>` : '✅'}</td></tr>
+                    </tbody></div>
                 </div>
                 
                 <div class="payment-history">
-                    <h3>📋 Payment History & Receipts</h3>
-                    ${localPayments.length === 0 ? '<p>No payments made yet.</p>' : localPayments.map(p => `
-                        <div class="payment-item">
-                            <div><strong>${p.paymentType}</strong><br>${p.amount} ETB | ${new Date(p.date).toLocaleDateString()}</div>
-                            <div><button onclick="showReceipt('${p.transactionId}')" class="btn-small">📄 View Receipt</button>
-                            <button onclick="downloadReceipt('${p.transactionId}')" class="btn-small">📥 Download</button></div>
-                        </div>`).join('')}
+                    <div class="section-title">📋 Payment History & Receipts</div>
+                    ${localPayments.length === 0 ? '<p>No payments made yet. Make a payment to see receipt here.</p>' : localPayments.map(p => `<div class="payment-item"><div><strong>${p.paymentType}</strong><br>${p.amount} ETB | ${new Date(p.date).toLocaleDateString()}</div><div><button onclick="showReceipt('${p.transactionId}')" class="btn-small">📄 View Receipt</button><button onclick="downloadReceipt('${p.transactionId}')" class="btn-small">📥 Download</button></div></div>`).join('')}
                 </div>
                 <div id="receiptDisplay"></div>
+                
+                <!-- Footer Links with Purpose Button -->
+                <div class="footer-links">
+                    <a onclick="openModal('aboutModal')">📖 About Us</a>
+                    <a onclick="openModal('purposeModal')">🎯 Our Purpose</a>
+                    <a onclick="openModal('feedbackModal')">💬 Feedback</a>
+                    <a onclick="openModal('privacyModal')">🔒 Privacy Policy</a>
+                </div>
             `;
+            
+            if (document.getElementById('examForm')) {
+                document.getElementById('examForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const examRes = await apiCall(`/exam/${currentUser.id}`);
+                    const exam = await examRes.json();
+                    const answers = [];
+                    for (let i = 0; i < exam.questions.length; i++) {
+                        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                        answers.push(selected ? parseInt(selected.value) : -1);
+                    }
+                    const submitRes = await apiCall('/exam/submit', { method: 'POST', body: JSON.stringify({ studentId: currentUser.id, answers }) });
+                    const result = await submitRes.json();
+                    alert(`Exam completed!\nScore: ${result.score}/${result.total} (${result.percentage}%)\n${result.percentage >= 50 ? 'You passed!' : 'Please study more.'}`);
+                    loadStudentDashboard();
+                });
+            }
         } catch (error) {
-            console.error('Error:', error);
-            dashboardDiv.innerHTML = `<div class="card" style="color:red;">Error loading dashboard. Please refresh.</div>`;
+            console.error('Error loading dashboard:', error);
         }
     }
 
     window.makePayment = async (type, amount) => {
         if (!confirm(`Pay ${amount} ETB for ${type}?`)) return;
         try {
-            const res = await apiCall('/payment', {
-                method: 'POST',
-                body: JSON.stringify({ studentId: currentUser.id, paymentType: type })
-            });
+            const res = await apiCall('/payment', { method: 'POST', body: JSON.stringify({ studentId: currentUser.id, paymentType: type }) });
             const data = await res.json();
             if (res.ok) {
-                const newPayment = {
-                    transactionId: data.receipt.transactionId,
-                    amount: data.receipt.amount,
-                    paymentType: type,
-                    studentId: currentUser.id,
-                    studentName: currentUser.name,
-                    date: new Date().toISOString()
-                };
+                const newPayment = { transactionId: data.receipt.transactionId, amount: data.receipt.amount, paymentType: type, studentId: currentUser.id, studentName: currentUser.name, date: new Date().toISOString() };
                 localPayments.unshift(newPayment);
                 localStorage.setItem(`receipts_${currentUser.id}`, JSON.stringify(localPayments));
                 document.getElementById('receiptDisplay').innerHTML = generateReceiptHTML(newPayment);
-                alert(`✅ Payment Successful!\nTransaction: ${data.receipt.transactionId}\nAmount: ${data.receipt.amount} ETB`);
+                alert(`✅ Payment Successful!\nTransaction ID: ${data.receipt.transactionId}\nAmount: ${data.receipt.amount} ETB`);
                 setTimeout(() => loadStudentDashboard(), 2000);
-            } else {
-                alert('Payment failed: ' + data.error);
-            }
-        } catch (error) {
-            alert('Error processing payment');
-        }
+            } else alert('Payment failed: ' + data.error);
+        } catch (error) { alert('Error processing payment'); }
     };
 
     async function loadDirectorDashboard() {
@@ -554,16 +908,7 @@
         try {
             const res = await apiCall('/director/students');
             const students = await res.json();
-            dashboard.innerHTML = `
-                <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:25px;border-radius:15px;margin-bottom:20px">
-                    <div class="navbar"><div><h2>📊 Director Dashboard</h2></div><button onclick="logout()" style="background:white;color:#667eea">Logout</button></div>
-                </div>
-                <button onclick="createUpdate()" style="margin-bottom:20px">📢 Post School Update</button>
-                <div style="overflow-x:auto"><table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Grade</th><th>Exam%</th><th>Reg</th><th>Term1+Bus</th><th>Term2+Bus</th><th>Term3+Bus</th></tr></thead><tbody>
-                ${students.map(s => `<tr><td>${s.fullName}</td><td>${s.ethiopianId}</td><td>${s.grade}</td><td>${s.examPercent||0}%</td>
-                <td>${s.paidRegistration ? '✅' : '❌'}</td><td>${s.paidTerm1Bus ? '✅' : '❌'}</td>
-                <td>${s.paidTerm2Bus ? '✅' : '❌'}</td><td>${s.paidTerm3Bus ? '✅' : '❌'}</td></tr>`).join('')}
-                </tbody></table></div>`;
+            dashboard.innerHTML = `<div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:25px;border-radius:15px;margin-bottom:20px"><div class="navbar"><div><h2>📊 Director Dashboard</h2></div><button onclick="logout()" style="background:white;color:#667eea">Logout</button></div></div><button onclick="createUpdate()" style="margin-bottom:20px">📢 Post School Update</button><div style="overflow-x:auto"><table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Grade</th><th>Exam%</th><th>Reg</th><th>Term1+Bus</th><th>Term2+Bus</th><th>Term3+Bus</th></tr></thead><tbody>${students.map(s => `<tr><td>${s.fullName}${s.ethiopianId}${s.grade}${s.examPercent||0}%${s.paidRegistration ? '✅' : '❌'}${s.paidTerm1Bus ? '✅' : '❌'}${s.paidTerm2Bus ? '✅' : '❌'}${s.paidTerm3Bus ? '✅' : '❌'}</table>`).join('')}</tbody></table></div>`;
         } catch (error) { console.error(error); }
     }
 
@@ -583,18 +928,12 @@
             const [updatesRes, studentsRes] = await Promise.all([apiCall('/parent/updates'), apiCall('/parent/students')]);
             const updates = await updatesRes.json();
             const students = await studentsRes.json();
-            dashboard.innerHTML = `
-                <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:25px;border-radius:15px;margin-bottom:20px">
-                    <div class="navbar"><div><h2>👪 Parent Hub</h2></div><button onclick="logout()" style="background:white;color:#667eea">Logout</button></div>
-                </div>
-                <h3>📢 Updates</h3>${updates.map(u => `<div style="background:#f0f0f0;padding:15px;margin:10px 0;border-radius:10px"><strong>${u.title}</strong><br><small>${new Date(u.createdAt).toLocaleDateString()}</small><p>${u.description}</p></div>`).join('')}
-                <h3>📚 Students</h3><td><thead><tr><th>Name</th><th>Grade</th></tr></thead><tbody>${students.map(s => `<tr><td>${s.fullName}${s.grade}</td></tr>`).join('')}</tbody></table>`;
+            dashboard.innerHTML = `<div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:25px;border-radius:15px;margin-bottom:20px"><div class="navbar"><div><h2>👪 Parent Hub</h2></div><button onclick="logout()" style="background:white;color:#667eea">Logout</button></div></div><h3>📢 Updates</h3>${updates.map(u => `<div style="background:#f0f0f0;padding:15px;margin:10px 0;border-radius:10px"><strong>${u.title}</strong><br><small>${new Date(u.createdAt).toLocaleDateString()}</small><p>${u.description}</p></div>`).join('')}<h3>📚 Students</h3><table><thead><tr><th>Name</th><th>Grade</th></tr></thead><tbody>${students.map(s => `<tr><td>${s.fullName}${s.grade}</td></tr>`).join('')}</tbody></table>`;
         } catch (error) { console.error(error); }
     }
 
-    function logout() { localStorage.removeItem('token'); token = null; currentUser = null; location.reload(); }
+    function logout() { localStorage.removeItem('token'); token = null; location.reload(); }
 
-    // Auto-login check
     if (token) {
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));
@@ -608,4 +947,4 @@
     window.logout = logout;
 </script>
 </body>
-                                                      </html>
+                            </html>
