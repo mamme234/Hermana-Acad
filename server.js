@@ -28,7 +28,7 @@ if (!fs.existsSync('./uploads')) {
 const db = new sqlite3.Database(path.join(__dirname, 'hermana.db'));
 
 db.serialize(() => {
-  // Users table (students, directors, teachers, parents)
+  // Users table
   db.run(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -37,7 +37,7 @@ db.serialize(() => {
       ethiopianId TEXT UNIQUE,
       idPhotoUrl TEXT,
       password TEXT,
-      role TEXT CHECK(role IN ('student', 'director', 'teacher', 'parent', 'board')) DEFAULT 'student',
+      role TEXT CHECK(role IN ('student', 'director', 'teacher', 'parent', 'board', 'finance')) DEFAULT 'student',
       grade TEXT,
       examScore INTEGER DEFAULT 0,
       examPercent INTEGER DEFAULT 0,
@@ -52,23 +52,62 @@ db.serialize(() => {
       teachingGrades TEXT,
       applicationReason TEXT,
       teacherStatus TEXT DEFAULT 'pending',
+      salary DECIMAL(10,2) DEFAULT 0,
       registrationDate DATETIME DEFAULT CURRENT_TIMESTAMP,
       isActive BOOLEAN DEFAULT 1
     )
   `);
 
-  // Payments table
+  // Payments table (student fees)
   db.run(`
     CREATE TABLE IF NOT EXISTS payments (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       studentId INTEGER NOT NULL,
+      studentName TEXT,
+      studentEthiopianId TEXT,
       paymentType TEXT CHECK(paymentType IN ('registration', 'term1Bus', 'term2Bus', 'term3Bus')),
       amount INTEGER NOT NULL,
       transactionId TEXT UNIQUE NOT NULL,
-      status TEXT DEFAULT 'completed',
+      receiptImage TEXT,
+      status TEXT DEFAULT 'pending',
+      verifiedBy INTEGER,
+      verifiedAt DATETIME,
       paymentDate DATETIME DEFAULT CURRENT_TIMESTAMP,
-      receipt TEXT,
+      notes TEXT,
       FOREIGN KEY (studentId) REFERENCES users(id)
+    )
+  `);
+
+  // Expenses table (school expenses)
+  db.run(`
+    CREATE TABLE IF NOT EXISTS expenses (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      expenseType TEXT CHECK(expenseType IN ('salary', 'maintenance', 'utilities', 'supplies', 'equipment', 'other')),
+      description TEXT,
+      amount DECIMAL(10,2) NOT NULL,
+      receiptImage TEXT,
+      createdBy INTEGER,
+      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+      status TEXT DEFAULT 'approved'
+    )
+  `);
+
+  // Salaries table
+  db.run(`
+    CREATE TABLE IF NOT EXISTS salaries (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      teacherId INTEGER,
+      teacherName TEXT,
+      month TEXT,
+      year INTEGER,
+      baseSalary DECIMAL(10,2),
+      bonus DECIMAL(10,2) DEFAULT 0,
+      deduction DECIMAL(10,2) DEFAULT 0,
+      netSalary DECIMAL(10,2),
+      paid BOOLEAN DEFAULT 0,
+      paidAt DATETIME,
+      transactionId TEXT,
+      FOREIGN KEY (teacherId) REFERENCES users(id)
     )
   `);
 
@@ -95,7 +134,7 @@ db.serialize(() => {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       title TEXT NOT NULL,
       description TEXT,
-      type TEXT CHECK(type IN ('alert', 'info', 'event', 'ban', 'announcement')),
+      type TEXT CHECK(type IN ('alert', 'info', 'event', 'ban', 'announcement', 'financial')),
       targetAudience TEXT DEFAULT 'all',
       createdBy INTEGER,
       createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -115,7 +154,7 @@ db.serialize(() => {
     )
   `);
 
-  // Insert default director if not exists
+  // Insert default director
   db.get("SELECT * FROM users WHERE role = 'director'", (err, row) => {
     if (!row && !err) {
       const hashedPassword = bcrypt.hashSync('director123', 10);
@@ -123,7 +162,7 @@ db.serialize(() => {
         INSERT INTO users (fullName, email, password, role, isActive)
         VALUES (?, ?, ?, ?, ?)
       `, ['Dr. Alemu Bekele', 'director@hermana.edu', hashedPassword, 'director', 1]);
-      console.log('✅ Default director created: director@hermana.edu / director123');
+      console.log('✅ Default director created');
     }
   });
 
@@ -135,7 +174,19 @@ db.serialize(() => {
         INSERT INTO users (fullName, email, password, role, isActive)
         VALUES (?, ?, ?, ?, ?)
       `, ['Board of Directors', 'board@hermana.edu', hashedPassword, 'board', 1]);
-      console.log('✅ Default board member created: board@hermana.edu / board123');
+      console.log('✅ Default board member created');
+    }
+  });
+
+  // Insert default finance officer
+  db.get("SELECT * FROM users WHERE role = 'finance'", (err, row) => {
+    if (!row && !err) {
+      const hashedPassword = bcrypt.hashSync('finance123', 10);
+      db.run(`
+        INSERT INTO users (fullName, email, password, role, isActive)
+        VALUES (?, ?, ?, ?, ?)
+      `, ['Finance Officer', 'finance@hermana.edu', hashedPassword, 'finance', 1]);
+      console.log('✅ Default finance officer created: finance@hermana.edu / finance123');
     }
   });
 
@@ -144,27 +195,22 @@ db.serialize(() => {
     if (!row && !err) {
       const hashedPassword = bcrypt.hashSync('teacher123', 10);
       db.run(`
-        INSERT INTO users (fullName, email, password, role, phone, teacherStatus, isActive)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-      `, ['Demo Teacher', 'teacher@hermana.edu', hashedPassword, 'teacher', '+251-911-000000', 'approved', 1]);
-      console.log('✅ Demo teacher created: teacher@hermana.edu / teacher123');
+        INSERT INTO users (fullName, email, password, role, phone, teacherStatus, salary, isActive)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `, ['Demo Teacher', 'teacher@hermana.edu', hashedPassword, 'teacher', '+251-911-000000', 'approved', 8000, 1]);
+      console.log('✅ Demo teacher created');
     }
   });
 
-  // Insert sample updates
-  db.get("SELECT * FROM updates LIMIT 1", (err, row) => {
+  // Insert sample student
+  db.get("SELECT * FROM users WHERE ethiopianId = 'ET999999'", (err, row) => {
     if (!row && !err) {
-      const sampleUpdates = [
-        { title: '🚨 Student Conduct Notice', description: 'John Demissie has been banned for 3 days due to bullying incident. Parents please discuss school rules with your children.', type: 'ban' },
-        { title: '📢 Mid-Term Examination Schedule', description: 'Mid-term exams will begin on April 5th. All students must prepare well. Exam timetable has been posted.', type: 'info' },
-        { title: '🎓 Parent-Teacher Conference', description: 'Parent-Teacher meeting will be held on March 30th at 9:00 AM in the main auditorium. All parents are encouraged to attend.', type: 'event' },
-        { title: '🏆 Academic Excellence Award', description: 'Congratulations to students who scored above 90% in the preliminary exams! Award ceremony on Friday.', type: 'announcement' }
-      ];
-      sampleUpdates.forEach(update => {
-        db.run(`INSERT INTO updates (title, description, type) VALUES (?, ?, ?)`,
-          [update.title, update.description, update.type]);
-      });
-      console.log('✅ Sample updates created');
+      const hashedPassword = bcrypt.hashSync('student123', 10);
+      db.run(`
+        INSERT INTO users (fullName, email, ethiopianId, password, grade, role, studentIdNumber, isActive)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `, ['Test Student', 'test@hermana.edu', 'ET999999', hashedPassword, 'Grade 10', 'student', 'HA20240001', 1]);
+      console.log('✅ Demo student created');
     }
   });
 });
@@ -182,27 +228,20 @@ const generateExamQuestions = (grade) => {
   if (gradeNum <= 4) {
     return [
       { id: 1, text: "What is 12 + 7?", options: ["18", "19", "20", "21"], correct: 1 },
-      { id: 2, text: "የኢትዮጵያ ዋና ከተማ ማንነው?", options: ["ጎንደር", "አዲስ አበባ", "ሀዋሳ", "ባህርዳር"], correct: 1 },
-      { id: 3, text: "5 × 3 = ?", options: ["12", "15", "18", "20"], correct: 1 },
-      { id: 4, text: "Which animal is known as 'King of the Jungle'?", options: ["Elephant", "Tiger", "Lion", "Giraffe"], correct: 2 },
-      { id: 5, text: "What color are bananas when ripe?", options: ["Red", "Green", "Yellow", "Blue"], correct: 2 }
+      { id: 2, text: "የኢትዮጵያ ዋና ከተማ?", options: ["ጎንደር", "አዲስ አበባ", "ሀዋሳ", "ባህርዳር"], correct: 1 },
+      { id: 3, text: "5 × 3 = ?", options: ["12", "15", "18", "20"], correct: 1 }
     ];
   } else if (gradeNum <= 8) {
     return [
       { id: 1, text: "144 ÷ 12 = ?", options: ["10", "12", "14", "16"], correct: 1 },
       { id: 2, text: "Capital of Ethiopia?", options: ["Adama", "Addis Ababa", "Harar", "Jimma"], correct: 1 },
-      { id: 3, text: "60 km/h for 2.5 hours = ? km", options: ["120", "150", "180", "100"], correct: 1 },
-      { id: 4, text: "በኢትዮጵያ ውስጥ ትልቁ ወንዝ?", options: ["አዋሽ", "አባይ", "ተከዜ", "ጊቤ"], correct: 1 },
-      { id: 5, text: "What is 25% of 200?", options: ["25", "50", "75", "100"], correct: 1 }
+      { id: 3, text: "60 km/h for 2.5h = ? km", options: ["120", "150", "180", "100"], correct: 1 }
     ];
   } else {
     return [
-      { id: 1, text: "Solve: 3x - 7 = 11, x = ?", options: ["4", "5", "6", "7"], correct: 2 },
-      { id: 2, text: "Which Ethiopian region is known for coffee origin?", options: ["Tigray", "Amhara", "Oromia (Kaffa)", "Somali"], correct: 2 },
-      { id: 3, text: "Oxygen atomic number?", options: ["6", "7", "8", "9"], correct: 2 },
-      { id: 4, text: "Who wrote 'Fikir Eske Mekabir'?", options: ["Baalu Girma", "Haddis Alemayehu", "Tsegaye Gabre-Medhin", "Mengistu Lemma"], correct: 1 },
-      { id: 5, text: "What is √169?", options: ["11", "12", "13", "14"], correct: 2 },
-      { id: 6, text: "If a train covers 240 km in 4 hours, speed?", options: ["40 km/h", "50 km/h", "60 km/h", "70 km/h"], correct: 2 }
+      { id: 1, text: "3x - 7 = 11, x = ?", options: ["4", "5", "6", "7"], correct: 2 },
+      { id: 2, text: "Oxygen atomic number?", options: ["6", "7", "8", "9"], correct: 2 },
+      { id: 3, text: "√169 = ?", options: ["11", "12", "13", "14"], correct: 2 }
     ];
   }
 };
@@ -273,7 +312,6 @@ app.post('/api/auth/register', upload.single('idPhoto'), async (req, res) => {
       return res.status(400).json({ error: 'Full name, Ethiopian ID, and grade are required' });
     }
     
-    // Check if Ethiopian ID already exists
     db.get("SELECT id FROM users WHERE ethiopianId = ?", [ethiopianId], async (err, existing) => {
       if (err) return res.status(500).json({ error: err.message });
       if (existing) return res.status(400).json({ error: 'Ethiopian ID already registered' });
@@ -306,7 +344,6 @@ app.post('/api/auth/register-teacher', upload.single('educationDoc'), async (req
       return res.status(400).json({ error: 'All fields are required' });
     }
     
-    // Check if email already exists
     db.get("SELECT id FROM users WHERE email = ?", [email], async (err, existing) => {
       if (err) return res.status(500).json({ error: err.message });
       if (existing) return res.status(400).json({ error: 'Email already registered' });
@@ -380,7 +417,6 @@ app.post('/api/auth/login', (req, res) => {
 
 // ==================== EXAM ROUTES ====================
 
-// Get exam questions for student
 app.get('/api/exam/:studentId', authenticate, (req, res) => {
   const studentId = req.params.studentId;
   
@@ -397,7 +433,6 @@ app.get('/api/exam/:studentId', authenticate, (req, res) => {
   });
 });
 
-// Submit exam answers with timer and violations
 app.post('/api/exam/submit', authenticate, (req, res) => {
   const { studentId, answers, timeSpent, violations } = req.body;
   
@@ -446,7 +481,6 @@ app.post('/api/exam/submit', authenticate, (req, res) => {
 
 // ==================== STUDENT ROUTES ====================
 
-// Get student profile
 app.get('/api/students/:id', authenticate, (req, res) => {
   const studentId = req.params.id;
   
@@ -470,47 +504,196 @@ const paymentPrices = {
   term3Bus: 3500
 };
 
-// Make payment
-app.post('/api/payment', authenticate, (req, res) => {
-  const { studentId, paymentType } = req.body;
+// Student submits payment receipt
+app.post('/api/payment/submit-receipt', authenticate, upload.single('receiptImage'), (req, res) => {
+  const { studentId, paymentType, amount, notes } = req.body;
+  const receiptImage = req.file ? `/uploads/${req.file.filename}` : null;
   
-  if (!paymentPrices[paymentType]) {
-    return res.status(400).json({ error: 'Invalid payment type' });
+  if (!receiptImage) {
+    return res.status(400).json({ error: 'Receipt image is required' });
   }
   
-  const amount = paymentPrices[paymentType];
-  const transactionId = 'HMTX-' + uuidv4().substr(0, 8).toUpperCase() + '-' + Date.now();
+  const transactionId = 'RCPT-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6).toUpperCase();
   
-  // Check if payment already exists
-  db.get(`
-    SELECT id FROM payments WHERE studentId = ? AND paymentType = ?
-  `, [studentId, paymentType], (err, existing) => {
-    if (existing) {
-      return res.status(400).json({ error: 'Payment already made for this type' });
-    }
+  db.get("SELECT fullName, ethiopianId FROM users WHERE id = ?", [studentId], (err, student) => {
+    if (err) return res.status(500).json({ error: err.message });
     
     db.run(`
-      INSERT INTO payments (studentId, paymentType, amount, transactionId, status)
-      VALUES (?, ?, ?, ?, 'completed')
-    `, [studentId, paymentType, amount, transactionId], function(err) {
+      INSERT INTO payments (studentId, studentName, studentEthiopianId, paymentType, amount, transactionId, receiptImage, status, notes)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?)
+    `, [studentId, student.fullName, student.ethiopianId, paymentType, amount || paymentPrices[paymentType], transactionId, receiptImage, notes], function(err) {
       if (err) return res.status(500).json({ error: err.message });
-      
-      const receipt = {
-        receiptId: this.lastID,
-        studentId: studentId,
-        paymentType: paymentType,
-        amount: amount,
-        transactionId: transactionId,
-        date: new Date().toISOString(),
-        academy: "Hermana Academy"
-      };
-      
       res.json({ 
         success: true, 
-        receipt, 
-        message: `Payment of ${amount} ETB successful!`
+        message: 'Receipt submitted to finance department for verification',
+        transactionId: transactionId,
+        status: 'pending'
       });
     });
+  });
+});
+
+// Finance: Get all pending receipts
+app.get('/api/finance/pending-receipts', authenticate, authorize('finance'), (req, res) => {
+  db.all(`
+    SELECT p.*, u.fullName, u.ethiopianId, u.grade, u.studentIdNumber
+    FROM payments p
+    JOIN users u ON p.studentId = u.id
+    WHERE p.status = 'pending'
+    ORDER BY p.paymentDate DESC
+  `, (err, receipts) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(receipts);
+  });
+});
+
+// Finance: Get all verified receipts
+app.get('/api/finance/verified-receipts', authenticate, authorize('finance'), (req, res) => {
+  db.all(`
+    SELECT p.*, u.fullName, u.ethiopianId, u.grade, u.studentIdNumber
+    FROM payments p
+    JOIN users u ON p.studentId = u.id
+    WHERE p.status = 'verified'
+    ORDER BY p.verifiedAt DESC
+  `, (err, receipts) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(receipts);
+  });
+});
+
+// Finance: Verify receipt
+app.post('/api/finance/verify-receipt/:receiptId', authenticate, authorize('finance'), (req, res) => {
+  const { receiptId } = req.params;
+  
+  db.run(`
+    UPDATE payments 
+    SET status = 'verified', verifiedBy = ?, verifiedAt = CURRENT_TIMESTAMP
+    WHERE id = ?
+  `, [req.user.id, receiptId], function(err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ message: 'Receipt verified successfully' });
+  });
+});
+
+// Finance: Reject receipt
+app.post('/api/finance/reject-receipt/:receiptId', authenticate, authorize('finance'), (req, res) => {
+  const { receiptId } = req.params;
+  const { reason } = req.body;
+  
+  db.run(`
+    UPDATE payments 
+    SET status = 'rejected', notes = ?
+    WHERE id = ?
+  `, [reason || 'Payment rejected', receiptId], function(err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ message: 'Receipt rejected' });
+  });
+});
+
+// Finance: Get all payments summary
+app.get('/api/finance/summary', authenticate, authorize('finance'), (req, res) => {
+  db.get("SELECT COUNT(*) as totalPayments, SUM(amount) as totalAmount FROM payments WHERE status = 'verified'", (err, total) => {
+    db.get("SELECT COUNT(*) as pendingCount FROM payments WHERE status = 'pending'", (err, pending) => {
+      db.get("SELECT SUM(amount) as pendingAmount FROM payments WHERE status = 'pending'", (err, pendingAmount) => {
+        db.all(`
+          SELECT paymentType, COUNT(*) as count, SUM(amount) as total 
+          FROM payments WHERE status = 'verified' 
+          GROUP BY paymentType
+        `, (err, byType) => {
+          res.json({
+            totalPayments: total?.totalPayments || 0,
+            totalAmount: total?.totalAmount || 0,
+            pendingCount: pending?.pendingCount || 0,
+            pendingAmount: pendingAmount?.pendingAmount || 0,
+            paymentsByType: byType || []
+          });
+        });
+      });
+    });
+  });
+});
+
+// Finance: Add expense
+app.post('/api/finance/expenses', authenticate, authorize('finance'), upload.single('receiptImage'), (req, res) => {
+  const { expenseType, description, amount } = req.body;
+  const receiptImage = req.file ? `/uploads/${req.file.filename}` : null;
+  
+  db.run(`
+    INSERT INTO expenses (expenseType, description, amount, receiptImage, createdBy)
+    VALUES (?, ?, ?, ?, ?)
+  `, [expenseType, description, amount, receiptImage, req.user.id], function(err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ message: 'Expense added successfully', expenseId: this.lastID });
+  });
+});
+
+// Finance: Get all expenses
+app.get('/api/finance/expenses', authenticate, authorize('finance'), (req, res) => {
+  db.all(`
+    SELECT e.*, u.fullName as createdByName
+    FROM expenses e
+    LEFT JOIN users u ON e.createdBy = u.id
+    ORDER BY e.createdAt DESC
+  `, (err, expenses) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(expenses);
+  });
+});
+
+// Finance: Get expense summary
+app.get('/api/finance/expenses-summary', authenticate, authorize('finance'), (req, res) => {
+  db.all(`
+    SELECT expenseType, SUM(amount) as total, COUNT(*) as count
+    FROM expenses
+    GROUP BY expenseType
+  `, (err, summary) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(summary);
+  });
+});
+
+// Finance: Process teacher salary
+app.post('/api/finance/salaries', authenticate, authorize('finance'), (req, res) => {
+  const { teacherId, month, year, baseSalary, bonus, deduction } = req.body;
+  const netSalary = (baseSalary || 0) + (bonus || 0) - (deduction || 0);
+  const transactionId = 'SAL-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+  
+  db.get("SELECT fullName FROM users WHERE id = ? AND role = 'teacher'", [teacherId], (err, teacher) => {
+    if (err) return res.status(500).json({ error: err.message });
+    
+    db.run(`
+      INSERT INTO salaries (teacherId, teacherName, month, year, baseSalary, bonus, deduction, netSalary, transactionId)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `, [teacherId, teacher.fullName, month, year, baseSalary, bonus, deduction, netSalary, transactionId], function(err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ message: 'Salary processed successfully', salaryId: this.lastID, netSalary });
+    });
+  });
+});
+
+// Finance: Get all salaries
+app.get('/api/finance/salaries', authenticate, authorize('finance'), (req, res) => {
+  db.all(`
+    SELECT s.*, u.fullName, u.email, u.phone
+    FROM salaries s
+    JOIN users u ON s.teacherId = u.id
+    ORDER BY s.year DESC, s.month DESC
+  `, (err, salaries) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(salaries);
+  });
+});
+
+// Finance: Mark salary as paid
+app.post('/api/finance/salaries/:salaryId/pay', authenticate, authorize('finance'), (req, res) => {
+  const { salaryId } = req.params;
+  
+  db.run(`
+    UPDATE salaries SET paid = 1, paidAt = CURRENT_TIMESTAMP
+    WHERE id = ?
+  `, [salaryId], function(err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ message: 'Salary marked as paid' });
   });
 });
 
@@ -519,7 +702,7 @@ app.get('/api/payments/student/:studentId', authenticate, (req, res) => {
   const studentId = req.params.studentId;
   
   db.all(`
-    SELECT paymentType, amount, transactionId, paymentDate 
+    SELECT paymentType, amount, transactionId, paymentDate, status, receiptImage
     FROM payments WHERE studentId = ?
   `, [studentId], (err, payments) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -532,37 +715,22 @@ app.get('/api/payments/student/:studentId', authenticate, (req, res) => {
     };
     
     payments.forEach(payment => {
-      paymentStatus[payment.paymentType] = true;
+      if (payment.status === 'verified') {
+        paymentStatus[payment.paymentType] = true;
+      }
     });
     
     res.json({ payments, paymentStatus });
   });
 });
 
-// Get receipt by transaction ID
-app.get('/api/receipt/:transactionId', authenticate, (req, res) => {
-  const transactionId = req.params.transactionId;
-  
-  db.get(`
-    SELECT p.*, u.fullName, u.ethiopianId, u.grade, u.studentIdNumber
-    FROM payments p
-    JOIN users u ON p.studentId = u.id
-    WHERE p.transactionId = ?
-  `, [transactionId], (err, receipt) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (!receipt) return res.status(404).json({ error: 'Receipt not found' });
-    res.json(receipt);
-  });
-});
-
 // ==================== TEACHER ROUTES ====================
 
-// Get teacher profile
 app.get('/api/teachers/:id', authenticate, (req, res) => {
   const teacherId = req.params.id;
   
   db.get(`
-    SELECT id, fullName, email, phone, teachingGrades, applicationReason, teacherStatus, registrationDate
+    SELECT id, fullName, email, phone, teachingGrades, applicationReason, teacherStatus, salary, registrationDate
     FROM users WHERE id = ? AND role = 'teacher'
   `, [teacherId], (err, teacher) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -577,7 +745,6 @@ app.get('/api/teachers/:id', authenticate, (req, res) => {
 
 // ==================== DIRECTOR ROUTES ====================
 
-// Get all students (director only)
 app.get('/api/director/students', authenticate, authorize('director'), (req, res) => {
   const { grade } = req.query;
   
@@ -592,14 +759,17 @@ app.get('/api/director/students', authenticate, authorize('director'), (req, res
   db.all(query, params, (err, students) => {
     if (err) return res.status(500).json({ error: err.message });
     
-    // Get payment status for each student
     const promises = students.map(student => {
       return new Promise((resolve) => {
-        db.all("SELECT paymentType FROM payments WHERE studentId = ?", [student.id], (err, payments) => {
+        db.all("SELECT paymentType, status FROM payments WHERE studentId = ?", [student.id], (err, payments) => {
           const paymentStatus = {
             registration: false, term1Bus: false, term2Bus: false, term3Bus: false
           };
-          payments.forEach(p => { paymentStatus[p.paymentType] = true; });
+          payments.forEach(p => { 
+            if (p.status === 'verified') {
+              paymentStatus[p.paymentType] = true;
+            }
+          });
           student.paymentStatus = paymentStatus;
           resolve(student);
         });
@@ -612,24 +782,9 @@ app.get('/api/director/students', authenticate, authorize('director'), (req, res
   });
 });
 
-// Get students grouped by grade
-app.get('/api/director/students/by-grade', authenticate, authorize('director'), (req, res) => {
-  db.all(`
-    SELECT grade, COUNT(*) as count, 
-           SUM(CASE WHEN examPercent >= 70 THEN 1 ELSE 0 END) as passedExam,
-           SUM(CASE WHEN examCompleted = 1 THEN 1 ELSE 0 END) as completedExam
-    FROM users WHERE role = 'student' 
-    GROUP BY grade
-  `, (err, grades) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(grades);
-  });
-});
-
-// Get all teachers for director
 app.get('/api/director/teachers', authenticate, authorize('director'), (req, res) => {
   db.all(`
-    SELECT id, fullName, email, phone, teachingGrades, teacherStatus, registrationDate
+    SELECT id, fullName, email, phone, teachingGrades, teacherStatus, salary, registrationDate
     FROM users WHERE role = 'teacher'
   `, (err, teachers) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -642,7 +797,6 @@ app.get('/api/director/teachers', authenticate, authorize('director'), (req, res
 
 // ==================== BOARD ROUTES ====================
 
-// Get all pending teacher applications (board only)
 app.get('/api/board/pending-teachers', authenticate, authorize('board'), (req, res) => {
   db.all(`
     SELECT id, fullName, email, phone, teachingGrades, applicationReason, educationDoc, teacherStatus, registrationDate
@@ -656,7 +810,6 @@ app.get('/api/board/pending-teachers', authenticate, authorize('board'), (req, r
   });
 });
 
-// Review teacher application (approve/reject)
 app.post('/api/board/review-teacher/:teacherId', authenticate, authorize('board'), (req, res) => {
   const { teacherId } = req.params;
   const { status, message } = req.body;
@@ -673,36 +826,10 @@ app.post('/api/board/review-teacher/:teacherId', authenticate, authorize('board'
   });
 });
 
-// Get all students for board
-app.get('/api/board/students', authenticate, authorize('board'), (req, res) => {
-  db.all(`
-    SELECT id, fullName, ethiopianId, grade, examPercent, studentIdNumber, registrationDate
-    FROM users WHERE role = 'student'
-  `, (err, students) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(students);
-  });
-});
-
-// Get all teachers for board
-app.get('/api/board/teachers', authenticate, authorize('board'), (req, res) => {
-  db.all(`
-    SELECT id, fullName, email, phone, teachingGrades, teacherStatus, registrationDate
-    FROM users WHERE role = 'teacher'
-  `, (err, teachers) => {
-    if (err) return res.status(500).json({ error: err.message });
-    teachers.forEach(t => {
-      if (t.teachingGrades) t.teachingGrades = JSON.parse(t.teachingGrades);
-    });
-    res.json(teachers);
-  });
-});
-
-// Get payment statistics for board
 app.get('/api/board/statistics', authenticate, authorize('board'), (req, res) => {
   db.get("SELECT COUNT(*) as totalStudents FROM users WHERE role = 'student'", (err, studentCount) => {
     db.get("SELECT COUNT(*) as totalTeachers FROM users WHERE role = 'teacher'", (err, teacherCount) => {
-      db.get("SELECT SUM(amount) as totalFees FROM payments", (err, fees) => {
+      db.get("SELECT SUM(amount) as totalFees FROM payments WHERE status = 'verified'", (err, fees) => {
         db.get("SELECT COUNT(*) as pendingTeachers FROM users WHERE role = 'teacher' AND teacherStatus = 'pending'", (err, pending) => {
           res.json({
             totalStudents: studentCount?.totalStudents || 0,
@@ -718,7 +845,6 @@ app.get('/api/board/statistics', authenticate, authorize('board'), (req, res) =>
 
 // ==================== PARENT ROUTES ====================
 
-// Get school updates for parents
 app.get('/api/parent/updates', authenticate, (req, res) => {
   db.all(`
     SELECT * FROM updates 
@@ -730,7 +856,6 @@ app.get('/api/parent/updates', authenticate, (req, res) => {
   });
 });
 
-// Get student by ID for parent
 app.get('/api/parent/student/:id', authenticate, (req, res) => {
   const studentId = req.params.id;
   
@@ -741,7 +866,7 @@ app.get('/api/parent/student/:id', authenticate, (req, res) => {
     if (err) return res.status(500).json({ error: err.message });
     if (!student) return res.status(404).json({ error: 'Student not found' });
     
-    db.all("SELECT paymentType, amount, paymentDate FROM payments WHERE studentId = ?", [studentId], (err, payments) => {
+    db.all("SELECT paymentType, amount, paymentDate, status FROM payments WHERE studentId = ?", [studentId], (err, payments) => {
       student.payments = payments;
       res.json(student);
     });
@@ -750,7 +875,6 @@ app.get('/api/parent/student/:id', authenticate, (req, res) => {
 
 // ==================== FEEDBACK ROUTES ====================
 
-// Submit feedback
 app.post('/api/feedback', (req, res) => {
   const { name, email, role, rating, message } = req.body;
   
@@ -767,19 +891,8 @@ app.post('/api/feedback', (req, res) => {
   });
 });
 
-// Get all feedback (director/board only)
-app.get('/api/feedback', authenticate, authorize('director', 'board'), (req, res) => {
-  db.all(`
-    SELECT * FROM feedback ORDER BY createdAt DESC
-  `, (err, feedback) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(feedback);
-  });
-});
-
 // ==================== UPDATES ROUTES ====================
 
-// Create school update (director only)
 app.post('/api/updates', authenticate, authorize('director'), (req, res) => {
   const { title, description, type } = req.body;
   
@@ -796,7 +909,6 @@ app.post('/api/updates', authenticate, authorize('director'), (req, res) => {
   });
 });
 
-// Get all updates
 app.get('/api/updates', (req, res) => {
   db.all(`
     SELECT u.*, u2.fullName as creatorName
@@ -807,6 +919,44 @@ app.get('/api/updates', (req, res) => {
   `, (err, updates) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json(updates);
+  });
+});
+
+// ==================== FINANCE DASHBOARD SUMMARY ====================
+app.get('/api/finance/dashboard', authenticate, authorize('finance'), (req, res) => {
+  // Get total income from verified payments
+  db.get("SELECT SUM(amount) as totalIncome FROM payments WHERE status = 'verified'", (err, income) => {
+    // Get total expenses
+    db.get("SELECT SUM(amount) as totalExpenses FROM expenses", (err, expenses) => {
+      // Get pending receipts count
+      db.get("SELECT COUNT(*) as pendingReceipts FROM payments WHERE status = 'pending'", (err, pending) => {
+        // Get monthly income
+        db.all(`
+          SELECT strftime('%Y-%m', paymentDate) as month, SUM(amount) as total 
+          FROM payments WHERE status = 'verified' 
+          GROUP BY strftime('%Y-%m', paymentDate)
+          ORDER BY month DESC LIMIT 6
+        `, (err, monthlyIncome) => {
+          // Get recent payments
+          db.all(`
+            SELECT p.*, u.fullName 
+            FROM payments p
+            JOIN users u ON p.studentId = u.id
+            WHERE p.status = 'verified'
+            ORDER BY p.paymentDate DESC LIMIT 10
+          `, (err, recentPayments) => {
+            res.json({
+              totalIncome: income?.totalIncome || 0,
+              totalExpenses: expenses?.totalExpenses || 0,
+              netProfit: (income?.totalIncome || 0) - (expenses?.totalExpenses || 0),
+              pendingReceipts: pending?.pendingReceipts || 0,
+              monthlyIncome: monthlyIncome || [],
+              recentPayments: recentPayments || []
+            });
+          });
+        });
+      });
+    });
   });
 });
 
@@ -826,11 +976,14 @@ app.get('/', (req, res) => {
     status: 'online',
     message: 'Hermana Academy API is running!',
     version: '2.0.0',
+    developer: 'Muhammad Ilyas',
+    purpose: 'To digitize Ethiopian education - making registration, payments, exams, and financial management easy and accessible for all students, teachers, and administrators.',
     endpoints: {
       auth: '/api/auth/register, /api/auth/login',
       exam: '/api/exam/:studentId, /api/exam/submit',
-      payment: '/api/payment, /api/payments/student/:studentId',
-      director: '/api/director/students, /api/director/students/by-grade',
+      payment: '/api/payment/submit-receipt, /api/payments/student/:studentId',
+      finance: '/api/finance/pending-receipts, /api/finance/verify-receipt/:id, /api/finance/expenses, /api/finance/salaries',
+      director: '/api/director/students, /api/director/teachers',
       board: '/api/board/pending-teachers, /api/board/review-teacher/:id',
       parent: '/api/parent/updates, /api/parent/student/:id',
       feedback: '/api/feedback',
@@ -851,16 +1004,23 @@ app.listen(PORT, () => {
   ╔═══════════════════════════════════════════════════════════════════╗
   ║                    🏫 HERMANA ACADEMY BACKEND                      ║
   ║                         Version 2.0.0                              ║
+  ║                    Developed by: Muhammad Ilyas                    ║
   ╠═══════════════════════════════════════════════════════════════════╣
   ║  📍 Server running on: http://localhost:${PORT}                     ║
   ║  ✅ Status: Online                                                 ║
   ║  📝 API ready for requests                                         ║
+  ╠═══════════════════════════════════════════════════════════════════╣
+  ║  🎯 My Purpose: To digitize Ethiopian education by providing      ║
+  ║     a complete school management system with student registration,║
+  ║     timed exams, ID cards, fee payments, financial management,    ║
+  ║     teacher applications, and board oversight - all in one place. ║
   ╠═══════════════════════════════════════════════════════════════════╣
   ║  🔐 Default Login Credentials:                                     ║
   ║  👨‍🎓 Student: ET999999 / student123                                 ║
   ║  👨‍🏫 Teacher: teacher@hermana.edu / teacher123                      ║
   ║  📊 Director: director@hermana.edu / director123                   ║
   ║  🎯 Board: board@hermana.edu / board123                            ║
+  ║  💰 Finance: finance@hermana.edu / finance123                      ║
   ╚═══════════════════════════════════════════════════════════════════╝
   `);
 });
