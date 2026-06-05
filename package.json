@@ -1,7 +1,7 @@
 {
   "name": "hermana-academy-backend",
   "version": "2.0.0",
-  "description": "Hermana Academy Complete Backend API",
+  "description": "Hermana Academy Complete School Management System Backend",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
