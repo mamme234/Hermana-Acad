@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Hermana Academy - Complete School Management System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .school-logo { margin-bottom: 15px; }
+        .school-logo img {
+            max-width: 120px;
+            height: auto;
+            border-radius: 50%;
+            object-fit: contain;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 { font-size: 2em; color: #333; margin: 10px 0 5px; }
+        .header .ethiopia { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 8px 0; }
+        .flag { display: inline-flex; gap: 3px; }
+        .flag span { width: 22px; height: 15px; display: inline-block; }
+        .flag .green { background: #078930; }
+        .flag .yellow { background: #fcdd09; }
+        .flag .red { background: #da121a; }
+        .motto { font-style: italic; color: #667eea; font-size: 0.85em; margin-top: 5px; }
+        
+        .tabs {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 12px 30px;
+            border: none;
+            background: #e0e0e0;
+            cursor: pointer;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .tab-btn.active { background: #667eea; color: white; }
+        .panel {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .panel.active { display: block; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+        input:focus, select:focus { outline: none; border-color: #667eea; }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        button:hover { background: #5a67d8; transform: translateY(-2px); }
+        .btn-small { padding: 8px 16px; font-size: 14px; }
+        .btn-danger { background: #dc3545; }
+        .btn-danger:hover { background: #c82333; }
+        .btn-success { background: #28a745; }
+        .btn-success:hover { background: #218838; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        
+        .badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; }
+        .badge-paid { background: #48bb78; color: white; }
+        .badge-unpaid { background: #f56565; color: white; }
+        .badge-passed { background: #48bb78; color: white; }
+        .badge-failed { background: #f56565; color: white; }
+        .badge-pending { background: #f59e0b; color: white; }
+        .badge-approved { background: #48bb78; color: white; }
+        .badge-rejected { background: #f56565; color: white; }
+        .card { background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
+        
+        /* Ethiopian Style ID Card */
+        .id-card-container { display: flex; justify-content: center; margin: 20px 0; }
+        .id-card {
+            width: 450px;
+            background: linear-gradient(145deg, #f5f5f5 0%, #e8e8e8 100%);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.3);
+            border: 1px solid #c0a080;
+            position: relative;
+            font-family: 'Courier New', monospace;
+        }
+        .id-card-ethiopia {
+            background: linear-gradient(90deg, #078930 0%, #078930 33%, #fcdd09 33%, #fcdd09 66%, #da121a 66%, #da121a 100%);
+            height: 8px;
+            width: 100%;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        .id-logo {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #c0a080;
+        }
+        .id-logo-left { text-align: center; }
+        .id-logo-left img { width: 60px; height: 60px; border-radius: 50%; }
+        .id-logo-left small { font-size: 10px; display: block; }
+        .id-logo-center { text-align: center; }
+        .id-logo-center h3 { color: #8B0000; font-size: 16px; }
+        .id-logo-center p { font-size: 10px; color: #555; }
+        .id-logo-right { text-align: center; }
+        .id-logo-right .flag-icon { font-size: 30px; }
+        .id-photo { text-align: center; margin: 15px 0; }
+        .id-photo-img { width: 140px; height: 160px; object-fit: cover; border: 3px solid #c0a080; background: white; }
+        .id-details { background: white; padding: 12px; border-radius: 8px; margin: 10px 0; }
+        .id-row { display: flex; margin-bottom: 5px; font-size: 11px; }
+        .id-label { width: 100px; font-weight: bold; color: #8B0000; }
+        .id-value { flex: 1; }
+        .id-footer { text-align: center; margin-top: 10px; font-size: 8px; color: #666; }
+        .id-card-actions { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
+        .section-title { font-size: 1.2em; font-weight: 600; margin: 20px 0 10px; color: #333; border-left: 4px solid #667eea; padding-left: 10px; }
+        
+        /* Timer Styles */
+        .timer-container {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .timer-clock {
+            font-size: 48px;
+            font-weight: bold;
+            font-family: monospace;
+            letter-spacing: 5px;
+        }
+        .timer-warning { color: #ff6b6b; font-size: 14px; margin-top: 5px; }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 35px;
+            position: relative;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .modal-header h2 { color: #667eea; }
+        .close-modal {
+            background: none;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            color: #999;
+        }
+        .close-modal:hover { color: #333; background: none; transform: none; }
+        
+        /* Star Rating */
+        .star-rating { display: flex; gap: 8px; margin: 15px 0; justify-content: center; }
+        .star { font-size: 35px; cursor: pointer; color: #ccc; transition: 0.2s; }
+        .star:hover, .star.active { color: #ffc107; }
+        
+        .footer-links {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+        .footer-links a { color: #667eea; text-decoration: none; cursor: pointer; font-weight: 500; }
+        .footer-links a:hover { text-decoration: underline; }
+        
+        .receipt-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            border-left: 4px solid #f59e0b;
+        }
+        .receipt-item.verified { border-left-color: #48bb78; }
+        .receipt-item.rejected { border-left-color: #f56565; }
+        
+        .creator-credit {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            background: rgba(0,0,0,0.7);
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+        }
+        .creator-credit span { color: #ffd700; font-weight: bold; }
+        
+        .student-table { width: 100%; overflow-x: auto; }
+        .student-table table { width: 100%; border-collapse: collapse; }
+        .student-table th, .student-table td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+        .student-table th { background: #667eea; color: white; }
+        
+        @media (max-width: 768px) { 
+            .grid-2 { grid-template-columns: 1fr; }
+            .id-card { width: 95%; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="school-logo">
+            <img src="logo.png" alt="Hermana Academy Logo" onerror="this.src='https://via.placeholder.com/120x120?text=HA'">
+        </div>
+        <h1>🏫 Hermana Academy</h1>
+        <div class="ethiopia">
+            <div class="flag"><span class="green"></span><span class="yellow"></span><span class="red"></span></div>
+            <span>Ethiopia's Premier Educational Institution</span>
+        </div>
+        <div class="motto">"እውቀት ብርሃን ነው | Quality Education for Future Leaders"</div>
+        <p>ኸርማና አካዳሚ | የኢትዮጵያ መሪ ትምህርት ተቋም</p>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('student')">👨‍🎓 Student Portal</button>
+            <button class="tab-btn" onclick="switchTab('teacher')">👨‍🏫 Teacher Portal</button>
+            <button class="tab-btn" onclick="switchTab('finance')">💰 Finance Portal</button>
+            <button class="tab-btn" onclick="switchTab('board')">🎯 Board Dashboard</button>
+            <button class="tab-btn" onclick="switchTab('director')">📊 Director Panel</button>
+            <button class="tab-btn" onclick="switchTab('parent')">👪 Parents Hub</button>
+        </div>
+    </div>
+
+    <!-- Student Panel -->
+    <div id="studentPanel" class="panel active">
+        <div id="studentAuth">
+            <div class="grid-2">
+                <div>
+                    <h2>📝 New Student Registration</h2>
+                    <form id="registerForm" enctype="multipart/form-data">
+                        <div class="form-group"><label>Full Name *</label><input type="text" id="regName" required></div>
+                        <div class="form-group"><label>Ethiopian ID *</label><input type="text" id="regEthiopianId" placeholder="ET1234567" required></div>
+                        <div class="form-group"><label>Email</label><input type="email" id="regEmail"></div>
+                        <div class="form-group"><label>Password</label><input type="password" id="regPassword" placeholder="Leave empty for 'default'"></div>
+                        <div class="form-group"><label>From Grade *</label><select id="regFromGrade">
+                            <option value="Nursery">🎨 Nursery</option><option value="Lower KG">📖 Lower KG</option><option value="Upper KG">✏️ Upper KG</option>
+                            <option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option>
+                            <option>Grade 5</option><option>Grade 6</option><option>Grade 7</option><option>Grade 8</option>
+                            <option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option>
+                        </select></div>
+                        <div class="form-group"><label>To Grade *</label><select id="regToGrade">
+                            <option value="Nursery">🎨 Nursery</option><option value="Lower KG">📖 Lower KG</option><option value="Upper KG">✏️ Upper KG</option>
+                            <option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option>
+                            <option>Grade 5</option><option>Grade 6</option><option>Grade 7</option><option>Grade 8</option>
+                            <option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option>
+                        </select></div>
+                        <div class="form-group"><label>Upload Your Photo *</label><input type="file" id="regPhoto" accept="image/*" required></div>
+                        <button type="submit">Register →</button>
+                    </form>
+                </div>
+                <div>
+                    <h2>🔐 Login to Dashboard</h2>
+                    <form id="studentLoginForm">
+                        <div class="form-group"><label>Ethiopian ID or Email</label><input type="text" id="studentIdentifier" required></div>
+                        <div class="form-group"><label>Password</label><input type="password" id="studentPassword"></div>
+                        <button type="submit">Login →</button>
+                    </form>
+                    <div class="card">
+                        <h3>📢 Demo Accounts</h3>
+                        <p><strong>Student:</strong> ET999999 / student123</p>
+                        <p><strong>Teacher:</strong> teacher@hermana.edu / teacher123</p>
+                        <p><strong>Finance:</strong> finance@hermana.edu / finance123</p>
+                        <p><strong>Director:</strong> director@hermana.edu / director123</p>
+                        <p><strong>Board:</strong> board@hermana.edu / board123</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="studentDashboard" style="display: none;"></div>
+    </div>
+
+    <!-- Teacher Panel -->
+    <div id="teacherPanel" class="panel">
+        <div id="teacherAuth">
+            <div class="grid-2">
+                <div>
+                    <h2>📝 New Teacher Registration</h2>
+                    <form id="teacherRegisterForm" enctype="multipart/form-data">
+                        <div class="form-group"><label>Full Name *</label><input type="text" id="teacherName" required></div>
+                        <div class="form-group"><label>Email *</label><input type="email" id="teacherEmail" required></div>
+                        <div class="form-group"><label>Password *</label><input type="password" id="teacherPassword" required></div>
+                        <div class="form-group"><label>Phone Number *</label><input type="tel" id="teacherPhone" required placeholder="+251-XXX-XXXX"></div>
+                        <div class="form-group"><label>Education Document *</label><input type="file" id="teacherDoc" accept=".pdf,.jpg,.png" required></div>
+                        <div class="form-group"><label>Teaching Grades *</label><select id="teacherGrades" multiple size="5">
+                            <option>Nursery</option><option>Lower KG</option><option>Upper KG</option>
+                            <option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option>
+                            <option>Grade 5</option><option>Grade 6</option><option>Grade 7</option><option>Grade 8</option>
+                            <option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option>
+                        </select><small>Hold Ctrl to select multiple</small></div>
+                        <div class="form-group"><label>Why join Hermana Academy? *</label><textarea rows="3" id="teacherReason" placeholder="Tell us about your teaching philosophy..."></textarea></div>
+                        <button type="submit">Submit Application →</button>
+                    </form>
+                </div>
+                <div>
+                    <h2>🔐 Teacher Login</h2>
+                    <form id="teacherLoginForm">
+                        <div class="form-group"><label>Email</label><input type="email" id="teacherLoginEmail" required></div>
+                        <div class="form-group"><label>Password</label><input type="password" id="teacherLoginPassword" required></div>
+                        <button type="submit">Login →</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div id="teacherDashboard" style="display: none;"></div>
+    </div>
+
+    <!-- Finance Panel -->
+    <div id="financePanel" class="panel">
+        <div id="financeAuth">
+            <h2>🔐 Finance Portal Login</h2>
+            <form id="financeLoginForm">
+                <div class="form-group"><label>Email</label><input type="email" id="financeEmail" required></div>
+                <div class="form-group"><label>Password</label><input type="password" id="financePassword" required></div>
+                <button type="submit">Login →</button>
+            </form>
+        </div>
+        <div id="financeDashboard" style="display: none;"></div>
+    </div>
+
+    <!-- Board Panel -->
+    <div id="boardPanel" class="panel">
+        <div id="boardAuth">
+            <h2>🔐 Board of Directors Login</h2>
+            <form id="boardLoginForm">
+                <div class="form-group"><label>Email</label><input type="email" id="boardEmail" required></div>
+                <div class="form-group"><label>Password</label><input type="password" id="boardPassword" required></div>
+                <button type="submit">Login →</button>
+            </form>
+        </div>
+        <div id="boardDashboard" style="display: none;"></div>
+    </div>
+
+    <!-- Director Panel -->
+    <div id="directorPanel" class="panel">
+        <div id="directorAuth">
+            <h2>🔐 Director Login</h2>
+            <form id="directorLoginForm">
+                <div class="form-group"><label>Email</label><input type="email" id="directorEmail" required></div>
+                <div class="form-group"><label>Password</label><input type="password" id="directorPassword" required></div>
+                <button type="submit">Login →</button>
+            </form>
+        </div>
+        <div id="directorDashboard" style="display: none;"></div>
+    </div>
+
+    <!-- Parent Panel -->
+    <div id="parentPanel" class="panel">
+        <div id="parentAuth">
+            <h2>🔐 Parent/Guardian Access</h2>
+            <form id="parentLoginForm">
+                <div class="form-group"><label>Student Ethiopian ID or Email</label><input type="text" id="parentIdentifier" required></div>
+                <div class="form-group"><label>Password</label><input type="password" id="parentPassword"></div>
+                <button type="submit">View →</button>
+            </form>
+        </div>
+        <div id="parentDashboard" style="display: none;"></div>
+    </div>
+</div>
+
+<!-- ==================== MODALS WITH LONG DETAILED CONTENT ==================== -->
+
+<!-- My Purpose Modal - Long Detailed -->
+<div id="purposeModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>🎯 My Purpose & Vision</h2>
+            <button class="close-modal" onclick="closeModal('purposeModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p style="font-size: 1.1em; margin-bottom: 15px;"><strong>My name is Muhammad Ilyas, and I created Hermana Academy with a clear vision for Ethiopia's educational future.</strong></p>
+            
+            <p>As a passionate software developer and education advocate, I witnessed firsthand the challenges faced by Ethiopian schools: endless paperwork, manual fee collection, lost receipts, communication gaps between parents and teachers, and no centralized system for student records. Traditional methods were inefficient, time-consuming, and prone to errors.</p>
+            
+            <br>
+            <h3>💡 The Problem I Saw</h3>
+            <ul style="margin-left: 20px; line-height: 1.8;">
+                <li>📝 <strong>Paper-based systems</strong> - Student registrations lost, records damaged, information inaccessible</li>
+                <li>💰 <strong>Payment confusion</strong> - Parents unsure about fee status, no digital receipts, payment disputes</li>
+                <li>🎓 <strong>No student identity</strong> - No standardized ID cards, difficulty verifying student enrollment</li>
+                <li>📊 <strong>Limited oversight</strong> - Directors and boards lacked real-time data on school operations</li>
+                <li>👨‍🏫 <strong>Teacher application delays</strong> - Manual document processing, no application tracking</li>
+                <li>👪 <strong>Parent disconnect</strong> - Parents uninformed about school updates and student progress</li>
+            </ul>
+            
+            <br>
+            <h3>🚀 The Solution - Hermana Academy</h3>
+            <p>I built this complete School Management System to solve these problems with:</p>
+            <ul style="margin-left: 20px; line-height: 1.8;">
+                <li>✅ <strong>Digital Registration</strong> - Students register online with photo upload and Ethiopian ID verification</li>
+                <li>✅ <strong>Secure Timed Exams</strong> - 1-minute proctored exams with auto-submit and violation tracking</li>
+                <li>✅ <strong>Instant Student ID Cards</strong> - Ethiopian-style digital ID cards generated upon passing exams</li>
+                <li>✅ <strong>Receipt-Based Payments</strong> - Students upload payment receipts, finance team verifies them</li>
+                <li>✅ <strong>Teacher Application Portal</strong> - Teachers apply online, boards review and approve digitally</li>
+                <li>✅ <strong>Real-Time Dashboards</strong> - Directors and boards see live statistics on students, payments, and teachers</li>
+                <li>✅ <strong>Parent Communication Hub</strong> - Parents access child's progress and school announcements instantly</li>
+            </ul>
+            
+            <br>
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 10px; margin: 15px 0;">
+                <p><strong>🌟 My Vision for Ethiopia:</strong> I dream of a digitally transformed Ethiopian education system where every school has efficient management, every student has a digital identity, every payment is transparent, and every parent is informed. Hermana Academy is my contribution to this digital future.</p>
+            </div>
+            
+            <div style="background: #fff3e0; padding: 15px; border-radius: 10px; margin: 15px 0;">
+                <p><strong>🚀 Future Roadmap:</strong> Mobile app launch • Integration with Ethiopian banks (CBE, Dashen, Awash) • AI-powered student performance analytics • Online learning modules • Parent-teacher video conferencing • Multi-language support (Amharic, English, Afaan Oromo)</p>
+            </div>
+            
+            <p style="margin-top: 15px;">This system is my humble gift to Ethiopian education. I believe technology can bridge gaps, create opportunities, and build a brighter future for every Ethiopian child. <strong>🇪🇹 ኢትዮጵያ ትበልጥ! (Ethiopia First!)</strong></p>
+        </div>
+    </div>
+</div>
+
+<!-- Privacy Policy Modal - Long Detailed -->
+<div id="privacyModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>🔒 Privacy Policy</h2>
+            <button class="close-modal" onclick="closeModal('privacyModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p><strong>Effective Date:</strong> January 1, 2024 | <strong>Last Updated:</strong> June 2024</p>
+            <br>
+            <p>At <strong>Hermana Academy</strong>, your privacy is our priority. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our School Management System. Please read this policy carefully.</p>
+            
+            <br>
+            <h3>📌 Information We Collect</h3>
+            <p><strong>Personal Information:</strong></p>
+            <ul style="margin-left: 20px;">
+                <li>Full name, Ethiopian ID number, date of birth</li>
+                <li>Email address, phone number, residential address</li>
+                <li>Student photographs for ID cards and verification</li>
+                <li>Parent/guardian names and contact information</li>
+                <li>Payment history, transaction records, and receipts</li>
+            </ul>
+            <p><strong>Academic Information:</strong></p>
+            <ul style="margin-left: 20px;">
+                <li>Grade level, class assignments, enrollment dates</li>
+                <li>Exam scores, completion status, violation records</li>
+                <li>Student ID numbers and academic progress</li>
+            </ul>
+            <p><strong>Teacher Information:</strong></p>
+            <ul style="margin-left: 20px;">
+                <li>Education documents, teaching certificates</li>
+                <li>Teaching grades, experience, application details</li>
+                <li>Salary records and employment history</li>
+            </ul>
+            
+            <br>
+            <h3>🔐 How We Use Your Information</h3>
+            <ul style="margin-left: 20px;">
+                <li>Student registration and identity verification</li>
+                <li>Processing fee payments and generating official receipts</li>
+                <li>Creating and managing student ID cards</li>
+                <li>Administering secure timed exams and recording results</li>
+                <li>Communicating school updates, announcements, and emergency alerts</li>
+                <li>Reviewing teacher applications and credentials</li>
+                <li>Generating reports for directors and boards</li>
+                <li>Improving our services and user experience</li>
+            </ul>
+            
+            <br>
+            <h3>🛡️ Data Protection & Security</h3>
+            <p>We implement industry-standard security measures to protect your data:</p>
+            <ul style="margin-left: 20px;">
+                <li><strong>Encryption:</strong> All data is encrypted using AES-256 standards</li>
+                <li><strong>Secure Servers:</strong> Hosted on protected servers with firewalls</li>
+                <li><strong>Access Control:</strong> Role-based access - only authorized personnel can view specific data</li>
+                <li><strong>Regular Audits:</strong> Weekly security audits and vulnerability scans</li>
+                <li><strong>Backup:</strong> Daily encrypted backups to prevent data loss</li>
+            </ul>
+            
+            <br>
+            <h3>📱 Your Rights</h3>
+            <p>You have the following rights regarding your personal data:</p>
+            <ul style="margin-left: 20px;">
+                <li><strong>Access:</strong> Request a copy of your personal data</li>
+                <li><strong>Correction:</strong> Update or correct inaccurate information</li>
+                <li><strong>Deletion:</strong> Request deletion of your data (subject to legal requirements)</li>
+                <li><strong>Restriction:</strong> Limit how we use your data</li>
+                <li><strong>Portability:</strong> Receive your data in a structured format</li>
+                <li><strong>Withdraw Consent:</strong> Opt out of communications at any time</li>
+            </ul>
+            
+            <br>
+            <h3>🍪 Cookies & Tracking</h3>
+            <p>We use cookies to remember your login session, preferences, and improve performance. You can disable cookies in your browser settings, but this may affect functionality.</p>
+            
+            <br>
+            <h3>👶 Children's Privacy</h3>
+            <p>Our services are directed at educational institutions. For student users, we collect information only with parental consent or through the school administration. Parents have full access to their child's information.</p>
+            
+            <br>
+            <h3>📞 Contact Our Privacy Team</h3>
+            <p>For privacy concerns, data requests, or questions:</p>
+            <p><strong>Email:</strong> privacy@hermanaacademy.edu.et<br>
+            <strong>Phone:</strong> +251-XXX-XXXX<br>
+            <strong>Address:</strong> Bole Road, Addis Ababa, Ethiopia</p>
+            <p>We respond to all privacy inquiries within 48 hours.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Contact Us Modal - Long Detailed -->
+<div id="contactModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>📞 Contact Us</h2>
+            <button class="close-modal" onclick="closeModal('contactModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>We're here to help! Whether you have questions about registration, payments, technical issues, or general inquiries, our dedicated team is ready to assist you.</p>
+            
+            <div style="background: #f0f7ff; padding: 20px; border-radius: 15px; margin: 15px 0;">
+                <h3>🏫 Main Campus & Headquarters</h3>
+                <p><strong>Address:</strong> Bole Road, Olympia Area, Addis Ababa, Ethiopia</p>
+                <p><strong>Phone:</strong> +251-911-XXXXXX</p>
+                <p><strong>WhatsApp:</strong> +251-911-XXXXXX</p>
+                <p><strong>Email:</strong> info@hermanaacademy.edu.et</p>
+            </div>
+            
+            <div style="background: #f5f5f5; padding: 20px; border-radius: 15px; margin: 15px 0;">
+                <h3>📧 Department-Specific Contacts</h3>
+                <p><strong>📝 Admissions Office:</strong> admissions@hermanaacademy.edu.et<br>
+                <small>For registration, enrollment, and grade placement inquiries</small></p>
+                <p><strong>💰 Finance Department:</strong> finance@hermanaacademy.edu.et<br>
+                <small>For fee payments, receipt verification, and billing questions</small></p>
+                <p><strong>📚 Academic Affairs:</strong> academics@hermanaacademy.edu.et<br>
+                <small>For exam schedules, curriculum, and student progress</small></p>
+                <p><strong>👨‍🏫 HR & Teacher Relations:</strong> hr@hermanaacademy.edu.et<br>
+                <small>For teacher applications, employment, and staffing</small></p>
+                <p><strong>💻 Technical Support:</strong> support@hermanaacademy.edu.et<br>
+                <small>For website issues, login problems, and technical assistance</small></p>
+                <p><strong>👪 Parent Relations:</strong> parents@hermanaacademy.edu.et<br>
+                <small>For parent concerns, feedback, and school-home communication</small></p>
+            </div>
+            
+            <div style="background: #e8f5e9; padding: 20px; border-radius: 15px; margin: 15px 0;">
+                <h3>⏰ Office Hours</h3>
+                <p><strong>Monday - Thursday:</strong> 8:00 AM - 5:00 PM (Lunch break: 12:30 - 1:30 PM)</p>
+                <p><strong>Friday:</strong> 8:00 AM - 1:00 PM</p>
+                <p><strong>Saturday - Sunday:</strong> Closed</p>
+                <p><strong>📞 24/7 Emergency Helpline:</strong> +251-911-000000 (For urgent school matters only)</p>
+            </div>
+            
+            <div style="background: #fff3e0; padding: 20px; border-radius: 15px; margin: 15px 0;">
+                <h3>🌐 Connect With Us Online</h3>
+                <p><strong>Website:</strong> www.hermanaacademy.edu.et</p>
+                <p><strong>Facebook:</strong> @HermanaAcademy</p>
+                <p><strong>Telegram:</strong> t.me/HermanaAcademy</p>
+                <p><strong>Twitter/X:</strong> @HermanaAcademy</p>
+            </div>
+            
+            <p style="margin-top: 15px; text-align: center;">We look forward to serving you and your family at Hermana Academy! 🇪🇹</p>
+        </div>
+    </div>
+</div>
+
+<!-- Feedback Modal -->
+<div id="feedbackModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>💬 Share Your Feedback</h2>
+            <button class="close-modal" onclick="closeModal('feedbackModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="feedbackFormModal">
+                <div class="form-group"><label>Your Name *</label><input type="text" id="fbName" required></div>
+                <div class="form-group"><label>Email</label><input type="email" id="fbEmail"></div>
+                <div class="form-group"><label>Role</label><select id="fbRole"><option>Student</option><option>Parent</option><option>Teacher</option><option>Administrator</option></select></div>
+                <div class="form-group"><label>Rating</label><div class="star-rating" id="starRating"><span class="star" data-rating="1">★</span><span class="star" data-rating="2">★</span><span class="star" data-rating="3">★</span><span class="star" data-rating="4">★</span><span class="star" data-rating="5">★</span></div><input type="hidden" id="fbRating" value="5"></div>
+                <div class="form-group"><label>Your Message *</label><textarea rows="4" id="fbMessage" placeholder="Please share your experience, suggestions, or concerns. Your feedback helps us improve!" required></textarea></div>
+                <button type="button" onclick="submitFeedback()">Submit Feedback</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+    // ==================== CONFIGURATION ====================
+    const API_URL = 'https://hermana-acad.onrender.com/api';
+    let token = localStorage.getItem('token');
+    let currentUser = null;
+    let currentRating = 5;
+    let examTimer = null;
+    let timeLeft = 60;
+    let examActive = false;
+
+    // ==================== HELPER FUNCTIONS ====================
+    async function apiCall(endpoint, options = {}) {
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        try {
+            const res = await fetch(API_URL + endpoint, { ...options, headers });
+            if (res.status === 401) logout();
+            return res;
+        } catch (error) {
+            console.error('API Error:', error);
+            throw error;
+        }
+    }
+
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        if (tab === 'student') { document.querySelector('.tab-btn').classList.add('active'); document.getElementById('studentPanel').classList.add('active'); }
+        else if (tab === 'teacher') { document.querySelectorAll('.tab-btn')[1].classList.add('active'); document.getElementById('teacherPanel').classList.add('active'); }
+        else if (tab === 'finance') { document.querySelectorAll('.tab-btn')[2].classList.add('active'); document.getElementById('financePanel').classList.add('active'); }
+        else if (tab === 'board') { document.querySelectorAll('.tab-btn')[3].classList.add('active'); document.getElementById('boardPanel').classList.add('active'); }
+        else if (tab === 'director') { document.querySelectorAll('.tab-btn')[4].classList.add('active'); document.getElementById('directorPanel').classList.add('active'); }
+        else { document.querySelectorAll('.tab-btn')[5].classList.add('active'); document.getElementById('parentPanel').classList.add('active'); }
+    }
+
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    
+    function logout() { localStorage.clear(); location.reload(); }
+
+    // ==================== FEEDBACK ====================
+    async function submitFeedback() {
+        const name = document.getElementById('fbName')?.value;
+        const email = document.getElementById('fbEmail')?.value;
+        const role = document.getElementById('fbRole')?.value;
+        const rating = currentRating;
+        const message = document.getElementById('fbMessage')?.value;
+        
+        if (!name || !message) {
+            alert('Please fill name and message!');
+            return;
+        }
+        
+        try {
+            const res = await fetch(API_URL + '/feedback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, role, rating, message })
+            });
+            if (res.ok) {
+                alert('✅ Thank you for your valuable feedback! We appreciate your input.');
+                closeModal('feedbackModal');
+                document.getElementById('feedbackFormModal').reset();
+                currentRating = 5;
+                document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+                if(document.querySelector('.star[data-rating="5"]')) document.querySelector('.star[data-rating="5"]').classList.add('active');
+            } else { alert('Error submitting feedback'); }
+        } catch(err) { alert('Error submitting feedback'); }
+    }
+
+    // Star rating setup
+    document.querySelectorAll('.star').forEach(star => {
+        star.addEventListener('click', function() {
+            currentRating = parseInt(this.dataset.rating);
+            document.querySelectorAll('.star').forEach(s => {
+                if(parseInt(s.dataset.rating) <= currentRating) s.classList.add('active');
+                else s.classList.remove('active');
+            });
+            document.getElementById('fbRating').value = currentRating;
+        });
+    });
+
+    // ==================== STUDENT FUNCTIONS ====================
+    document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('fullName', document.getElementById('regName').value);
+        formData.append('ethiopianId', document.getElementById('regEthiopianId').value);
+        formData.append('email', document.getElementById('regEmail').value);
+        formData.append('grade', document.getElementById('regFromGrade').value);
+        formData.append('fromGrade', document.getElementById('regFromGrade').value);
+        formData.append('toGrade', document.getElementById('regToGrade').value);
+        formData.append('password', document.getElementById('regPassword').value || 'default');
+        const photo = document.getElementById('regPhoto').files[0];
+        if (photo) formData.append('idPhoto', photo);
+        
+        try {
+            const res = await fetch(API_URL + '/auth/register', { method: 'POST', body: formData });
+            const data = await res.json();
+            alert(res.ok ? '✅ Registration successful! Please login.' : '❌ Error: ' + data.error);
+        } catch(err) { alert('Connection error'); }
+    });
+
+    // Student Login
+    document.getElementById('studentLoginForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+            const res = await fetch(API_URL + '/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    identifier: document.getElementById('studentIdentifier').value,
+                    password: document.getElementById('studentPassword').value || 'default'
+                })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                token = data.token;
+                currentUser = data.user;
+                localStorage.setItem('token', token);
+                await loadStudentDashboard();
+            } else alert('Login failed: ' + data.error);
+        } catch(err) { alert('Cannot connect to server.'); }
+    });
+
+    // Teacher Login
+    document.getElementById('teacherLoginForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+            const res = await fetch(API_URL + '/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    identifier: document.getElementById('teacherLoginEmail').value,
+                    password: document.getElementById('teacherLoginPassword').value
+                })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                token = data.token;
+                currentUser = data.user;
+                localStorage.setItem('token', token);
+                await loadTeacherDashboard();
+            } else alert('Login failed: ' + data.error);
+        } catch(err) { alert('Cannot connect to server.'); }
+    });
+
+    // Finance Login
+    document.getElementById('financeLoginForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+            const res = await fetch(API_URL + '/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    identifier: document.getElementById('financeEmail').value,
+                    password: document.getElementById('financePassword').value
+                })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                token = data.token;
+                currentUser = data.user;
+                localStorage.setItem('token', token);
+                await loadFinanceDashboard();
+            } else alert('Login failed: ' + data.error);
+        } catch(err) { alert('Cannot connect to server.'); }
+    });
+
+    // Board Login
+    document.getElementById('boardLoginForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+            const res = await fetch(API_URL + '/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    identifier: document.getElementById('boardEmail').value,
+                    password: document.getElementById('boardPassword').value
+                })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                token = data.token;
+                currentUser = data.user;
+                localStorage.setItem('token', token);
+                await loadBoardDashboard();
+            } else alert('Login failed: ' + data.error);
+        } catch(err) { alert('Cannot connect to server.'); }
+    });
+
+    // Director Login
+    document.getElementById('directorLoginForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+            const res = await fetch(API_URL + '/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    identifier: document.getElementById('directorEmail').value,
+                    password: document.getElementById('directorPassword').value
+                })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                token = data.token;
+                currentUser = data.user;
+                localStorage.setItem('token', token);
+                await loadDirectorDashboard();
+            } else alert('Login failed: ' + data.error);
+        } catch(err) { alert('Cannot connect to server.'); }
+    });
+
+    // Parent Login
+    document.getElementById('parentLoginForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+            const res = await fetch(API_URL + '/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    identifier: document.getElementById('parentIdentifier').value,
+                    password: document.getElementById('parentPassword').value || 'default'
+                })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                token = data.token;
+                currentUser = data.user;
+                localStorage.setItem('token', token);
+                await loadParentDashboard();
+            } else alert('Login failed: ' + data.error);
+        } catch(err) { alert('Cannot connect to server.'); }
+    });
+
+    // Teacher Registration
+    document.getElementById('teacherRegisterForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('fullName', document.getElementById('teacherName').value);
+        formData.append('email', document.getElementById('teacherEmail').value);
+        formData.append('password', document.getElementById('teacherPassword').value);
+        formData.append('phone', document.getElementById('teacherPhone').value);
+        formData.append('teachingGrades', Array.from(document.getElementById('teacherGrades').selectedOptions).map(opt => opt.value).join(','));
+        formData.append('reason', document.getElementById('teacherReason').value);
+        const doc = document.getElementById('teacherDoc').files[0];
+        if (doc) formData.append('educationDoc', doc);
+        
+        try {
+            const res = await fetch(API_URL + '/auth/register-teacher', { method: 'POST', body: formData });
+            const data = await res.json();
+            alert(res.ok ? '✅ Application submitted! Board will review it.' : '❌ Error: ' + data.error);
+        } catch(err) { alert('Connection error'); }
+    });
+
+    function startTimedExam(studentId, questions) {
+        examActive = true;
+        timeLeft = 60;
+        const examHTML = `<div id="examContainer" style="position:fixed;top:0;left:0;width:100%;height:100%;background:white;z-index:10001;overflow-y:auto;padding:30px;"><div style="max-width:800px;margin:0 auto;"><div class="timer-container"><div class="timer-clock" id="examTimer">01:00</div><div class="timer-warning">⚠️ Time remaining - Auto-submit at zero! ⚠️</div></div><form id="timedExamForm">${questions.map((q, i) => `<div style="margin-bottom:30px;padding:20px;background:#f8f9fa;border-radius:15px;"><h4>Question ${i+1}: ${q.text}</h4><div>${q.options.map((opt, oi) => `<label style="display:block;margin:10px 0;"><input type="radio" name="q${i}" value="${oi}" required> ${opt}</label>`).join('')}</div></div>`).join('')}<button type="submit" style="width:100%;padding:15px;">Submit Exam</button></form></div></div>`;
+        document.body.insertAdjacentHTML('beforeend', examHTML);
+        
+        const timerElement = document.getElementById('examTimer');
+        const timerInterval = setInterval(() => {
+            if (!examActive) { clearInterval(timerInterval); return; }
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+            if (timeLeft <= 10) timerElement.style.color = '#ff6b6b';
+            if (timeLeft <= 0) { clearInterval(timerInterval); document.getElementById('timedExamForm').dispatchEvent(new Event('submit')); }
+        }, 1000);
+        
+        document.getElementById('timedExamForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearInterval(timerInterval);
+            examActive = false;
+            const answers = [];
+            for (let i = 0; i < questions.length; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                answers.push(selected ? parseInt(selected.value) : -1);
+            }
+            try {
+                const res = await apiCall('/exam/submit', { method: 'POST', body: JSON.stringify({ studentId, answers, timeSpent: 60 - timeLeft, violations: 0 }) });
+                const result = await res.json();
+                alert(`Exam completed!\nScore: ${result.score}/${result.total} (${result.percentage}%)\n${result.passed ? '✅ Passed! Student ID generated.' : '❌ Failed! Retake exam.'}`);
+                document.getElementById('examContainer').remove();
+                loadStudentDashboard();
+            } catch(err) { alert('Error submitting exam'); }
+        });
+    }
+
+    async function loadStudentDashboard() {
+        document.getElementById('studentAuth').style.display = 'none';
+        const dashboard = document.getElementById('studentDashboard');
+        dashboard.style.display = 'block';
+        
+        try {
+            const studentRes = await apiCall(`/students/${currentUser.id}`);
+            const student = await studentRes.json();
+            const examRes = await apiCall(`/exam/${currentUser.id}`);
+            const exam = await examRes.json();
+            const payRes = await apiCall(`/payments/student/${currentUser.id}`);
+            const payments = await payRes.json();
+            
+            let examHtml = '';
+            if (!student.examCompleted) {
+                examHtml = `<div class="card"><h3>⏰ Timed Ability Exam (${student.grade} Level)</h3><div class="timer-container"><div class="timer-clock">01:00</div><div class="timer-warning">You have 1 minute to complete the exam</div></div><button onclick="startTimedExam(${currentUser.id}, ${JSON.stringify(exam.questions).replace(/"/g, '&quot;')})" class="btn-success">⏰ Start Timed Exam →</button></div>`;
+            }
+            
+            const examPassed = student.examPercent >= 50;
+            dashboard.innerHTML = `
+                <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px"><div><h2>Welcome, ${student.fullName}!</h2><p>Ethiopian ID: ${student.ethiopianId} | Grade: ${student.grade}</p><button onclick="logout()" style="background:white;color:#667eea;">Logout</button></div></div>
+                ${student.studentIdNumber ? `<div class="card" style="background:linear-gradient(135deg,#48bb78,#38a169);color:white"><h3>🎓 Your Student ID Number</h3><p style="font-size:24px;font-weight:bold">${student.studentIdNumber}</p></div>` : ''}
+                <div class="id-card-container"><div class="id-card"><div class="id-card-ethiopia"></div><div class="id-logo"><div class="id-logo-left"><img src="logo.png" onerror="this.src='https://via.placeholder.com/60'"><small>Hermana Academy</small></div><div class="id-logo-center"><h3>የኸርማና አካዳሚ</h3><p>STUDENT ID CARD</p></div><div class="id-logo-right"><div class="flag-icon">🇪🇹</div></div></div><div class="id-photo"><img class="id-photo-img" src="${student.idPhotoUrl || 'https://via.placeholder.com/140'}" alt="Photo"></div><div class="id-details"><div class="id-row"><span class="id-label">Name:</span><span class="id-value">${student.fullName}</span></div><div class="id-row"><span class="id-label">Student ID:</span><span class="id-value">${student.studentIdNumber || 'Not Issued'}</span></div><div class="id-row"><span class="id-label">Ethiopian ID:</span><span class="id-value">${student.ethiopianId}</span></div><div class="id-row"><span class="id-label">Grade:</span><span class="id-value">${student.grade}</span></div></div><div class="id-footer">www.hermanaacademy.edu.et</div></div></div>
+                ${examHtml}
+                ${student.examCompleted ? `<div class="card"><h3>📊 Exam Result</h3><p>Score: ${student.examPercent}%</p><span class="badge ${examPassed ? 'badge-passed' : 'badge-failed'}">${examPassed ? 'PASSED' : 'FAILED'}</span></div>` : ''}
+                ${examPassed ? `<div class="card"><h3>💰 Fee Payments</h3><div style="overflow-x:auto"><table><thead><tr><th>Package</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody>
+                    <tr><td>Registration Fee</td><td>1000 ETB</td><td class="${payments.paymentStatus?.registration ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.registration ? 'Paid' : 'Unpaid'}</td><td>${!payments.paymentStatus?.registration ? `<button onclick="showPaymentModal('registration',1000)">Pay Now</button>` : '✅'}</td></tr>
+                    <tr><td>Term 1 + Bus</td><td>3500 ETB</td><td class="${payments.paymentStatus?.term1Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term1Bus ? 'Paid' : 'Unpaid'}</td><td>${!payments.paymentStatus?.term1Bus ? `<button onclick="showPaymentModal('term1Bus',3500)">Pay Now</button>` : '✅'}</td></tr>
+                    <tr><td>Term 2 + Bus</td><td>3500 ETB</td><td class="${payments.paymentStatus?.term2Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term2Bus ? 'Paid' : 'Unpaid'}</td><td>${!payments.paymentStatus?.term2Bus ? `<button onclick="showPaymentModal('term2Bus',3500)">Pay Now</button>` : '✅'}</td></tr>
+                    <tr><td>Term 3 + Bus</td><td>3500 ETB</td><td class="${payments.paymentStatus?.term3Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term3Bus ? 'Paid' : 'Unpaid'}</td><td>${!payments.paymentStatus?.term3Bus ? `<button onclick="showPaymentModal('term3Bus',3500)">Pay Now</button>` : '✅'}</td></tr>
+                </tbody></div></div>` : '<div class="card"><h3>⚠️ Payment Unavailable</h3><p>You must pass the exam (50%+) to access payments.</p></div>'}
+                <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 My Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>
+            `;
+        } catch(err) { console.error(err); }
+    }
+
+    window.showPaymentModal = (type, amount) => {
+        const modalHtml = `<div id="paymentModal" class="modal" style="display:flex"><div class="modal-content"><div class="modal-header"><h2>💰 Pay ${amount} ETB for ${type}</h2><button class="close-modal" onclick="closePaymentModal()">&times;</button></div><div class="modal-body"><form id="paymentForm" enctype="multipart/form-data"><div class="form-group"><label>Upload Payment Receipt *</label><input type="file" id="receiptImage" accept="image/*" required></div><div class="form-group"><label>Notes</label><textarea id="paymentNotes" rows="2"></textarea></div><button type="submit">Submit Receipt for Verification</button></form></div></div></div>`;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        
+        document.getElementById('paymentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('studentId', currentUser.id);
+            formData.append('paymentType', type);
+            formData.append('amount', amount);
+            formData.append('notes', document.getElementById('paymentNotes').value);
+            const receipt = document.getElementById('receiptImage').files[0];
+            if (receipt) formData.append('receiptImage', receipt);
+            
+            try {
+                const res = await fetch(API_URL + '/payment/submit-receipt', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+                const data = await res.json();
+                alert(res.ok ? '✅ Receipt submitted! Finance will verify it.' : 'Error: ' + data.error);
+                closePaymentModal();
+                loadStudentDashboard();
+            } catch(err) { alert('Error submitting receipt'); }
+        });
+    };
+    
+    window.closePaymentModal = () => {
+        const modal = document.getElementById('paymentModal');
+        if (modal) modal.remove();
+    };
+
+    async function loadTeacherDashboard() {
+        document.getElementById('teacherAuth').style.display = 'none';
+        const dashboard = document.getElementById('teacherDashboard');
+        dashboard.style.display = 'block';
+        try {
+            const res = await apiCall(`/teachers/${currentUser.id}`);
+            const teacher = await res.json();
+            dashboard.innerHTML = `
+                <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px"><div><h2>👨‍🏫 Welcome, ${teacher.fullName}!</h2><p>Status: <span class="badge ${teacher.teacherStatus === 'approved' ? 'badge-approved' : (teacher.teacherStatus === 'rejected' ? 'badge-rejected' : 'badge-pending')}">${teacher.teacherStatus}</span></p><button onclick="logout()" style="background:white;color:#667eea;">Logout</button></div></div>
+                <div class="card"><h3>📚 Your Information</h3><p><strong>Email:</strong> ${teacher.email}</p><p><strong>Phone:</strong> ${teacher.phone}</p><p><strong>Teaching Grades:</strong> ${teacher.teachingGrades?.join(', ') || 'N/A'}</p></div>
+                <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 My Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>
+            `;
+        } catch(err) { console.error(err); }
+    }
+
+    async function loadFinanceDashboard() {
+        document.getElementById('financeAuth').style.display = 'none';
+        const dashboard = document.getElementById('financeDashboard');
+        dashboard.style.display = 'block';
+        try {
+            const pendingRes = await apiCall('/finance/pending-receipts');
+            const pendingReceipts = await pendingRes.json();
+            const summaryRes = await apiCall('/finance/summary');
+            const summary = await summaryRes.json();
+            
+            dashboard.innerHTML = `
+                <div style="background:linear-gradient(135deg,#28a745,#20c997);color:white;padding:20px;border-radius:15px;margin-bottom:20px"><div><h2>💰 Finance Dashboard</h2><p>Welcome, ${currentUser.name}</p><button onclick="logout()" style="background:white;color:#28a745;">Logout</button></div></div>
+                <div class="grid-2"><div class="card"><h3>📊 Summary</h3><p><strong>Total Verified Payments:</strong> ${summary.totalAmount || 0} ETB</p><p><strong>Pending Receipts:</strong> ${summary.pendingCount || 0}</p><p><strong>Pending Amount:</strong> ${summary.pendingAmount || 0} ETB</p></div><div class="card"><h3>💰 Payments by Type</h3>${summary.paymentsByType?.map(p => `<p>${p.paymentType}: ${p.total} ETB (${p.count} payments)</p>`).join('') || '<p>No data</p>'}</div></div>
+                <div class="card"><h3>📋 Pending Receipts for Verification</h3>${pendingReceipts.length === 0 ? '<p>No pending receipts</p>' : pendingReceipts.map(r => `<div class="receipt-item"><div><strong>${r.studentName}</strong><br>${r.paymentType} - ${r.amount} ETB<br><small>${new Date(r.paymentDate).toLocaleDateString()}</small></div><div><button onclick="verifyReceipt(${r.id})" class="btn-small btn-success">✅ Verify</button> <button onclick="rejectReceipt(${r.id})" class="btn-small btn-danger">❌ Reject</button></div></div>`).join('')}</div>
+                <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 My Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>
+            `;
+        } catch(err) { console.error(err); }
+    }
+
+    window.verifyReceipt = async (receiptId) => {
+        const res = await apiCall(`/finance/verify-receipt/${receiptId}`, { method: 'POST' });
+        if (res.ok) { alert('Receipt verified!'); loadFinanceDashboard(); }
+        else alert('Error verifying receipt');
+    };
+    
+    window.rejectReceipt = async (receiptId) => {
+        const reason = prompt('Reason for rejection:');
+        const res = await apiCall(`/finance/reject-receipt/${receiptId}`, { method: 'POST', body: JSON.stringify({ reason }) });
+        if (res.ok) { alert('Receipt rejected'); loadFinanceDashboard(); }
+        else alert('Error rejecting receipt');
+    };
+
+    async function loadBoardDashboard() {
+        document.getElementById('boardAuth').style.display = 'none';
+        const dashboard = document.getElementById('boardDashboard');
+        dashboard.style.display = 'block';
+        try {
+            const pendingRes = await apiCall('/board/pending-teachers');
+            const pendingTeachers = await pendingRes.json();
+            const statsRes = await apiCall('/board/statistics');
+            const stats = await statsRes.json();
+            
+            dashboard.innerHTML = `
+                <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px"><div><h2>🎯 Board Dashboard</h2><p>Welcome, Board Member</p><button onclick="logout()" style="background:white;color:#667eea;">Logout</button></div></div>
+                <div class="grid-2"><div class="card"><h3>📊 Statistics</h3><p><strong>Total Students:</strong> ${stats.totalStudents}</p><p><strong>Total Teachers:</strong> ${stats.totalTeachers}</p><p><strong>Total Fees Collected:</strong> ${stats.totalFeesCollected} ETB</p><p><strong>Pending Applications:</strong> ${stats.pendingTeachers}</p></div></div>
+                <div class="card"><h3>📝 Pending Teacher Applications</h3>${pendingTeachers.length === 0 ? '<p>No pending applications</p>' : pendingTeachers.map(t => `<div class="receipt-item"><div><strong>${t.fullName}</strong><br>${t.email} | ${t.phone}<br>Grades: ${t.teachingGrades?.join(', ')}</div><div><button onclick="reviewTeacher(${t.id}, 'approved')" class="btn-small btn-success">✅ Approve</button> <button onclick="reviewTeacher(${t.id}, 'rejected')" class="btn-small btn-danger">❌ Reject</button></div></div>`).join('')}</div>
+                <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 My Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>
+            `;
+        } catch(err) { console.error(err); }
+    }
+
+    window.reviewTeacher = async (teacherId, status) => {
+        const res = await apiCall(`/board/review-teacher/${teacherId}`, { method: 'POST', body: JSON.stringify({ status }) });
+        if (res.ok) { alert(`Teacher ${status}!`); loadBoardDashboard(); }
+        else alert('Error');
+    };
+
+    async function loadDirectorDashboard() {
+        document.getElementById('directorAuth').style.display = 'none';
+        const dashboard = document.getElementById('directorDashboard');
+        dashboard.style.display = 'block';
+        try {
+            const studentsRes = await apiCall('/director/students');
+            const students = await studentsRes.json();
+            const teachersRes = await apiCall('/director/teachers');
+            const teachers = await teachersRes.json();
+            
+            dashboard.innerHTML = `
+                <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px"><div><h2>📊 Director Dashboard</h2><p>Total Students: ${students.length} | Teachers: ${teachers.length}</p><button onclick="logout()" style="background:white;color:#667eea;">Logout</button></div></div>
+                <div class="card"><h3>📋 All Students</h3><div class="student-table"><table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Grade</th><th>Student ID</th><th>Exam %</th><th>Payment Status</th></tr></thead><tbody>
+                ${students.map(s => `<tr><td>${s.fullName}</td><td>${s.ethiopianId}</td><td>${s.grade}</td><td>${s.studentIdNumber || 'Not issued'}</td><td>${s.examPercent}%</td><td><span class="badge ${s.paymentStatus?.registration ? 'badge-paid' : 'badge-unpaid'}">${s.paymentStatus?.registration ? 'Paid' : 'Unpaid'}</span></td></tr>`).join('')}
+                </tbody></div></div>
+                <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 My Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>
+            `;
+        } catch(err) { console.error(err); }
+    }
+
+    async function loadParentDashboard() {
+        document.getElementById('parentAuth').style.display = 'none';
+        const dashboard = document.getElementById('parentDashboard');
+        dashboard.style.display = 'block';
+        try {
+            const studentRes = await apiCall(`/parent/student/${currentUser.id}`);
+            const student = await studentRes.json();
+            const updatesRes = await apiCall('/parent/updates');
+            const updates = await updatesRes.json();
+            
+            dashboard.innerHTML = `
+                <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px"><div><h2>👪 Parent Hub</h2><p>Viewing: ${student.fullName}</p><button onclick="logout()" style="background:white;color:#667eea;">Logout</button></div></div>
+                <div class="card"><h3>📊 Student Information</h3><p><strong>Name:</strong> ${student.fullName}</p><p><strong>Student ID:</strong> ${student.studentIdNumber || 'Not issued'}</p><p><strong>Grade:</strong> ${student.grade}</p><p><strong>Exam Score:</strong> ${student.examPercent}%</p></div>
+                <div class="card"><h3>📢 School Updates</h3>${updates.slice(0,5).map(u => `<div style="padding:10px; border-bottom:1px solid #ddd;"><strong>${u.title}</strong><br><small>${new Date(u.createdAt).toLocaleDateString()}</small><p>${u.description}</p></div>`).join('')}</div>
+                <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 My Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>
+            `;
+        } catch(err) { console.error(err); }
+    }
+
+    // Auto login check
+    if (token) {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        currentUser = { id: payload.id, role: payload.role, name: payload.name };
+        if (currentUser.role === 'student') loadStudentDashboard();
+        else if (currentUser.role === 'teacher') loadTeacherDashboard();
+        else if (currentUser.role === 'finance') loadFinanceDashboard();
+        else if (currentUser.role === 'board') loadBoardDashboard();
+        else if (currentUser.role === 'director') loadDirectorDashboard();
+    }
+
+    window.switchTab = switchTab;
+    window.openModal = openModal;
+    window.closeModal = closeModal;
+    window.submitFeedback = submitFeedback;
+    window.startTimedExam = startTimedExam;
+    window.verifyReceipt = verifyReceipt;
+    window.rejectReceipt = rejectReceipt;
+    window.reviewTeacher = reviewTeacher;
+</script>
+
+<div class="creator-credit">
+    Created with <span>❤️</span> by <span>Muhammad Ilyas</span> | Hermana Academy Management System
+</div>
+</body>
+            </html>
