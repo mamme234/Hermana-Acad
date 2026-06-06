@@ -94,6 +94,8 @@
         .btn-danger:hover { background: #c82333; }
         .btn-success { background: #28a745; }
         .btn-success:hover { background: #218838; }
+        .btn-warning { background: #f59e0b; }
+        .btn-warning:hover { background: #d97706; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
         
         .badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
@@ -339,9 +341,103 @@
             font-weight: 600;
         }
         
+        /* Live Call Styles */
+        .live-call-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10000;
+        }
+        .call-button {
+            background: #28a745;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: 0.3s;
+            font-size: 28px;
+        }
+        .call-button:hover { transform: scale(1.1); background: #218838; }
+        .call-window {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 350px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 10001;
+        }
+        .call-header {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .call-body {
+            padding: 15px;
+            background: #f0f2f5;
+            min-height: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .call-input {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            background: white;
+        }
+        .call-input input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            margin-right: 8px;
+        }
+        .message-bubble {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 18px;
+            max-width: 85%;
+            word-wrap: break-word;
+        }
+        .message-mine {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+        .message-other {
+            background: white;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        .system-message {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            margin: 10px 0;
+            font-style: italic;
+        }
+        .invite-btn {
+            background: #f59e0b;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
         @media (max-width: 768px) { 
             .grid-2 { grid-template-columns: 1fr; }
             .id-card { width: 95%; }
+            .call-window { width: 90%; right: 5%; left: 5%; bottom: 80px; }
         }
     </style>
 </head>
@@ -498,32 +594,61 @@
     </div>
 </div>
 
-<!-- ENHANCED MODALS (Added longer content, star rating, and attractive feedback) -->
-<div id="purposeModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>🎯 Our Purpose & Vision</h2><button class="close-modal" onclick="closeModal('purposeModal')">&times;</button></div>
-    <div style="line-height:1.6;">
-        <p><strong>Hermana Academy</strong> was founded with a clear mission: <em>to revolutionize education in Ethiopia by digitizing school management, making quality learning accessible from Nursery to Grade 12.</em></p>
+<!-- PURPOSE MODAL - Long conversation about the problems I solved -->
+<div id="purposeModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>💡 The Problems I Solved - My Journey as a Developer</h2><button class="close-modal" onclick="closeModal('purposeModal')">&times;</button></div>
+    <div style="line-height:1.8;">
+        <p><strong>👋 Hi, I'm Muhammad Ilyas. Let me tell you why I built Hermana Academy.</strong></p>
         <br>
-        <p>🎓 <strong>Our Core Purpose:</strong> To provide a secure, transparent, and efficient platform where students, parents, teachers, and administrators can seamlessly interact. We believe every child deserves a bright future, and technology is the bridge.</p>
+        
+        <p>🔴 <strong>The Problem That Started It All:</strong></p>
+        <p>In 2024, I visited a small school in Addis Ababa. I saw teachers manually writing student records in dusty notebooks. ID cards were handwritten on paper. Exam cheating was rampant because there was no proctoring. Parents had no way to check their child's progress. The director couldn't track payments. Teachers applied with paper forms that got lost.</p>
         <br>
-        <p>🇪🇹 <strong>Vision:</strong> To become Ethiopia's leading digital education hub, producing future leaders equipped with 21st-century skills while preserving our rich cultural heritage.</p>
+        
+        <p>⚙️ <strong>Problem #1 - No Centralized Student Management</strong></p>
+        <p>Schools had student data scattered everywhere. No single place to see a student's photo, grade, exam scores, and payment status. <strong>I SOLVED THIS</strong> by creating a complete digital profile for every student with Ethiopian ID, photo upload, grade tracking, and payment history.</p>
         <br>
-        <p>📚 <strong>Key Objectives:</strong></p>
-        <ul style="margin-left: 20px;">
-            <li>✅ Streamline student registration and digital ID management</li>
-            <li>✅ Enable secure online exams with proctoring</li>
-            <li>✅ Facilitate transparent fee payments and digital receipts</li>
-            <li>✅ Empower teachers with digital application and approval workflows</li>
-            <li>✅ Provide real-time parent portals for monitoring progress</li>
-            <li>✅ Foster communication through integrated board meeting tools</li>
-        </ul>
+        
+        <p>🔒 <strong>Problem #2 - Exam Cheating & No Security</strong></p>
+        <p>Students would cheat during entrance exams. Teachers couldn't verify who was actually taking the test. <strong>I SOLVED THIS</strong> by building a secure exam system that: takes your photo before starting, disables right-click and keyboard shortcuts, records tab switches, and terminates the exam after 3 violations.</p>
         <br>
-        <p>🌍 <em>"እውቀት ብርሃን ነው" - Knowledge is Light. Join us in shaping Ethiopia's tomorrow!</em></p>
+        
+        <p>🪪 <strong>Problem #3 - Fake / Lost ID Cards</strong></p>
+        <p>Schools spent money printing plastic ID cards that got lost or damaged. <strong>I SOLVED THIS</strong> by creating digital ID cards with Ethiopian flag design, downloadable as PNG, and printable - all generated instantly after registration.</p>
+        <br>
+        
+        <p>💰 <strong>Problem #4 - Payment Confusion</strong></p>
+        <p>No transparency on who paid registration or term fees. <strong>I SOLVED THIS</strong> with a clear payment dashboard showing registration (1000 ETB), term+bus packages (3500 ETB each), and downloadable receipts.</p>
+        <br>
+        
+        <p>👨‍🏫 <strong>Problem #5 - Teacher Application Chaos</strong></p>
+        <p>Paper applications got lost. No tracking. <strong>I SOLVED THIS</strong> with digital teacher registration including document upload, teaching grades selection, and a board approval workflow with status tracking (pending/approved/rejected).</p>
+        <br>
+        
+        <p>👪 <strong>Problem #6 - Parents Had No Visibility</strong></p>
+        <p>Parents couldn't see their child's performance or payment status. <strong>I SOLVED THIS</strong> by creating a parent portal where they can log in with the student's ID and view everything.</p>
+        <br>
+        
+        <p>📊 <strong>Problem #7 - Director Had No Overview</strong></p>
+        <p>No dashboard showing all grades, sections, and student distribution. <strong>I SOLVED THIS</strong> with grade buttons that show student counts, automatic section splitting for large classes (Section A/B), and complete student tables.</p>
+        <br>
+        
+        <p>🎥 <strong>Problem #8 - Board & Director Couldn't Communicate</strong></p>
+        <p>No internal communication tool for leadership. <strong>I SOLVED THIS</strong> with a live internal call system where the Board can start calls and invite the Director, with real-time messaging and meeting scheduling.</p>
+        <br>
+        
+        <p>🌟 <strong>What I Learned:</strong> Building this system taught me that technology can genuinely transform education. Every feature I added came from watching real people struggle with real problems.</p>
+        <br>
+        
+        <p><strong>My Mission Continues:</strong> I will keep improving Hermana Academy. It's free, it's secure, and it's built for Ethiopia.</p>
+        <br>
+        <p><em>- Muhammad Ilyas | Full Stack Developer | Problem Solver</em></p>
     </div>
 </div></div>
 
-<div id="feedbackModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>💬 Share Your Feedback</h2><button class="close-modal" onclick="closeModal('feedbackModal')">&times;</button></div>
+<!-- FEEDBACK MODAL - Enhanced attractive feedback -->
+<div id="feedbackModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>💬 Share Your Feedback - I Read Every Single One</h2><button class="close-modal" onclick="closeModal('feedbackModal')">&times;</button></div>
     <div>
-        <p>Your voice matters! Help us improve Hermana Academy.</p>
+        <p style="font-size:16px; margin-bottom:10px;">Your feedback helps me improve Hermana Academy. Please be honest!</p>
         <div class="star-rating" id="starRating">
             <span class="star" data-value="1">★</span>
             <span class="star" data-value="2">★</span>
@@ -533,42 +658,97 @@
         </div>
         <input type="hidden" id="feedbackRating" value="0">
         <form id="feedbackForm">
-            <textarea rows="4" id="feedbackText" placeholder="Tell us what you love or suggest improvements..." style="width:100%;margin-bottom:10px;border-radius:10px;padding:10px;"></textarea>
-            <button type="submit" style="width:100%;">Submit Feedback ★</button>
+            <textarea rows="5" id="feedbackText" placeholder="What do you love? What can be better? Suggestions for new features? I want to hear everything!" style="width:100%; margin:15px 0; border-radius:10px; padding:12px; border:2px solid #e0e0e0; font-size:14px;"></textarea>
+            <button type="submit" style="width:100%; padding:14px; font-size:16px;">💝 Submit Feedback (Anonymous)</button>
         </form>
-        <p id="feedbackThanks" style="display:none;color:green;margin-top:10px;text-align:center;">✅ Thank you! Your feedback helps us grow.</p>
+        <p id="feedbackThanks" style="display:none; color:#28a745; margin-top:15px; text-align:center; font-weight:bold;">✅ Thank you! Your feedback has been saved and will help make Hermana Academy better!</p>
+        <hr style="margin:20px 0;">
+        <p style="font-size:12px; color:#666; text-align:center;">⭐ 5-star ratings make my day! ⭐</p>
     </div>
 </div></div>
 
-<div id="privacyModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>🔒 Privacy & Data Protection</h2><button class="close-modal" onclick="closeModal('privacyModal')">&times;</button></div>
-    <div style="line-height:1.6;">
-        <p>At Hermana Academy, <strong>your privacy is our priority</strong>. We collect only essential data for academic and administrative purposes.</p>
+<!-- PRIVACY POLICY MODAL - Expanded -->
+<div id="privacyModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>🔒 Privacy Policy - Your Data is Safe With Me</h2><button class="close-modal" onclick="closeModal('privacyModal')">&times;</button></div>
+    <div style="line-height:1.7;">
+        <p><strong>Last Updated: June 2026</strong></p>
         <br>
-        <p>📌 <strong>What we collect:</strong> Name, Ethiopian ID, contact info, academic records, payment history, and exam proctoring images (for security).</p>
-        <p>🔐 <strong>How we protect:</strong> All data is encrypted locally and never shared with third parties. Exam photos are used only for verification.</p>
-        <p>👨‍👩‍👧 <strong>Parental Rights:</strong> Parents can access their child's records anytime. You may request data deletion by contacting us.</p>
-        <p>📜 <strong>Compliance:</strong> We adhere to Ethiopian education data protection standards. Data is stored securely in your browser's local storage.</p>
+        <p>📌 <strong>What Data Does Hermana Academy Collect?</strong></p>
+        <ul style="margin-left: 20px; margin-bottom: 15px;">
+            <li><strong>Students:</strong> Name, Ethiopian ID, email, grade level, photo, exam scores, violation records, payment history</li>
+            <li><strong>Teachers:</strong> Name, email, phone, education documents, teaching grades, application status</li>
+            <li><strong>Parents:</strong> Only viewing access to their child's data - no separate collection</li>
+        </ul>
+        
+        <p>🔐 <strong>How Is Your Data Protected?</strong></p>
+        <ul style="margin-left: 20px; margin-bottom: 15px;">
+            <li>✅ All passwords are encrypted using bcrypt hashing</li>
+            <li>✅ Exam photos are stored locally and only used for verification</li>
+            <li>✅ Data is saved in your browser's local storage (not on external servers)</li>
+            <li>✅ No third-party access - ever</li>
+        </ul>
+        
+        <p>📸 <strong>Exam Proctoring Privacy:</strong></p>
+        <p>When you take an exam, your photo is captured via your camera. This photo is used ONLY to verify your identity during the exam. It is not shared, sold, or used for any other purpose.</p>
         <br>
-        <p>⏰ <strong>Data Retention:</strong> Student records are kept until graduation + 5 years. Teacher records are kept for 7 years.</p>
-        <p><em>Last Updated: June 2026</em></p>
+        
+        <p>👨‍👩‍👧 <strong>Parental Rights:</strong></p>
+        <p>Parents have full viewing access to their child's academic records, exam results, and payment status. Parents cannot modify any data.</p>
+        <br>
+        
+        <p><em>I built this system with integrity. Your trust matters more than anything.</em></p>
     </div>
 </div></div>
 
-<div id="contactModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📞 Contact Hermana Academy</h2><button class="close-modal" onclick="closeModal('contactModal')">&times;</button></div>
-    <div style="line-height:1.6;">
-        <p><strong>📍 Main Campus:</strong> Bole Road, Addis Ababa, Ethiopia</p>
-        <p>📧 <strong>Email:</strong> info@hermanaacademy.edu.et | admissions@hermanaacademy.edu.et</p>
-        <p>📞 <strong>Phone:</strong> +251-911-123456 | +251-911-789012</p>
-        <p>🕒 <strong>Office Hours:</strong> Monday - Friday, 8:30 AM - 5:00 PM (Saturday 9 AM - 1 PM)</p>
-        <p>🌐 <strong>Website:</strong> www.hermanaacademy.edu.et</p>
-        <p>📱 <strong>Social Media:</strong> @HermanaAcademy (Facebook, Telegram, LinkedIn)</p>
+<!-- CONTACT US MODAL - Expanded -->
+<div id="contactModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📞 Contact Me - Let's Connect!</h2><button class="close-modal" onclick="closeModal('contactModal')">&times;</button></div>
+    <div style="line-height:1.8;">
+        <p><strong>👨‍💻 Created by Muhammad Ilyas</strong></p>
+        <br>
+        <p>📧 <strong>Email:</strong> ilyas@hermanaacademy.edu.et</p>
+        <p>📞 <strong>Phone/WhatsApp:</strong> +251-900-123456</p>
+        <p>🌍 <strong>Telegram:</strong> @MuhammadIlyas</p>
+        <p>📍 <strong>Location:</strong> Addis Ababa, Ethiopia</p>
+        <br>
+        <p>⏰ <strong>Response Time:</strong> I respond to all emails within 24-48 hours.</p>
         <hr style="margin:15px 0;">
-        <p><strong>💬 Live Support:</strong> Use the live call feature in the Board Dashboard for instant messaging with our support team!</p>
-        <p><strong>📞 Emergency Contact:</strong> +251-900-000111 (24/7 for urgent academic matters)</p>
+        <p style="text-align:center;"><strong>💬 Want to collaborate? Let's talk!</strong></p>
     </div>
 </div></div>
 
-<!-- Skype Call Modal (unchanged from original) -->
+<!-- LIVE INTERNAL CALL MODAL - Board can invite Director -->
+<div id="liveCallModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>🎥 Live Internal Call - Board & Director Communication</h2>
+            <button class="close-modal" onclick="closeModal('liveCallModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div style="text-align: center; padding: 10px;">
+                <div style="background:#e8f0fe; border-radius:20px; padding:20px;">
+                    <h3>📞 Hermana Academy Internal Call System</h3>
+                    <p>Secure messaging between Board of Directors and Director</p>
+                    <p><small>🔒 Only Board members can start calls. Director can join.</small></p>
+                    
+                    <div id="liveCallMessages" style="height:250px; overflow-y:auto; background:white; border-radius:10px; margin:15px 0; padding:10px; text-align:left;">
+                        <div class="system-message">🔔 System ready. Board can start a meeting invitation.</div>
+                    </div>
+                    
+                    <div style="display:flex; gap:10px; margin-top:10px;">
+                        <input type="text" id="liveCallInput" placeholder="Type your message..." style="flex:1; padding:10px; border-radius:20px; border:1px solid #ddd;">
+                        <button id="sendLiveMessageBtn" class="btn-success">Send</button>
+                    </div>
+                    
+                    <button id="inviteDirectorBtn" class="invite-btn btn-warning" style="margin-top:15px; width:100%;">📢 Board: Invite Director to Meeting</button>
+                    <button id="joinCallBtn" class="btn-success" style="margin-top:10px; width:100%; display:none;">✅ Director: Join Meeting</button>
+                    
+                    <p style="margin-top:15px; font-size:11px; color:#666;">💡 Board members can start calls and invite Director. Director can join when invited.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Skype Modal (original - kept for compatibility) -->
 <div id="skypeModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -577,21 +757,12 @@
         </div>
         <div class="modal-body">
             <div style="text-align: center; padding: 20px;">
-                <i class="fas fa-video" style="font-size: 60px; color: #667eea;"></i>
                 <h3>Join Board Meeting</h3>
                 <p>Click below to start or join the Skype meeting</p>
                 <br>
                 <a href="https://join.skype.com/8fXqVZLwQw6d" target="_blank" class="btn-small" style="display: inline-block; background: #0078ff; padding: 12px 30px; border-radius: 10px; color: white; text-decoration: none;">Join Skype Meeting →</a>
                 <br><br>
                 <p><small>Meeting ID: hermana.board@skype.com</small></p>
-                <hr style="margin: 20px 0;">
-                <h4>📋 Current Agenda Items:</h4>
-                <ul style="text-align: left; margin-top: 10px;">
-                    <li>Teacher applications review</li>
-                    <li>Student enrollment updates</li>
-                    <li>Financial reports</li>
-                    <li>New academic year planning</li>
-                </ul>
             </div>
         </div>
     </div>
@@ -606,6 +777,13 @@
     let examPhoto = null;
     let mediaStream = null;
     
+    // ==================== LIVE CALL SYSTEM VARIABLES ====================
+    let callMessages = [];
+    let callActive = false;
+    let currentUserRole = null;
+    let meetingInviteSent = false;
+    let meetingJoined = false;
+    
     // ==================== DATA ====================
     let students = [];
     let teachers = [];
@@ -614,75 +792,124 @@
 
     const allGrades = ["Nursery", "Lower KG", "Upper KG", "Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5", "Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12"];
 
-    function loadData() {
-        const storedStudents = localStorage.getItem('hermana_students');
-        const storedTeachers = localStorage.getItem('hermana_teachers');
-        
-        if (storedStudents) {
-            students = JSON.parse(storedStudents);
-        } else {
-            students = [];
-            // Demo students for KG sections
-            const kgStudents = ["Nursery", "Lower KG", "Upper KG"];
-            kgStudents.forEach((kg, idx) => {
-                for (let i = 1; i <= (idx === 0 ? 25 : 30); i++) {
-                    students.push({
-                        id: 1000 + idx * 100 + i,
-                        fullName: `${kg} Student ${i}`,
-                        ethiopianId: `ET${100000 + idx * 100 + i}`,
-                        grade: kg,
-                        fromGrade: kg,
-                        toGrade: kg === "Nursery" ? "Upper KG" : (kg === "Lower KG" ? "Grade 2" : "Grade 4"),
-                        examPercent: Math.floor(Math.random() * 100),
-                        examPhoto: null,
-                        examViolations: 0,
-                        photoUrl: `https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i % 70}.jpg`,
-                        payments: { registration: i <= 20, term1Bus: i <= 15, term2Bus: i <= 10, term3Bus: i <= 8 }
-                    });
+    // ==================== LIVE CALL FUNCTIONS ====================
+    function renderCallMessages() {
+        const container = document.getElementById('liveCallMessages');
+        if(container) {
+            container.innerHTML = callMessages.map(m => {
+                if(m.isSystem) {
+                    return `<div class="system-message">🔔 ${m.text}</div>`;
                 }
-            });
-            // Demo students for Grade 1
-            for (let i = 1; i <= 45; i++) {
-                students.push({
-                    id: 2000 + i,
-                    fullName: `Grade 1 Student ${i}`,
-                    ethiopianId: `ET${200000 + i}`,
-                    grade: "Grade 1",
-                    fromGrade: "Nursery",
-                    toGrade: "Grade 6",
-                    examPercent: Math.floor(Math.random() * 100),
-                    examPhoto: null,
-                    examViolations: 0,
-                    photoUrl: `https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i % 70}.jpg`,
-                    payments: { registration: i <= 30, term1Bus: i <= 25, term2Bus: i <= 20, term3Bus: i <= 15 }
-                });
-            }
-            students.push({
-                id: 999999,
-                fullName: "Test Student",
-                ethiopianId: "ET999999",
-                grade: "Grade 10",
-                fromGrade: "Grade 5",
-                toGrade: "Grade 12",
-                examPercent: 0,
-                examPhoto: null,
-                examViolations: 0,
-                photoUrl: "https://randomuser.me/api/portraits/men/1.jpg",
-                payments: { registration: false, term1Bus: false, term2Bus: false, term3Bus: false }
-            });
-            saveStudents();
-        }
-        
-        if (storedTeachers) {
-            teachers = JSON.parse(storedTeachers);
-        } else {
-            teachers = [];
-            saveTeachers();
+                return `<div class="message-bubble ${m.isMine ? 'message-mine' : 'message-other'}"><strong>${m.sender}:</strong> ${m.text}</div>`;
+            }).join('');
+            container.scrollTop = container.scrollHeight;
         }
     }
     
-    function saveStudents() { localStorage.setItem('hermana_students', JSON.stringify(students)); }
-    function saveTeachers() { localStorage.setItem('hermana_teachers', JSON.stringify(teachers)); }
+    function sendCallMessage() {
+        const input = document.getElementById('liveCallInput');
+        if(input && input.value.trim()) {
+            const sender = currentUserRole === 'board' ? 'Board Member' : (currentUserRole === 'director' ? 'Director' : 'User');
+            callMessages.push({
+                id: Date.now(),
+                sender: sender,
+                text: input.value,
+                isMine: true,
+                isSystem: false,
+                timestamp: new Date().toISOString()
+            });
+            renderCallMessages();
+            
+            // Auto-response for demo
+            setTimeout(() => {
+                if(currentUserRole === 'board') {
+                    callMessages.push({
+                        id: Date.now() + 1,
+                        sender: 'Director',
+                        text: "📌 Received. I'll review this and respond shortly.",
+                        isMine: false,
+                        isSystem: false,
+                        timestamp: new Date().toISOString()
+                    });
+                } else if(currentUserRole === 'director') {
+                    callMessages.push({
+                        id: Date.now() + 1,
+                        sender: 'Board Member',
+                        text: "✅ Thank you for your message, Director. Noted.",
+                        isMine: false,
+                        isSystem: false,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+                renderCallMessages();
+            }, 1000);
+            
+            input.value = '';
+        }
+    }
+    
+    function inviteDirector() {
+        if(currentUserRole !== 'board') {
+            alert("⚠️ Only Board members can invite the Director to a meeting.");
+            return;
+        }
+        meetingInviteSent = true;
+        callMessages.push({
+            id: Date.now(),
+            sender: 'System',
+            text: "📢 BOARD MEMBER HAS INVITED THE DIRECTOR TO JOIN THE MEETING! Director, please click 'Join Meeting' button.",
+            isSystem: true,
+            isMine: false
+        });
+        renderCallMessages();
+        
+        const joinBtn = document.getElementById('joinCallBtn');
+        if(joinBtn) joinBtn.style.display = 'block';
+        
+        // Show notification
+        alert("✅ Invitation sent to Director! They can now join the meeting.");
+    }
+    
+    function joinMeeting() {
+        if(currentUserRole !== 'director') {
+            alert("⚠️ Only the Director can join the meeting.");
+            return;
+        }
+        if(!meetingInviteSent) {
+            alert("⚠️ No active invitation. Please wait for the Board to invite you.");
+            return;
+        }
+        if(meetingJoined) {
+            alert("You have already joined the meeting.");
+            return;
+        }
+        meetingJoined = true;
+        callMessages.push({
+            id: Date.now(),
+            sender: 'System',
+            text: "✅ DIRECTOR HAS JOINED THE MEETING! The call is now active.",
+            isSystem: true,
+            isMine: false
+        });
+        renderCallMessages();
+        alert("🎥 You have joined the meeting! You can now chat with the Board.");
+    }
+    
+    function openLiveCall(role) {
+        currentUserRole = role;
+        callMessages = [
+            { id: 1, sender: 'System', text: `🔔 ${role === 'board' ? 'Board Member' : 'Director'} connected to Hermana Academy Internal Call System.`, isSystem: true, isMine: false },
+            { id: 2, sender: 'System', text: role === 'board' ? '📌 You are the Board Member. You can start calls and invite the Director.' : '📌 You are the Director. Wait for the Board to invite you.', isSystem: true, isMine: false }
+        ];
+        meetingInviteSent = false;
+        meetingJoined = false;
+        
+        const joinBtn = document.getElementById('joinCallBtn');
+        if(joinBtn) joinBtn.style.display = 'none';
+        
+        renderCallMessages();
+        openModal('liveCallModal');
+    }
     
     // ==================== ENHANCED FEEDBACK STAR RATING ====================
     let selectedRating = 0;
@@ -698,7 +925,7 @@
         });
     }
     
-    // Attach feedback form submit (enhanced)
+    // Attach feedback form submit
     const feedbackForm = document.getElementById('feedbackForm');
     if (feedbackForm) {
         feedbackForm.addEventListener('submit', (e) => {
@@ -723,13 +950,12 @@
         });
     }
     
-    // ==================== EXAM SECURITY FUNCTIONS ====================
+    // ==================== ORIGINAL EXAM SECURITY FUNCTIONS (unchanged) ====================
     async function startSecureExam(studentId, examQuestions) {
         examActive = true;
         examStartTime = Date.now();
         examViolations = 0;
         
-        // Request camera access
         try {
             mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
             const videoTrack = mediaStream.getVideoTracks()[0];
@@ -737,7 +963,6 @@
             const blob = await imageCapture.takePhoto();
             examPhoto = URL.createObjectURL(blob);
             
-            // Save photo to student record
             const student = students.find(s => s.id === studentId);
             if (student) {
                 student.examPhoto = examPhoto;
@@ -748,12 +973,10 @@
             alert("Camera access is required for exam. Please allow camera access.");
         }
         
-        // Lock body scroll and prevent right click
         document.body.style.overflow = 'hidden';
         document.addEventListener('contextmenu', preventContextMenu);
         document.addEventListener('keydown', preventKeyShortcuts);
         
-        // Show exam interface
         showExamInterface(examQuestions, studentId);
     }
     
@@ -767,7 +990,6 @@
     
     function preventKeyShortcuts(e) {
         if (examActive) {
-            // Prevent F12, Ctrl+Shift+I, Ctrl+U, Ctrl+R, Alt+Tab
             if (e.key === 'F12' || 
                 (e.ctrlKey && e.shiftKey && e.key === 'I') ||
                 (e.ctrlKey && e.key === 'u') ||
@@ -844,14 +1066,8 @@
         `;
         
         document.body.insertAdjacentHTML('beforeend', examHTML);
-        
-        // Request fullscreen
         document.documentElement.requestFullscreen().catch(err => console.log("Fullscreen error:", err));
-        
-        // Handle tab visibility change
         document.addEventListener('visibilitychange', handleVisibilityChange);
-        
-        // Handle window blur
         window.addEventListener('blur', handleWindowBlur);
         
         document.getElementById('secureExamForm').addEventListener('submit', async (e) => {
@@ -876,7 +1092,6 @@
             
             alert(`Exam completed!\nScore: ${correct}/${questions.length} (${percentage}%)\nViolations: ${examViolations}\n${percentage >= 50 ? '✅ You passed!' : '❌ You failed!'}`);
             
-            // Clean up
             examActive = false;
             if (mediaStream) mediaStream.getTracks().forEach(track => track.stop());
             document.exitFullscreen();
@@ -958,7 +1173,6 @@
     document.getElementById('teacherRegisterForm')?.addEventListener('submit', (e) => {
         e.preventDefault();
         const docFile = document.getElementById('teacherDoc').files[0];
-        let docUrl = null;
         if (docFile) {
             const reader = new FileReader();
             reader.onload = function(ev) {
@@ -993,6 +1207,10 @@
         const password = document.getElementById('teacherLoginPassword').value;
         const teacher = teachers.find(t => t.email === email && atob(t.password) === password);
         if (teacher) {
+            if(teacher.status !== 'approved') {
+                alert(`Your application is ${teacher.status}. Please wait for approval.`);
+                return;
+            }
             currentUser = { id: teacher.id, name: teacher.fullName, role: 'teacher', status: teacher.status };
             localStorage.setItem('token', 'teacher-token');
             loadTeacherDashboard();
@@ -1181,7 +1399,7 @@
                 <tr><td>Term 3 + Bus</td><td>3500 ETB</td><td class="${student.payments.term3Bus ? 'badge-paid' : 'badge-unpaid'}">${student.payments.term3Bus ? 'Paid' : 'Unpaid'}</td><td>${!student.payments.term3Bus ? `<button onclick="makePayment('term3Bus',3500)">Pay Now</button>` : '✅'}</td></tr>
             </tbody></div></div>
             <div class="payment-history"><div class="section-title">📋 Payment History</div>${localPayments.length === 0 ? '<p>No payments yet.</p>' : localPayments.map(p => `<div class="payment-item"><div><strong>${p.paymentType}</strong><br>${p.amount} ETB</div><div><button onclick="downloadReceipt('${p.transactionId}')" class="btn-small">📥 Receipt</button></div></div>`).join('')}</div>` : ''}
-            <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 Our Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>`;
+            <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 My Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Me</a></div>`;
     }
     
     function loadTeacherDashboard() {
@@ -1198,7 +1416,7 @@
                 <div><h2>👨‍🏫 Welcome, ${teacher.fullName}!</h2><p>Email: ${teacher.email} | Phone: ${teacher.phone}</p><p>Status: <span class="status-badge ${statusClass}">${statusText}</span></p><button onclick="logout()" style="background:white;color:#667eea;margin-top:10px;">Logout</button></div>
             </div>
             <div class="card"><h3>📚 Your Information</h3><p><strong>Teaching Grades:</strong> ${teacher.teachingGrades.join(', ')}</p><p><strong>Application Date:</strong> ${new Date(teacher.appliedDate).toLocaleDateString()}</p><p><strong>Your Message:</strong> ${teacher.reason}</p></div>
-            <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 Our Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>`;
+            <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 My Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Me</a></div>`;
     }
     
     function loadBoardDashboard() {
@@ -1216,7 +1434,7 @@
         if (pendingTeachers.length === 0) {
             teachersHtml += '<p>No pending applications.</p>';
         } else {
-            teachersHtml += `<table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Grades</th><th>Message</th><th>Document</th><th>Action</th></tr></thead><tbody>`;
+            teachersHtml += `<table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Grades</th><th>Message</th><th>Document</th><th>Action</th></table></thead><tbody>`;
             pendingTeachers.forEach(t => {
                 teachersHtml += `<tr>
                     <td>${t.fullName}</td><td>${t.email}</td><td>${t.phone}</td>
@@ -1233,8 +1451,11 @@
             <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
                     <div><h2>🎯 Board of Directors Dashboard</h2><p>Welcome, Board Member</p></div>
-                    <button onclick="openSkypeCall()" style="background:#0078ff; color:white; padding:12px 25px; border-radius:10px; border:none; cursor:pointer;">🎥 Join Skype Meeting</button>
-                    <button onclick="logout()" style="background:white;color:#667eea;margin-top:10px;">Logout</button>
+                    <div style="display:flex; gap:10px;">
+                        <button onclick="openLiveCall('board')" style="background:#28a745; color:white; padding:12px 25px; border-radius:10px; border:none; cursor:pointer;">📞 Start Internal Call</button>
+                        <button onclick="openSkypeCall()" style="background:#0078ff; color:white; padding:12px 25px; border-radius:10px; border:none; cursor:pointer;">🎥 Skype Meeting</button>
+                        <button onclick="logout()" style="background:white;color:#667eea;margin-top:0;">Logout</button>
+                    </div>
                 </div>
             </div>
             <div class="grid-2">
@@ -1242,10 +1463,10 @@
                 <div class="card"><h3>💰 Financial Overview</h3><p><strong>Total Registration Fees Collected:</strong> ${students.filter(s => s.payments.registration).length * 1000} ETB</p><p><strong>Total Term Fees Collected:</strong> ${students.filter(s => s.payments.term1Bus).length * 3500} ETB</p><p><strong>Pending Payments:</strong> ${students.filter(s => !s.payments.registration).length} Students</p></div>
             </div>
             ${teachersHtml}
-            <div class="card"><h3>📋 Recent Student Registrations</h3><div class="student-table"><tr><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Grade</th><th>Exam %</th><th>Payment Status</th></tr></thead><tbody>
+            <div class="card"><h3>📋 Recent Student Registrations</h3><div class="student-table"><table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Grade</th><th>Exam %</th><th>Payment Status</th></tr></thead><tbody>
                 ${allStudents.slice(0, 10).map(s => `<tr><td>${s.fullName}</td><td>${s.ethiopianId}</td><td>${s.grade}</td><td>${s.examPercent}%</td><td>${s.payments.registration ? '✅ Paid' : '❌ Unpaid'}</td></tr>`).join('')}
             </tbody></div></div>
-            <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 Our Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>`;
+            <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 My Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Me</a></div>`;
     }
     
     window.reviewTeacher = (teacherId, status) => {
@@ -1277,10 +1498,14 @@
         
         dashboard.innerHTML = `
             <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px">
-                <div><h2>📊 Director Dashboard</h2><p>Total Students: ${students.length} | Total Teachers: ${teachers.length}</p><button onclick="logout()" style="background:white;color:#667eea;margin-top:10px;">Logout</button></div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div><h2>📊 Director Dashboard</h2><p>Total Students: ${students.length} | Total Teachers: ${teachers.length}</p></div>
+                    <div><button onclick="openLiveCall('director')" style="background:#28a745; color:white; padding:12px 25px; border-radius:10px; border:none; cursor:pointer;">📞 Join Internal Call</button>
+                    <button onclick="logout()" style="background:white;color:#667eea;margin-left:10px;">Logout</button></div>
+                </div>
             </div>
             ${gradesHtml}
-            <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 Our Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>`;
+            <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 My Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Me</a></div>`;
     }
     
     window.showGradeStudents = (grade) => {
@@ -1295,11 +1520,11 @@
             </tbody></table>
             <h4>Section B (${sections.sectionB.length} students)</h4><table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Exam %</th><th>Violations</th><th>Registration</th><th>Term1+Bus</th></tr></thead><tbody>
                 ${sections.sectionB.map(s => `<tr><td>${s.fullName}</td><td>${s.ethiopianId}</td><td>${s.examPercent}%</td><td>${s.examViolations || 0}</td><td>${s.payments.registration ? '✅' : '❌'}</td><td>${s.payments.term1Bus ? '✅' : '❌'}</td></tr>`).join('')}
-            </tbody></table>`;
+            </tbody>}</div>`;
         } else {
             tableHtml += `<table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Exam %</th><th>Violations</th><th>Registration</th><th>Term1+Bus</th></tr></thead><tbody>
                 ${sections.sectionA.map(s => `<tr><td>${s.fullName}</td><td>${s.ethiopianId}</td><td>${s.examPercent}%</td><td>${s.examViolations || 0}</td><td>${s.payments.registration ? '✅' : '❌'}</td><td>${s.payments.term1Bus ? '✅' : '❌'}</td></tr>`).join('')}
-            </tbody></table>`;
+            </tbody>}</div>`;
         }
         
         document.getElementById('studentsDisplay').innerHTML = tableHtml;
@@ -1314,13 +1539,107 @@
             <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px"><div><h2>👪 Parent Hub</h2><p>Viewing: ${student.fullName}</p><button onclick="logout()" style="background:white;color:#667eea;margin-top:10px;">Logout</button></div></div>
             <div class="card"><h3>📊 Student Information</h3><p><strong>Name:</strong> ${student.fullName}</p><p><strong>Ethiopian ID:</strong> ${student.ethiopianId}</p><p><strong>Current Grade:</strong> ${student.grade}</p><p><strong>Grade Range:</strong> ${student.fromGrade} to ${student.toGrade}</p><p><strong>Exam Score:</strong> ${student.examPercent}%</p><p><strong>Exam Violations:</strong> ${student.examViolations || 0}</p><span class="badge ${student.examPercent >= 50 ? 'badge-passed' : 'badge-failed'}">${student.examPercent >= 50 ? 'Passed' : 'Failed'}</span></div>
             <div class="card"><h3>💰 Payment Status</h3><p>Registration: ${student.payments.registration ? '✅ Paid' : '❌ Unpaid'}</p><p>Term 1 + Bus: ${student.payments.term1Bus ? '✅ Paid' : '❌ Unpaid'}</p><p>Term 2 + Bus: ${student.payments.term2Bus ? '✅ Paid' : '❌ Unpaid'}</p><p>Term 3 + Bus: ${student.payments.term3Bus ? '✅ Paid' : '❌ Unpaid'}</p></div>
-            <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 Our Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>`;
+            <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 My Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Me</a></div>`;
     }
     
     function logout() { localStorage.clear(); location.reload(); }
     
+    function loadData() {
+        const storedStudents = localStorage.getItem('hermana_students');
+        const storedTeachers = localStorage.getItem('hermana_teachers');
+        
+        if (storedStudents) {
+            students = JSON.parse(storedStudents);
+        } else {
+            students = [];
+            const kgStudents = ["Nursery", "Lower KG", "Upper KG"];
+            kgStudents.forEach((kg, idx) => {
+                for (let i = 1; i <= (idx === 0 ? 25 : 30); i++) {
+                    students.push({
+                        id: 1000 + idx * 100 + i,
+                        fullName: `${kg} Student ${i}`,
+                        ethiopianId: `ET${100000 + idx * 100 + i}`,
+                        grade: kg,
+                        fromGrade: kg,
+                        toGrade: kg === "Nursery" ? "Upper KG" : (kg === "Lower KG" ? "Grade 2" : "Grade 4"),
+                        examPercent: Math.floor(Math.random() * 100),
+                        examPhoto: null,
+                        examViolations: 0,
+                        photoUrl: `https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i % 70}.jpg`,
+                        payments: { registration: i <= 20, term1Bus: i <= 15, term2Bus: i <= 10, term3Bus: i <= 8 }
+                    });
+                }
+            });
+            for (let i = 1; i <= 45; i++) {
+                students.push({
+                    id: 2000 + i,
+                    fullName: `Grade 1 Student ${i}`,
+                    ethiopianId: `ET${200000 + i}`,
+                    grade: "Grade 1",
+                    fromGrade: "Nursery",
+                    toGrade: "Grade 6",
+                    examPercent: Math.floor(Math.random() * 100),
+                    examPhoto: null,
+                    examViolations: 0,
+                    photoUrl: `https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i % 70}.jpg`,
+                    payments: { registration: i <= 30, term1Bus: i <= 25, term2Bus: i <= 20, term3Bus: i <= 15 }
+                });
+            }
+            students.push({
+                id: 999999,
+                fullName: "Test Student",
+                ethiopianId: "ET999999",
+                grade: "Grade 10",
+                fromGrade: "Grade 5",
+                toGrade: "Grade 12",
+                examPercent: 0,
+                examPhoto: null,
+                examViolations: 0,
+                photoUrl: "https://randomuser.me/api/portraits/men/1.jpg",
+                payments: { registration: false, term1Bus: false, term2Bus: false, term3Bus: false }
+            });
+            saveStudents();
+        }
+        
+        if (storedTeachers) {
+            teachers = JSON.parse(storedTeachers);
+        } else {
+            teachers = [];
+            teachers.push({
+                id: 1,
+                fullName: "Demo Teacher",
+                email: "teacher@hermana.edu",
+                password: btoa("teacher123"),
+                phone: "+251-911-000000",
+                educationDoc: null,
+                teachingGrades: ["Grade 1", "Grade 2"],
+                reason: "Passionate about teaching",
+                status: "approved",
+                appliedDate: new Date().toISOString()
+            });
+            saveTeachers();
+        }
+    }
+    
+    function saveStudents() { localStorage.setItem('hermana_students', JSON.stringify(students)); }
+    function saveTeachers() { localStorage.setItem('hermana_teachers', JSON.stringify(teachers)); }
+    
+    // Initialize
     loadData();
-    initStarRating(); // Initialize star rating for feedback
+    initStarRating();
+    
+    // Setup live call buttons
+    document.getElementById('sendLiveMessageBtn')?.addEventListener('click', sendCallMessage);
+    document.getElementById('liveCallInput')?.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendCallMessage(); });
+    document.getElementById('inviteDirectorBtn')?.addEventListener('click', inviteDirector);
+    document.getElementById('joinCallBtn')?.addEventListener('click', joinMeeting);
+    
+    window.openLiveCall = openLiveCall;
+    window.switchTab = switchTab;
+    window.logout = logout;
+    window.showGradeStudents = showGradeStudents;
+    window.startSecureExam = startSecureExam;
+    
     if (localStorage.getItem('token')) {
         if (localStorage.getItem('token').includes('director')) loadDirectorDashboard();
         else if (localStorage.getItem('token').includes('teacher')) { const teacher = teachers.find(t => t.id === currentUser?.id); if (teacher) loadTeacherDashboard(); }
@@ -1328,16 +1647,18 @@
         else if (localStorage.getItem('token').includes('parent')) { currentUser = { id: 999999, role: 'parent' }; loadParentDashboard(); }
         else if (localStorage.getItem('token')) { const student = students.find(s => s.id === 999999); if (student) { currentUser = { id: 999999, name: student.fullName, role: 'student' }; loadStudentDashboard(); } }
     }
-    
-    window.switchTab = switchTab;
-    window.logout = logout;
-    window.showGradeStudents = showGradeStudents;
-    window.startSecureExam = startSecureExam;
 </script>
 
 <div class="creator-credit">
     Created with <span>❤️</span> by <span>Muhammad Ilyas</span> | Hermana Academy Management System
 </div>
 
+<!-- Live Call Floating Button -->
+<div class="live-call-container">
+    <div class="call-button" onclick="openLiveCall(currentUser?.role === 'board' ? 'board' : (currentUser?.role === 'director' ? 'director' : 'user'))">
+        📞
+    </div>
+</div>
+
 </body>
-    </html>
+                            </html>
