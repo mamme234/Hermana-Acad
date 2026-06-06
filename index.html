@@ -339,86 +339,6 @@
             font-weight: 600;
         }
         
-        /* Live Call Styles */
-        .live-call-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 10000;
-        }
-        .call-button {
-            background: #28a745;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            transition: 0.3s;
-        }
-        .call-button:hover { transform: scale(1.1); background: #218838; }
-        .call-window {
-            position: fixed;
-            bottom: 90px;
-            right: 20px;
-            width: 320px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            z-index: 10001;
-        }
-        .call-header {
-            background: #667eea;
-            color: white;
-            padding: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .call-body {
-            padding: 15px;
-            background: #f0f2f5;
-            min-height: 200px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .call-input {
-            display: flex;
-            padding: 10px;
-            border-top: 1px solid #ddd;
-            background: white;
-        }
-        .call-input input {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            margin-right: 8px;
-        }
-        .message-bubble {
-            margin-bottom: 10px;
-            padding: 8px 12px;
-            border-radius: 18px;
-            max-width: 85%;
-            word-wrap: break-word;
-        }
-        .message-mine {
-            background: #667eea;
-            color: white;
-            margin-left: auto;
-            text-align: right;
-        }
-        .message-other {
-            background: white;
-            color: #333;
-            border: 1px solid #ddd;
-        }
-        
         @media (max-width: 768px) { 
             .grid-2 { grid-template-columns: 1fr; }
             .id-card { width: 95%; }
@@ -578,67 +498,100 @@
     </div>
 </div>
 
-<!-- Modals - Enhanced Content -->
+<!-- ENHANCED MODALS (Added longer content, star rating, and attractive feedback) -->
 <div id="purposeModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>🎯 Our Purpose & Vision</h2><button class="close-modal" onclick="closeModal('purposeModal')">&times;</button></div>
-    <div><p><strong>Hermana Academy</strong> was founded with a clear mission: <em>to revolutionize education in Ethiopia by digitizing school management, making quality learning accessible from Nursery to Grade 12.</em></p>
-    <br><p>🎓 <strong>Our Core Purpose:</strong> To provide a secure, transparent, and efficient platform where students, parents, teachers, and administrators can seamlessly interact. We believe every child deserves a bright future, and technology is the bridge.</p>
-    <br><p>🇪🇹 <strong>Vision:</strong> To become Ethiopia's leading digital education hub, producing future leaders equipped with 21st-century skills while preserving our rich cultural heritage.</p>
-    <br><p>📚 <strong>Key Objectives:</strong></p>
-    <ul style="margin-left: 20px;"><li>✅ Streamline student registration and ID management</li><li>✅ Enable secure online exams with proctoring</li><li>✅ Facilitate transparent fee payments and receipts</li><li>✅ Empower teachers with digital tools</li><li>✅ Provide real-time parent portals</li></ul>
-    <br><p>🌍 <em>"እውቀት ብርሃን ነው" - Knowledge is Light. Join us in shaping Ethiopia's tomorrow!</em></p>
-</div></div></div>
+    <div style="line-height:1.6;">
+        <p><strong>Hermana Academy</strong> was founded with a clear mission: <em>to revolutionize education in Ethiopia by digitizing school management, making quality learning accessible from Nursery to Grade 12.</em></p>
+        <br>
+        <p>🎓 <strong>Our Core Purpose:</strong> To provide a secure, transparent, and efficient platform where students, parents, teachers, and administrators can seamlessly interact. We believe every child deserves a bright future, and technology is the bridge.</p>
+        <br>
+        <p>🇪🇹 <strong>Vision:</strong> To become Ethiopia's leading digital education hub, producing future leaders equipped with 21st-century skills while preserving our rich cultural heritage.</p>
+        <br>
+        <p>📚 <strong>Key Objectives:</strong></p>
+        <ul style="margin-left: 20px;">
+            <li>✅ Streamline student registration and digital ID management</li>
+            <li>✅ Enable secure online exams with proctoring</li>
+            <li>✅ Facilitate transparent fee payments and digital receipts</li>
+            <li>✅ Empower teachers with digital application and approval workflows</li>
+            <li>✅ Provide real-time parent portals for monitoring progress</li>
+            <li>✅ Foster communication through integrated board meeting tools</li>
+        </ul>
+        <br>
+        <p>🌍 <em>"እውቀት ብርሃን ነው" - Knowledge is Light. Join us in shaping Ethiopia's tomorrow!</em></p>
+    </div>
+</div></div>
 
 <div id="feedbackModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>💬 Share Your Feedback</h2><button class="close-modal" onclick="closeModal('feedbackModal')">&times;</button></div>
-    <div><p>Your voice matters! Help us improve Hermana Academy.</p>
-    <div class="star-rating" id="starRating"><span class="star" data-value="1">★</span><span class="star" data-value="2">★</span><span class="star" data-value="3">★</span><span class="star" data-value="4">★</span><span class="star" data-value="5">★</span></div>
-    <input type="hidden" id="feedbackRating" value="0">
-    <form id="feedbackForm"><textarea rows="4" id="feedbackText" placeholder="Tell us what you love or suggest improvements..." style="width:100%;margin-bottom:10px;border-radius:10px;padding:10px;"></textarea>
-    <button type="submit" style="width:100%;">Submit Feedback ★</button></form>
-    <p id="feedbackThanks" style="display:none;color:green;margin-top:10px;">✅ Thank you! Your feedback helps us grow.</p>
-</div></div></div>
+    <div>
+        <p>Your voice matters! Help us improve Hermana Academy.</p>
+        <div class="star-rating" id="starRating">
+            <span class="star" data-value="1">★</span>
+            <span class="star" data-value="2">★</span>
+            <span class="star" data-value="3">★</span>
+            <span class="star" data-value="4">★</span>
+            <span class="star" data-value="5">★</span>
+        </div>
+        <input type="hidden" id="feedbackRating" value="0">
+        <form id="feedbackForm">
+            <textarea rows="4" id="feedbackText" placeholder="Tell us what you love or suggest improvements..." style="width:100%;margin-bottom:10px;border-radius:10px;padding:10px;"></textarea>
+            <button type="submit" style="width:100%;">Submit Feedback ★</button>
+        </form>
+        <p id="feedbackThanks" style="display:none;color:green;margin-top:10px;text-align:center;">✅ Thank you! Your feedback helps us grow.</p>
+    </div>
+</div></div>
 
 <div id="privacyModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>🔒 Privacy & Data Protection</h2><button class="close-modal" onclick="closeModal('privacyModal')">&times;</button></div>
-    <div><p>At Hermana Academy, <strong>your privacy is our priority</strong>. We collect only essential data for academic and administrative purposes.</p>
-    <br><p>📌 <strong>What we collect:</strong> Name, Ethiopian ID, contact info, academic records, payment history, and exam proctoring images (for security).</p>
-    <p>🔐 <strong>How we protect:</strong> All data is encrypted locally and never shared with third parties. Exam photos are used only for verification.</p>
-    <p>👨‍👩‍👧 <strong>Parental Rights:</strong> Parents can access their child's records anytime. You may request data deletion by contacting us.</p>
-    <p>📜 <strong>Compliance:</strong> We adhere to Ethiopian education data protection standards. Data is stored securely in your browser's local storage.</p>
-    <br><p>⏰ <strong>Data Retention:</strong> Student records are kept until graduation + 5 years. Teacher records are kept for 7 years.</p>
-    <p><em>Last Updated: June 2026</em></p>
-</div></div></div>
+    <div style="line-height:1.6;">
+        <p>At Hermana Academy, <strong>your privacy is our priority</strong>. We collect only essential data for academic and administrative purposes.</p>
+        <br>
+        <p>📌 <strong>What we collect:</strong> Name, Ethiopian ID, contact info, academic records, payment history, and exam proctoring images (for security).</p>
+        <p>🔐 <strong>How we protect:</strong> All data is encrypted locally and never shared with third parties. Exam photos are used only for verification.</p>
+        <p>👨‍👩‍👧 <strong>Parental Rights:</strong> Parents can access their child's records anytime. You may request data deletion by contacting us.</p>
+        <p>📜 <strong>Compliance:</strong> We adhere to Ethiopian education data protection standards. Data is stored securely in your browser's local storage.</p>
+        <br>
+        <p>⏰ <strong>Data Retention:</strong> Student records are kept until graduation + 5 years. Teacher records are kept for 7 years.</p>
+        <p><em>Last Updated: June 2026</em></p>
+    </div>
+</div></div>
 
 <div id="contactModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📞 Contact Hermana Academy</h2><button class="close-modal" onclick="closeModal('contactModal')">&times;</button></div>
-    <div><p><strong>📍 Main Campus:</strong> Bole Road, Addis Ababa, Ethiopia</p>
-    <p>📧 <strong>Email:</strong> info@hermanaacademy.edu.et | admissions@hermanaacademy.edu.et</p>
-    <p>📞 <strong>Phone:</strong> +251-911-123456 | +251-911-789012</p>
-    <p>🕒 <strong>Office Hours:</strong> Monday - Friday, 8:30 AM - 5:00 PM (Saturday 9 AM - 1 PM)</p>
-    <p>🌐 <strong>Website:</strong> www.hermanaacademy.edu.et</p>
-    <p>📱 <strong>Social Media:</strong> @HermanaAcademy (Facebook, Telegram, LinkedIn)</p>
-    <hr style="margin:15px 0;">
-    <p><strong>💬 Live Support:</strong> Use the green call button at the bottom right for instant messaging with our support team!</p>
-</div></div></div>
+    <div style="line-height:1.6;">
+        <p><strong>📍 Main Campus:</strong> Bole Road, Addis Ababa, Ethiopia</p>
+        <p>📧 <strong>Email:</strong> info@hermanaacademy.edu.et | admissions@hermanaacademy.edu.et</p>
+        <p>📞 <strong>Phone:</strong> +251-911-123456 | +251-911-789012</p>
+        <p>🕒 <strong>Office Hours:</strong> Monday - Friday, 8:30 AM - 5:00 PM (Saturday 9 AM - 1 PM)</p>
+        <p>🌐 <strong>Website:</strong> www.hermanaacademy.edu.et</p>
+        <p>📱 <strong>Social Media:</strong> @HermanaAcademy (Facebook, Telegram, LinkedIn)</p>
+        <hr style="margin:15px 0;">
+        <p><strong>💬 Live Support:</strong> Use the live call feature in the Board Dashboard for instant messaging with our support team!</p>
+        <p><strong>📞 Emergency Contact:</strong> +251-900-000111 (24/7 for urgent academic matters)</p>
+    </div>
+</div></div>
 
-<!-- Skype Call Modal (Live Call System) -->
+<!-- Skype Call Modal (unchanged from original) -->
 <div id="skypeModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2>🎥 Live Board Meeting - Internal Call</h2>
+            <h2>🎥 Board Meeting - Skype Call</h2>
             <button class="close-modal" onclick="closeModal('skypeModal')">&times;</button>
         </div>
         <div class="modal-body">
             <div style="text-align: center; padding: 20px;">
-                <div style="background:#e8f0fe; border-radius:20px; padding:20px;">
-                    <h3>📞 Hermana Academy Live Call System</h3>
-                    <p>Connect instantly with board members, directors, or support staff via our internal chat.</p>
-                    <div id="liveCallMessages" style="height:200px; overflow-y:auto; background:white; border-radius:10px; margin:15px 0; padding:10px; text-align:left;">
-                        <div class="message-bubble message-other">Welcome to Hermana Academy Live Support! How can we help you today?</div>
-                    </div>
-                    <div style="display:flex; gap:10px;">
-                        <input type="text" id="liveCallInput" placeholder="Type your message..." style="flex:1;">
-                        <button id="sendLiveMessageBtn" class="btn-success">Send</button>
-                    </div>
-                    <p style="margin-top:15px; font-size:12px;">🔒 End-to-end encrypted internal communication</p>
-                </div>
+                <i class="fas fa-video" style="font-size: 60px; color: #667eea;"></i>
+                <h3>Join Board Meeting</h3>
+                <p>Click below to start or join the Skype meeting</p>
+                <br>
+                <a href="https://join.skype.com/8fXqVZLwQw6d" target="_blank" class="btn-small" style="display: inline-block; background: #0078ff; padding: 12px 30px; border-radius: 10px; color: white; text-decoration: none;">Join Skype Meeting →</a>
+                <br><br>
+                <p><small>Meeting ID: hermana.board@skype.com</small></p>
+                <hr style="margin: 20px 0;">
+                <h4>📋 Current Agenda Items:</h4>
+                <ul style="text-align: left; margin-top: 10px;">
+                    <li>Teacher applications review</li>
+                    <li>Student enrollment updates</li>
+                    <li>Financial reports</li>
+                    <li>New academic year planning</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -646,30 +599,92 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
-    // Live Call System (internal)
-    let liveMessages = [{text:"Welcome to Hermana Academy Live Support! How can we help you today?", isMine:false}];
-    function renderLiveMessages() {
-        const container = document.getElementById('liveCallMessages');
-        if(container) {
-            container.innerHTML = liveMessages.map(m => `<div class="message-bubble ${m.isMine ? 'message-mine' : 'message-other'}">${m.text}</div>`).join('');
-            container.scrollTop = container.scrollHeight;
+    // ==================== EXAM SECURITY VARIABLES ====================
+    let examActive = false;
+    let examStartTime = null;
+    let examViolations = 0;
+    let examPhoto = null;
+    let mediaStream = null;
+    
+    // ==================== DATA ====================
+    let students = [];
+    let teachers = [];
+    let currentUser = null;
+    let localPayments = [];
+
+    const allGrades = ["Nursery", "Lower KG", "Upper KG", "Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5", "Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12"];
+
+    function loadData() {
+        const storedStudents = localStorage.getItem('hermana_students');
+        const storedTeachers = localStorage.getItem('hermana_teachers');
+        
+        if (storedStudents) {
+            students = JSON.parse(storedStudents);
+        } else {
+            students = [];
+            // Demo students for KG sections
+            const kgStudents = ["Nursery", "Lower KG", "Upper KG"];
+            kgStudents.forEach((kg, idx) => {
+                for (let i = 1; i <= (idx === 0 ? 25 : 30); i++) {
+                    students.push({
+                        id: 1000 + idx * 100 + i,
+                        fullName: `${kg} Student ${i}`,
+                        ethiopianId: `ET${100000 + idx * 100 + i}`,
+                        grade: kg,
+                        fromGrade: kg,
+                        toGrade: kg === "Nursery" ? "Upper KG" : (kg === "Lower KG" ? "Grade 2" : "Grade 4"),
+                        examPercent: Math.floor(Math.random() * 100),
+                        examPhoto: null,
+                        examViolations: 0,
+                        photoUrl: `https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i % 70}.jpg`,
+                        payments: { registration: i <= 20, term1Bus: i <= 15, term2Bus: i <= 10, term3Bus: i <= 8 }
+                    });
+                }
+            });
+            // Demo students for Grade 1
+            for (let i = 1; i <= 45; i++) {
+                students.push({
+                    id: 2000 + i,
+                    fullName: `Grade 1 Student ${i}`,
+                    ethiopianId: `ET${200000 + i}`,
+                    grade: "Grade 1",
+                    fromGrade: "Nursery",
+                    toGrade: "Grade 6",
+                    examPercent: Math.floor(Math.random() * 100),
+                    examPhoto: null,
+                    examViolations: 0,
+                    photoUrl: `https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i % 70}.jpg`,
+                    payments: { registration: i <= 30, term1Bus: i <= 25, term2Bus: i <= 20, term3Bus: i <= 15 }
+                });
+            }
+            students.push({
+                id: 999999,
+                fullName: "Test Student",
+                ethiopianId: "ET999999",
+                grade: "Grade 10",
+                fromGrade: "Grade 5",
+                toGrade: "Grade 12",
+                examPercent: 0,
+                examPhoto: null,
+                examViolations: 0,
+                photoUrl: "https://randomuser.me/api/portraits/men/1.jpg",
+                payments: { registration: false, term1Bus: false, term2Bus: false, term3Bus: false }
+            });
+            saveStudents();
         }
-    }
-    function sendLiveMessage() {
-        const input = document.getElementById('liveCallInput');
-        if(input && input.value.trim()) {
-            liveMessages.push({text: input.value, isMine:true});
-            renderLiveMessages();
-            // Auto-reply simulation for demo
-            setTimeout(() => {
-                liveMessages.push({text: "Thank you for your message. A representative will respond shortly.", isMine:false});
-                renderLiveMessages();
-            }, 1000);
-            input.value = '';
+        
+        if (storedTeachers) {
+            teachers = JSON.parse(storedTeachers);
+        } else {
+            teachers = [];
+            saveTeachers();
         }
     }
     
-    // Enhanced Feedback with star rating
+    function saveStudents() { localStorage.setItem('hermana_students', JSON.stringify(students)); }
+    function saveTeachers() { localStorage.setItem('hermana_teachers', JSON.stringify(teachers)); }
+    
+    // ==================== ENHANCED FEEDBACK STAR RATING ====================
     let selectedRating = 0;
     function initStarRating() {
         const stars = document.querySelectorAll('#starRating .star');
@@ -677,250 +692,652 @@
             star.addEventListener('click', function() {
                 selectedRating = parseInt(this.getAttribute('data-value'));
                 stars.forEach(s => s.classList.remove('active'));
-                for(let i=0; i<selectedRating; i++) stars[i].classList.add('active');
+                for(let i = 0; i < selectedRating; i++) stars[i].classList.add('active');
                 document.getElementById('feedbackRating').value = selectedRating;
             });
         });
     }
     
-    // Attach feedback form submit
-    document.getElementById('feedbackForm')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const rating = document.getElementById('feedbackRating').value;
-        const text = document.getElementById('feedbackText').value;
-        if(!rating || rating==0) { alert("Please rate us using stars!"); return; }
-        const feedbacks = JSON.parse(localStorage.getItem('hermana_feedbacks') || '[]');
-        feedbacks.unshift({rating, text, date: new Date().toISOString()});
-        localStorage.setItem('hermana_feedbacks', JSON.stringify(feedbacks));
-        document.getElementById('feedbackThanks').style.display = 'block';
-        document.getElementById('feedbackForm').reset();
-        document.querySelectorAll('#starRating .star').forEach(s => s.classList.remove('active'));
-        document.getElementById('feedbackRating').value = '0';
-        selectedRating = 0;
-        setTimeout(() => { document.getElementById('feedbackThanks').style.display = 'none'; closeModal('feedbackModal'); }, 2000);
-    });
+    // Attach feedback form submit (enhanced)
+    const feedbackForm = document.getElementById('feedbackForm');
+    if (feedbackForm) {
+        feedbackForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const rating = document.getElementById('feedbackRating').value;
+            const text = document.getElementById('feedbackText').value;
+            if (!rating || rating == 0) { alert("Please rate us using stars!"); return; }
+            if (!text.trim()) { alert("Please write your feedback before submitting."); return; }
+            const feedbacks = JSON.parse(localStorage.getItem('hermana_feedbacks') || '[]');
+            feedbacks.unshift({ rating, text, date: new Date().toISOString() });
+            localStorage.setItem('hermana_feedbacks', JSON.stringify(feedbacks));
+            const thanksMsg = document.getElementById('feedbackThanks');
+            thanksMsg.style.display = 'block';
+            document.getElementById('feedbackForm').reset();
+            document.querySelectorAll('#starRating .star').forEach(s => s.classList.remove('active'));
+            document.getElementById('feedbackRating').value = '0';
+            selectedRating = 0;
+            setTimeout(() => { 
+                thanksMsg.style.display = 'none'; 
+                closeModal('feedbackModal'); 
+            }, 2000);
+        });
+    }
     
-    // ==================== EXAM TIMER & ID GENERATION ====================
-    let examTimerInterval = null;
-    let examTimeLeft = 0;
-    
-    function startSecureExamWithTimer(studentId, questions, durationMinutes = 5) {
-        examTimeLeft = durationMinutes * 60;
+    // ==================== EXAM SECURITY FUNCTIONS ====================
+    async function startSecureExam(studentId, examQuestions) {
         examActive = true;
         examStartTime = Date.now();
         examViolations = 0;
         
-        // Request camera
-        navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
-            mediaStream = stream;
-            const videoTrack = stream.getVideoTracks()[0];
+        // Request camera access
+        try {
+            mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+            const videoTrack = mediaStream.getVideoTracks()[0];
             const imageCapture = new ImageCapture(videoTrack);
-            imageCapture.takePhoto().then(blob => {
-                examPhoto = URL.createObjectURL(blob);
-                const student = students.find(s => s.id === studentId);
-                if (student) student.examPhoto = examPhoto;
+            const blob = await imageCapture.takePhoto();
+            examPhoto = URL.createObjectURL(blob);
+            
+            // Save photo to student record
+            const student = students.find(s => s.id === studentId);
+            if (student) {
+                student.examPhoto = examPhoto;
                 saveStudents();
-            }).catch(()=>{});
-        }).catch(()=>{ alert("Camera permission needed for exam security."); });
+            }
+        } catch (err) {
+            console.log("Camera access denied:", err);
+            alert("Camera access is required for exam. Please allow camera access.");
+        }
         
+        // Lock body scroll and prevent right click
         document.body.style.overflow = 'hidden';
         document.addEventListener('contextmenu', preventContextMenu);
         document.addEventListener('keydown', preventKeyShortcuts);
         
-        showExamInterfaceWithTimer(questions, studentId);
+        // Show exam interface
+        showExamInterface(examQuestions, studentId);
     }
     
-    function showExamInterfaceWithTimer(questions, studentId) {
+    function preventContextMenu(e) {
+        if (examActive) {
+            e.preventDefault();
+            recordViolation("Right click detected");
+            return false;
+        }
+    }
+    
+    function preventKeyShortcuts(e) {
+        if (examActive) {
+            // Prevent F12, Ctrl+Shift+I, Ctrl+U, Ctrl+R, Alt+Tab
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                (e.ctrlKey && e.key === 'u') ||
+                (e.ctrlKey && e.key === 'r') ||
+                (e.altKey && e.key === 'Tab')) {
+                e.preventDefault();
+                recordViolation("Keyboard shortcut detected");
+                return false;
+            }
+        }
+    }
+    
+    function recordViolation(reason) {
+        examViolations++;
+        const warningBanner = document.getElementById('warningBanner');
+        warningBanner.style.display = 'block';
+        setTimeout(() => {
+            warningBanner.style.display = 'none';
+        }, 3000);
+        
+        if (examViolations >= 3) {
+            alert("⚠️ You have violated exam rules 3 times! Your exam has been terminated.");
+            terminateExam();
+        }
+    }
+    
+    function terminateExam() {
+        examActive = false;
+        if (mediaStream) {
+            mediaStream.getTracks().forEach(track => track.stop());
+        }
+        document.body.style.overflow = '';
+        document.removeEventListener('contextmenu', preventContextMenu);
+        document.removeEventListener('keydown', preventKeyShortcuts);
+        
+        const examContainer = document.getElementById('examContainer');
+        if (examContainer) {
+            examContainer.remove();
+        }
+        alert("Exam terminated due to rule violations.");
+        location.reload();
+    }
+    
+    function showExamInterface(questions, studentId) {
         const examHTML = `
             <div id="examContainer" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 10001; overflow-y: auto; padding: 30px;">
                 <div style="max-width: 800px; margin: 0 auto;">
                     <div style="background: #dc3545; color: white; padding: 10px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
-                        ⏱️ Time Remaining: <span id="examTimerDisplay">05:00</span> | ⚠️ Do NOT leave this window!
+                        ⚠️ Exam in Progress - Do NOT leave this window! Your photo has been taken. ⚠️
                     </div>
                     <div style="background: #f0f0f0; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
-                        <p>📸 Your photo has been captured for verification. You have 5 minutes to complete the exam.</p>
+                        <p><strong>📸 Your exam photo has been captured for verification</strong></p>
+                        <p>⚠️ Leaving this page will terminate your exam</p>
+                        <p>⚠️ Right-click is disabled</p>
+                        <p>⚠️ Keyboard shortcuts are disabled</p>
                     </div>
                     <form id="secureExamForm">
                         ${questions.map((q, i) => `
                             <div style="margin-bottom: 30px; padding: 20px; background: #f8f9fa; border-radius: 15px;">
                                 <h4>Question ${i+1}: ${q.text}</h4>
-                                ${q.options.map((opt, oi) => `<label style="display:block; margin:10px 0;"><input type="radio" name="q${i}" value="${oi}" required> ${opt}</label>`).join('')}
+                                <div style="margin-top: 15px;">
+                                    ${q.options.map((opt, oi) => `
+                                        <label style="display: block; margin: 10px 0; cursor: pointer;">
+                                            <input type="radio" name="q${i}" value="${oi}" required> ${opt}
+                                        </label>
+                                    `).join('')}
+                                </div>
                             </div>
                         `).join('')}
-                        <button type="submit" style="width:100%; padding:15px;">Submit Exam</button>
+                        <button type="submit" style="width: 100%; padding: 15px; font-size: 18px;">Submit Exam</button>
                     </form>
                 </div>
             </div>
         `;
+        
         document.body.insertAdjacentHTML('beforeend', examHTML);
-        document.documentElement.requestFullscreen().catch(e=>{});
         
-        examTimerInterval = setInterval(() => {
-            if (examTimeLeft <= 0) {
-                clearInterval(examTimerInterval);
-                alert("Time's up! Submitting exam automatically.");
-                submitExamAuto(studentId, questions);
-            } else {
-                examTimeLeft--;
-                const mins = Math.floor(examTimeLeft / 60);
-                const secs = examTimeLeft % 60;
-                const timerSpan = document.getElementById('examTimerDisplay');
-                if(timerSpan) timerSpan.innerText = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
-            }
-        }, 1000);
+        // Request fullscreen
+        document.documentElement.requestFullscreen().catch(err => console.log("Fullscreen error:", err));
         
-        document.getElementById('secureExamForm').addEventListener('submit', (e) => {
+        // Handle tab visibility change
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        
+        // Handle window blur
+        window.addEventListener('blur', handleWindowBlur);
+        
+        document.getElementById('secureExamForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            clearInterval(examTimerInterval);
-            submitExamAnswers(studentId, questions);
+            const answers = [];
+            for (let i = 0; i < questions.length; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                answers.push(selected ? parseInt(selected.value) : -1);
+            }
+            
+            let correct = 0;
+            answers.forEach((ans, i) => { if (ans === questions[i].correct) correct++; });
+            const percentage = Math.round((correct / questions.length) * 100);
+            
+            const student = students.find(s => s.id === studentId);
+            if (student) {
+                student.examScore = correct;
+                student.examPercent = percentage;
+                student.examViolations = examViolations;
+                saveStudents();
+            }
+            
+            alert(`Exam completed!\nScore: ${correct}/${questions.length} (${percentage}%)\nViolations: ${examViolations}\n${percentage >= 50 ? '✅ You passed!' : '❌ You failed!'}`);
+            
+            // Clean up
+            examActive = false;
+            if (mediaStream) mediaStream.getTracks().forEach(track => track.stop());
+            document.exitFullscreen();
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            window.removeEventListener('blur', handleWindowBlur);
+            document.body.style.overflow = '';
+            document.removeEventListener('contextmenu', preventContextMenu);
+            document.removeEventListener('keydown', preventKeyShortcuts);
+            
+            document.getElementById('examContainer').remove();
+            loadStudentDashboard();
         });
     }
     
-    function submitExamAnswers(studentId, questions) {
-        const answers = [];
-        for (let i = 0; i < questions.length; i++) {
-            const selected = document.querySelector(`input[name="q${i}"]:checked`);
-            answers.push(selected ? parseInt(selected.value) : -1);
+    function handleVisibilityChange() {
+        if (examActive && document.hidden) {
+            recordViolation("Tab switch detected");
+            if (examViolations >= 3) terminateExam();
         }
-        let correct = 0;
-        answers.forEach((ans, i) => { if (ans === questions[i].correct) correct++; });
-        const percentage = Math.round((correct / questions.length) * 100);
-        const student = students.find(s => s.id === studentId);
-        if (student) {
-            student.examScore = correct;
-            student.examPercent = percentage;
-            student.examViolations = examViolations;
-            if (percentage >= 50) {
-                // Generate unique Student ID Card Number after passing exam
-                const newStudentId = "HA" + new Date().getFullYear() + student.id.toString().slice(-4);
-                student.studentCardId = newStudentId;
-                alert(`🎉 CONGRATULATIONS! You passed the exam! Your new Hermana Academy Student ID is: ${newStudentId}`);
-            } else {
-                alert(`❌ You scored ${percentage}%. You need 50% to pass. Please retake the exam.`);
-            }
-            saveStudents();
-        }
-        cleanupExam();
-        loadStudentDashboard();
     }
     
-    function submitExamAuto(studentId, questions) {
-        const student = students.find(s => s.id === studentId);
-        if(student) {
-            student.examPercent = 0;
-            student.examViolations = examViolations + 1;
-            saveStudents();
-            alert("Time expired. You need to retake the exam.");
+    function handleWindowBlur() {
+        if (examActive) {
+            recordViolation("Window focus lost");
+            if (examViolations >= 3) terminateExam();
         }
-        cleanupExam();
-        loadStudentDashboard();
     }
     
-    function cleanupExam() {
-        examActive = false;
-        if (mediaStream) mediaStream.getTracks().forEach(t => t.stop());
-        document.body.style.overflow = '';
-        document.removeEventListener('contextmenu', preventContextMenu);
-        document.removeEventListener('keydown', preventKeyShortcuts);
-        document.exitFullscreen().catch(e=>{});
-        const container = document.getElementById('examContainer');
-        if(container) container.remove();
-        if(examTimerInterval) clearInterval(examTimerInterval);
+    function generateExamQuestions(grade) {
+        if (grade === "Nursery" || grade === "Lower KG" || grade === "Upper KG") {
+            return [
+                { id: 1, text: "What color is the sun?", options: ["Red", "Yellow", "Blue", "Green"], correct: 1 },
+                { id: 2, text: "Which animal says 'Moo'?", options: ["Cat", "Dog", "Cow", "Lion"], correct: 2 },
+                { id: 3, text: "What is 1 + 1?", options: ["1", "2", "3", "4"], correct: 1 }
+            ];
+        }
+        const gradeNum = parseInt(grade.match(/\d+/)?.[0] || 5);
+        if (gradeNum <= 4) return [
+            { id: 1, text: "What is 12 + 7?", options: ["18", "19", "20", "21"], correct: 1 },
+            { id: 2, text: "የኢትዮጵያ ዋና ከተማ?", options: ["ጎንደር", "አዲስ አበባ", "ሀዋሳ", "ባህርዳር"], correct: 1 },
+            { id: 3, text: "5 × 3 = ?", options: ["12", "15", "18", "20"], correct: 1 }
+        ];
+        else if (gradeNum <= 8) return [
+            { id: 1, text: "144 ÷ 12 = ?", options: ["10", "12", "14", "16"], correct: 1 },
+            { id: 2, text: "Capital of Ethiopia?", options: ["Adama", "Addis Ababa", "Harar", "Jimma"], correct: 1 },
+            { id: 3, text: "60 km/h for 2.5h = ? km", options: ["120", "150", "180", "100"], correct: 1 }
+        ];
+        else return [
+            { id: 1, text: "3x - 7 = 11, x = ?", options: ["4", "5", "6", "7"], correct: 2 },
+            { id: 2, text: "Oxygen atomic number?", options: ["6", "7", "8", "9"], correct: 2 },
+            { id: 3, text: "√169 = ?", options: ["11", "12", "13", "14"], correct: 2 }
+        ];
     }
     
-    // Teacher registration with approval simulation and email notification
+    function getGradeSections(grade) {
+        const gradeStudents = students.filter(s => s.grade === grade);
+        if (gradeStudents.length > 40) {
+            const mid = Math.ceil(gradeStudents.length / 2);
+            return { sectionA: gradeStudents.slice(0, mid), sectionB: gradeStudents.slice(mid) };
+        }
+        return { sectionA: gradeStudents, sectionB: [] };
+    }
+    
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        if (tab === 'student') { document.querySelector('.tab-btn').classList.add('active'); document.getElementById('studentPanel').classList.add('active'); }
+        else if (tab === 'teacher') { document.querySelectorAll('.tab-btn')[1].classList.add('active'); document.getElementById('teacherPanel').classList.add('active'); }
+        else if (tab === 'board') { document.querySelectorAll('.tab-btn')[2].classList.add('active'); document.getElementById('boardPanel').classList.add('active'); }
+        else if (tab === 'director') { document.querySelectorAll('.tab-btn')[3].classList.add('active'); document.getElementById('directorPanel').classList.add('active'); }
+        else { document.querySelectorAll('.tab-btn')[4].classList.add('active'); document.getElementById('parentPanel').classList.add('active'); }
+    }
+    
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    window.openModal = openModal; window.closeModal = closeModal;
+    
+    // Teacher Registration
     document.getElementById('teacherRegisterForm')?.addEventListener('submit', (e) => {
         e.preventDefault();
         const docFile = document.getElementById('teacherDoc').files[0];
-        if(!docFile) { alert("Please upload your education document."); return; }
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-            const grades = Array.from(document.getElementById('teacherGrades').selectedOptions).map(opt => opt.value);
-            const newTeacher = {
-                id: Date.now(),
-                fullName: document.getElementById('teacherName').value,
-                email: document.getElementById('teacherEmail').value,
-                password: btoa(document.getElementById('teacherPassword').value),
-                phone: document.getElementById('teacherPhone').value,
-                educationDoc: ev.target.result,
-                teachingGrades: grades,
-                reason: document.getElementById('teacherReason').value,
-                status: 'pending',
-                appliedDate: new Date().toISOString()
+        let docUrl = null;
+        if (docFile) {
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const grades = Array.from(document.getElementById('teacherGrades').selectedOptions).map(opt => opt.value);
+                const newTeacher = {
+                    id: Date.now(),
+                    fullName: document.getElementById('teacherName').value,
+                    email: document.getElementById('teacherEmail').value,
+                    password: btoa(document.getElementById('teacherPassword').value),
+                    phone: document.getElementById('teacherPhone').value,
+                    educationDoc: ev.target.result,
+                    teachingGrades: grades,
+                    reason: document.getElementById('teacherReason').value,
+                    status: 'pending',
+                    appliedDate: new Date().toISOString()
+                };
+                teachers.push(newTeacher);
+                saveTeachers();
+                alert('✅ Application submitted! Board will review your application.');
+                document.getElementById('teacherRegisterForm').reset();
             };
-            teachers.push(newTeacher);
-            saveTeachers();
-            // Simulate email notification
-            alert(`📧 Application submitted! A confirmation email has been sent to ${newTeacher.email} (simulated). You will receive another email when the board approves your application.`);
-            document.getElementById('teacherRegisterForm').reset();
-        };
-        reader.readAsDataURL(docFile);
+            reader.readAsDataURL(docFile);
+        } else {
+            alert('Please upload your education document!');
+        }
     });
     
-    // Teacher login checks status
+    // Teacher Login
     document.getElementById('teacherLoginForm')?.addEventListener('submit', (e) => {
         e.preventDefault();
         const email = document.getElementById('teacherLoginEmail').value;
         const password = document.getElementById('teacherLoginPassword').value;
         const teacher = teachers.find(t => t.email === email && atob(t.password) === password);
         if (teacher) {
-            if(teacher.status === 'pending') {
-                alert("⏳ Your application is pending board approval. You will receive an email once approved.");
-                return;
-            } else if(teacher.status === 'rejected') {
-                alert("❌ Your application has been rejected. Please contact the board for more information.");
-                return;
-            }
             currentUser = { id: teacher.id, name: teacher.fullName, role: 'teacher', status: teacher.status };
             localStorage.setItem('token', 'teacher-token');
             loadTeacherDashboard();
         } else {
-            alert('Invalid credentials or application not approved!');
+            alert('Invalid credentials or application not approved yet!');
         }
     });
     
-    window.sendLiveMessage = sendLiveMessage;
-    document.getElementById('sendLiveMessageBtn')?.addEventListener('click', sendLiveMessage);
-    document.getElementById('liveCallInput')?.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendLiveMessage(); });
+    // Board Login
+    document.getElementById('boardLoginForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('boardEmail').value;
+        const password = document.getElementById('boardPassword').value;
+        if (email === 'board@hermana.edu' && password === 'board123') {
+            currentUser = { name: 'Board Member', role: 'board' };
+            localStorage.setItem('token', 'board-token');
+            loadBoardDashboard();
+        } else {
+            alert('Invalid credentials!');
+        }
+    });
     
-    window.openSkypeCall = () => { openModal('skypeModal'); renderLiveMessages(); };
+    // Director Login
+    document.getElementById('directorLoginForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (document.getElementById('directorEmail').value === 'director@hermana.edu' && document.getElementById('directorPassword').value === 'director123') {
+            currentUser = { name: 'Director', role: 'director' };
+            localStorage.setItem('token', 'director-token');
+            loadDirectorDashboard();
+        } else alert('Invalid credentials!');
+    });
     
-    // Override startSecureExam to use timer
-    window.startSecureExam = (studentId, questions) => { startSecureExamWithTimer(studentId, questions, 5); };
+    // Parent Login
+    document.getElementById('parentLoginForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const student = students.find(s => s.ethiopianId === document.getElementById('parentIdentifier').value || s.email === document.getElementById('parentIdentifier').value);
+        if (!student) { alert('Student not found!'); return; }
+        if (atob(student.password) !== (document.getElementById('parentPassword').value || 'default')) { alert('Wrong password!'); return; }
+        currentUser = { id: student.id, name: student.fullName, role: 'parent' };
+        localStorage.setItem('token', 'parent-token');
+        loadParentDashboard();
+    });
     
-    // All other existing functions (loadData, switchTab, etc.) remain unchanged from original
-    // [The rest of the original script continues here...]
-    // (To keep file size manageable, all original functions like loadData, switchTab, loadStudentDashboard, etc. are assumed present)
-    // For brevity in this response, key functions are shown above; original functionality preserved.
+    // Student Login
+    document.getElementById('studentLoginForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const student = students.find(s => s.ethiopianId === document.getElementById('studentIdentifier').value || s.email === document.getElementById('studentIdentifier').value);
+        if (!student) { alert('Student not found!'); return; }
+        if (atob(student.password) !== (document.getElementById('studentPassword').value || 'default')) { alert('Wrong password!'); return; }
+        currentUser = { id: student.id, name: student.fullName, role: 'student', grade: student.grade };
+        localStorage.setItem('token', 'student-token');
+        loadStudentDashboard();
+    });
     
-    // Re-declare essential missing functions to avoid errors
-    let students = [], teachers = [], currentUser = null, localPayments = [], examActive = false, mediaStream = null, examViolations = 0;
-    function saveStudents() { localStorage.setItem('hermana_students', JSON.stringify(students)); }
-    function saveTeachers() { localStorage.setItem('hermana_teachers', JSON.stringify(teachers)); }
-    function loadData() { /* original loadData logic would be here */ }
-    function switchTab(tab) { /* original logic */ }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    // Student Registration
+    document.getElementById('registerForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const photoFile = document.getElementById('regPhoto').files[0];
+        if (!photoFile) { alert('Please upload photo!'); return; }
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            students.push({
+                id: Date.now(),
+                fullName: document.getElementById('regName').value,
+                ethiopianId: document.getElementById('regEthiopianId').value,
+                email: document.getElementById('regEmail').value,
+                password: btoa(document.getElementById('regPassword').value || 'default'),
+                grade: document.getElementById('regFromGrade').value,
+                fromGrade: document.getElementById('regFromGrade').value,
+                toGrade: document.getElementById('regToGrade').value,
+                examPercent: 0,
+                examPhoto: null,
+                examViolations: 0,
+                photoUrl: ev.target.result,
+                payments: { registration: false, term1Bus: false, term2Bus: false, term3Bus: false }
+            });
+            saveStudents();
+            alert('✅ Registration successful! Please login.');
+            document.getElementById('registerForm').reset();
+        };
+        reader.readAsDataURL(photoFile);
+    });
+    
+    function generateIDCard(student) {
+        const studentId = 'HA' + student.id + new Date().getFullYear();
+        return `
+            <div class="id-card" id="student-id-card">
+                <div class="id-card-ethiopia"></div>
+                <div class="id-logo">
+                    <div class="id-logo-left"><img src="logo.png" onerror="this.src='https://via.placeholder.com/60'"><small>Hermana Academy</small></div>
+                    <div class="id-logo-center"><h3>የኸርማና አካዳሚ</h3><p>HERMANA ACADEMY</p><p>STUDENT IDENTIFICATION CARD</p></div>
+                    <div class="id-logo-right"><div class="flag-icon">🇪🇹</div><small>Ethiopia</small></div>
+                </div>
+                <div class="id-photo"><img class="id-photo-img" src="${student.photoUrl}" alt="Photo"></div>
+                <div class="id-details">
+                    <div class="id-row"><span class="id-label">Full Name:</span><span class="id-value">${student.fullName}</span></div>
+                    <div class="id-row"><span class="id-label">Student ID:</span><span class="id-value">${studentId}</span></div>
+                    <div class="id-row"><span class="id-label">Ethiopian ID:</span><span class="id-value">${student.ethiopianId}</span></div>
+                    <div class="id-row"><span class="id-label">Grade:</span><span class="id-value">${student.grade}</span></div>
+                    <div class="id-row"><span class="id-label">From/To Grade:</span><span class="id-value">${student.fromGrade} - ${student.toGrade}</span></div>
+                    <div class="id-row"><span class="id-label">Issued Date:</span><span class="id-value">${new Date().toLocaleDateString()}</span></div>
+                    <div class="id-row"><span class="id-label">Valid Until:</span><span class="id-value">${new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toLocaleDateString()}</span></div>
+                </div>
+                <div class="id-footer"><div class="id-signature">Authorized Signature: _________________</div><div>www.hermanaacademy.edu.et</div></div>
+            </div>`;
+    }
+    
+    window.downloadIDCard = () => {
+        const card = document.getElementById('student-id-card');
+        if (!card) return;
+        html2canvas(card, { scale: 2 }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `ID_Card_${currentUser.name}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+    };
+    
+    window.printIDCard = () => {
+        const card = document.getElementById('student-id-card');
+        if (!card) return;
+        const win = window.open('', '_blank');
+        win.document.write(`<html><head><title>ID Card</title><style>body{display:flex;justify-content:center;align-items:center;min-height:100vh;}</style></head><body>${card.outerHTML}<script>window.print();setTimeout(()=>window.close(),500);<\/script></body></html>`);
+        win.document.close();
+    };
+    
+    window.makePayment = (type, amount) => {
+        if (!confirm(`Pay ${amount} ETB for ${type}?`)) return;
+        const student = students.find(s => s.id === currentUser.id);
+        if (student) {
+            student.payments[type] = true;
+            saveStudents();
+            const newPayment = { transactionId: 'TXN-' + Date.now(), amount, paymentType: type, studentId: currentUser.id, studentName: student.fullName, date: new Date().toISOString() };
+            localPayments.unshift(newPayment);
+            localStorage.setItem(`receipts_${currentUser.id}`, JSON.stringify(localPayments));
+            alert(`✅ Payment Successful!\nAmount: ${amount} ETB`);
+            loadStudentDashboard();
+        }
+    };
+    
+    window.downloadReceipt = (transactionId) => {
+        const payment = localPayments.find(p => p.transactionId === transactionId);
+        if (!payment) return;
+        const receiptText = `HERMANA ACADEMY RECEIPT\nReceipt No: ${payment.transactionId}\nDate: ${new Date(payment.date).toLocaleString()}\nStudent: ${payment.studentName}\nPayment Type: ${payment.paymentType}\nAmount: ${payment.amount} ETB\nStatus: PAID`;
+        const blob = new Blob([receiptText], { type: 'text/plain' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `Receipt_${payment.transactionId}.txt`;
+        a.click();
+    };
+    
+    async function loadStudentDashboard() {
+        document.getElementById('studentAuth').style.display = 'none';
+        const dashboard = document.getElementById('studentDashboard');
+        dashboard.style.display = 'block';
+        const student = students.find(s => s.id === currentUser.id);
+        const saved = localStorage.getItem(`receipts_${currentUser.id}`);
+        if (saved) localPayments = JSON.parse(saved);
+        
+        let examHtml = '';
+        if (student.examPercent === 0) {
+            const questions = generateExamQuestions(student.grade);
+            examHtml = `<div class="card"><h3>✍️ Secure Ability Exam (Required - ${student.grade} Level)</h3>
+                        <p>⚠️ <strong>Exam Rules:</strong></p>
+                        <ul style="margin-left: 20px; margin-bottom: 15px;">
+                            <li>Your photo will be taken before the exam starts</li>
+                            <li>Leaving the exam window will be recorded as a violation</li>
+                            <li>3 violations will terminate your exam</li>
+                            <li>Right-click and keyboard shortcuts are disabled</li>
+                            <li>Fullscreen mode is required</li>
+                        </ul>
+                        <button onclick="startSecureExam(${student.id}, ${JSON.stringify(generateExamQuestions(student.grade)).replace(/"/g, '&quot;')})" class="btn-success">🎥 Start Secure Exam →</button>
+                        </div>`;
+        }
+        
+        const examPassed = student.examPercent >= 50;
+        dashboard.innerHTML = `
+            <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px"><div><h2>Welcome, ${student.fullName}!</h2><p>ID: ${student.ethiopianId} | Grade: ${student.grade}</p>${student.examViolations > 0 ? `<p style="color: #ffcccc;">⚠️ Exam Violations: ${student.examViolations}</p>` : ''}<button onclick="logout()" style="background:white;color:#667eea;margin-top:10px;">Logout</button></div></div>
+            <div class="dashboard-section"><div class="section-title">🪪 Student ID Card</div><div class="id-card-container">${generateIDCard(student)}</div><div class="id-card-actions"><button onclick="downloadIDCard()" class="btn-small">📥 Download ID</button><button onclick="printIDCard()" class="btn-small">🖨️ Print ID</button></div></div>
+            ${examHtml}
+            ${student.examPercent > 0 ? `<div class="card"><h3>📊 Exam Result</h3><p>Score: ${student.examPercent}%</p><p>Violations: ${student.examViolations || 0}</p><span class="badge ${examPassed ? 'badge-passed' : 'badge-failed'}">${examPassed ? 'PASSED - You can pay fees' : 'FAILED - Retake exam'}</span></div>` : ''}
+            ${examPassed ? `<div class="card"><h3>💰 Fee Payments (Demo - Real amounts)</h3><div style="overflow-x:auto"><table><thead><tr><th>Package</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody>
+                <tr><td>Registration Fee</span></td><td>1000 ETB</td><td class="${student.payments.registration ? 'badge-paid' : 'badge-unpaid'}">${student.payments.registration ? 'Paid' : 'Unpaid'}</td><td>${!student.payments.registration ? `<button onclick="makePayment('registration',1000)">Pay Now</button>` : '✅'}</td></tr>
+                <tr><td>Term 1 + Bus</td><td>3500 ETB</td><td class="${student.payments.term1Bus ? 'badge-paid' : 'badge-unpaid'}">${student.payments.term1Bus ? 'Paid' : 'Unpaid'}</td><td>${!student.payments.term1Bus ? `<button onclick="makePayment('term1Bus',3500)">Pay Now</button>` : '✅'}</td></tr>
+                <tr><td>Term 2 + Bus</td><td>3500 ETB</td><td class="${student.payments.term2Bus ? 'badge-paid' : 'badge-unpaid'}">${student.payments.term2Bus ? 'Paid' : 'Unpaid'}</td><td>${!student.payments.term2Bus ? `<button onclick="makePayment('term2Bus',3500)">Pay Now</button>` : '✅'}</td></tr>
+                <tr><td>Term 3 + Bus</td><td>3500 ETB</td><td class="${student.payments.term3Bus ? 'badge-paid' : 'badge-unpaid'}">${student.payments.term3Bus ? 'Paid' : 'Unpaid'}</td><td>${!student.payments.term3Bus ? `<button onclick="makePayment('term3Bus',3500)">Pay Now</button>` : '✅'}</td></tr>
+            </tbody></div></div>
+            <div class="payment-history"><div class="section-title">📋 Payment History</div>${localPayments.length === 0 ? '<p>No payments yet.</p>' : localPayments.map(p => `<div class="payment-item"><div><strong>${p.paymentType}</strong><br>${p.amount} ETB</div><div><button onclick="downloadReceipt('${p.transactionId}')" class="btn-small">📥 Receipt</button></div></div>`).join('')}</div>` : ''}
+            <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 Our Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>`;
+    }
+    
+    function loadTeacherDashboard() {
+        document.getElementById('teacherAuth').style.display = 'none';
+        const dashboard = document.getElementById('teacherDashboard');
+        dashboard.style.display = 'block';
+        
+        const teacher = teachers.find(t => t.id === currentUser.id);
+        const statusClass = teacher.status === 'approved' ? 'badge-approved' : (teacher.status === 'rejected' ? 'badge-rejected' : 'badge-pending');
+        const statusText = teacher.status === 'approved' ? '✅ Approved' : (teacher.status === 'rejected' ? '❌ Rejected' : '⏳ Pending Review');
+        
+        dashboard.innerHTML = `
+            <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px">
+                <div><h2>👨‍🏫 Welcome, ${teacher.fullName}!</h2><p>Email: ${teacher.email} | Phone: ${teacher.phone}</p><p>Status: <span class="status-badge ${statusClass}">${statusText}</span></p><button onclick="logout()" style="background:white;color:#667eea;margin-top:10px;">Logout</button></div>
+            </div>
+            <div class="card"><h3>📚 Your Information</h3><p><strong>Teaching Grades:</strong> ${teacher.teachingGrades.join(', ')}</p><p><strong>Application Date:</strong> ${new Date(teacher.appliedDate).toLocaleDateString()}</p><p><strong>Your Message:</strong> ${teacher.reason}</p></div>
+            <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 Our Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>`;
+    }
+    
+    function loadBoardDashboard() {
+        document.getElementById('boardAuth').style.display = 'none';
+        const dashboard = document.getElementById('boardDashboard');
+        dashboard.style.display = 'block';
+        
+        const pendingTeachers = teachers.filter(t => t.status === 'pending');
+        const allStudents = students;
+        const totalStudents = allStudents.length;
+        const totalTeachers = teachers.length;
+        const approvedTeachers = teachers.filter(t => t.status === 'approved').length;
+        
+        let teachersHtml = '<div class="student-table"><h3>📝 Pending Teacher Applications</h3>';
+        if (pendingTeachers.length === 0) {
+            teachersHtml += '<p>No pending applications.</p>';
+        } else {
+            teachersHtml += `<table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Grades</th><th>Message</th><th>Document</th><th>Action</th></tr></thead><tbody>`;
+            pendingTeachers.forEach(t => {
+                teachersHtml += `<tr>
+                    <td>${t.fullName}</td><td>${t.email}</td><td>${t.phone}</td>
+                    <td>${t.teachingGrades.join(', ')}</td><td>${t.reason.substring(0, 50)}...</td>
+                    <td><a href="${t.educationDoc}" download="Teacher_Doc_${t.id}.pdf" class="btn-small">📄 View</a></td>
+                    <td><button onclick="reviewTeacher(${t.id}, 'approved')" class="btn-small btn-success" style="margin-right:5px;">✅ Approve</button>
+                    <button onclick="reviewTeacher(${t.id}, 'rejected')" class="btn-small btn-danger">❌ Reject</button></td>
+                </tr>`;
+            });
+            teachersHtml += `</tbody>}</div>`;
+        }
+        
+        dashboard.innerHTML = `
+            <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+                    <div><h2>🎯 Board of Directors Dashboard</h2><p>Welcome, Board Member</p></div>
+                    <button onclick="openSkypeCall()" style="background:#0078ff; color:white; padding:12px 25px; border-radius:10px; border:none; cursor:pointer;">🎥 Join Skype Meeting</button>
+                    <button onclick="logout()" style="background:white;color:#667eea;margin-top:10px;">Logout</button>
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="card"><h3>📊 School Statistics</h3><p><strong>Total Students:</strong> ${totalStudents}</p><p><strong>Total Teachers:</strong> ${totalTeachers}</p><p><strong>Approved Teachers:</strong> ${approvedTeachers}</p><p><strong>Pending Applications:</strong> ${pendingTeachers.length}</p></div>
+                <div class="card"><h3>💰 Financial Overview</h3><p><strong>Total Registration Fees Collected:</strong> ${students.filter(s => s.payments.registration).length * 1000} ETB</p><p><strong>Total Term Fees Collected:</strong> ${students.filter(s => s.payments.term1Bus).length * 3500} ETB</p><p><strong>Pending Payments:</strong> ${students.filter(s => !s.payments.registration).length} Students</p></div>
+            </div>
+            ${teachersHtml}
+            <div class="card"><h3>📋 Recent Student Registrations</h3><div class="student-table"><tr><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Grade</th><th>Exam %</th><th>Payment Status</th></tr></thead><tbody>
+                ${allStudents.slice(0, 10).map(s => `<tr><td>${s.fullName}</td><td>${s.ethiopianId}</td><td>${s.grade}</td><td>${s.examPercent}%</td><td>${s.payments.registration ? '✅ Paid' : '❌ Unpaid'}</td></tr>`).join('')}
+            </tbody></div></div>
+            <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 Our Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>`;
+    }
+    
+    window.reviewTeacher = (teacherId, status) => {
+        const teacher = teachers.find(t => t.id === teacherId);
+        if (teacher) {
+            teacher.status = status;
+            saveTeachers();
+            alert(`Teacher ${teacher.fullName} has been ${status}!`);
+            loadBoardDashboard();
+        }
+    };
+    
+    window.openSkypeCall = () => {
+        openModal('skypeModal');
+    };
+    
+    function loadDirectorDashboard() {
+        document.getElementById('directorAuth').style.display = 'none';
+        const dashboard = document.getElementById('directorDashboard');
+        dashboard.style.display = 'block';
+        
+        let gradesHtml = '<div class="grade-buttons">';
+        allGrades.forEach(grade => {
+            const studentCount = students.filter(s => s.grade === grade).length;
+            const isKg = grade.includes("KG") || grade === "Nursery";
+            gradesHtml += `<button class="grade-btn ${isKg ? 'kg' : ''}" onclick="showGradeStudents('${grade}')">${grade} (${studentCount})</button>`;
+        });
+        gradesHtml += '</div><div id="studentsDisplay" class="student-table"><p>Click on a grade to view students</p></div>';
+        
+        dashboard.innerHTML = `
+            <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px">
+                <div><h2>📊 Director Dashboard</h2><p>Total Students: ${students.length} | Total Teachers: ${teachers.length}</p><button onclick="logout()" style="background:white;color:#667eea;margin-top:10px;">Logout</button></div>
+            </div>
+            ${gradesHtml}
+            <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 Our Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>`;
+    }
+    
+    window.showGradeStudents = (grade) => {
+        const gradeStudents = students.filter(s => s.grade === grade);
+        const sections = getGradeSections(grade);
+        
+        let tableHtml = `<h3>${grade} - ${gradeStudents.length} Students</h3>`;
+        
+        if (sections.sectionB.length > 0) {
+            tableHtml += `<h4>Section A (${sections.sectionA.length} students)</h4><table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Exam %</th><th>Violations</th><th>Registration</th><th>Term1+Bus</th></tr></thead><tbody>
+                ${sections.sectionA.map(s => `<tr><td>${s.fullName}</td><td>${s.ethiopianId}</td><td>${s.examPercent}%</td><td>${s.examViolations || 0}</td><td>${s.payments.registration ? '✅' : '❌'}</td><td>${s.payments.term1Bus ? '✅' : '❌'}</td></tr>`).join('')}
+            </tbody></table>
+            <h4>Section B (${sections.sectionB.length} students)</h4><table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Exam %</th><th>Violations</th><th>Registration</th><th>Term1+Bus</th></tr></thead><tbody>
+                ${sections.sectionB.map(s => `<tr><td>${s.fullName}</td><td>${s.ethiopianId}</td><td>${s.examPercent}%</td><td>${s.examViolations || 0}</td><td>${s.payments.registration ? '✅' : '❌'}</td><td>${s.payments.term1Bus ? '✅' : '❌'}</td></tr>`).join('')}
+            </tbody></table>`;
+        } else {
+            tableHtml += `<table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Exam %</th><th>Violations</th><th>Registration</th><th>Term1+Bus</th></tr></thead><tbody>
+                ${sections.sectionA.map(s => `<tr><td>${s.fullName}</td><td>${s.ethiopianId}</td><td>${s.examPercent}%</td><td>${s.examViolations || 0}</td><td>${s.payments.registration ? '✅' : '❌'}</td><td>${s.payments.term1Bus ? '✅' : '❌'}</td></tr>`).join('')}
+            </tbody></table>`;
+        }
+        
+        document.getElementById('studentsDisplay').innerHTML = tableHtml;
+    };
+    
+    async function loadParentDashboard() {
+        document.getElementById('parentAuth').style.display = 'none';
+        const dashboard = document.getElementById('parentDashboard');
+        dashboard.style.display = 'block';
+        const student = students.find(s => s.id === currentUser.id);
+        dashboard.innerHTML = `
+            <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px"><div><h2>👪 Parent Hub</h2><p>Viewing: ${student.fullName}</p><button onclick="logout()" style="background:white;color:#667eea;margin-top:10px;">Logout</button></div></div>
+            <div class="card"><h3>📊 Student Information</h3><p><strong>Name:</strong> ${student.fullName}</p><p><strong>Ethiopian ID:</strong> ${student.ethiopianId}</p><p><strong>Current Grade:</strong> ${student.grade}</p><p><strong>Grade Range:</strong> ${student.fromGrade} to ${student.toGrade}</p><p><strong>Exam Score:</strong> ${student.examPercent}%</p><p><strong>Exam Violations:</strong> ${student.examViolations || 0}</p><span class="badge ${student.examPercent >= 50 ? 'badge-passed' : 'badge-failed'}">${student.examPercent >= 50 ? 'Passed' : 'Failed'}</span></div>
+            <div class="card"><h3>💰 Payment Status</h3><p>Registration: ${student.payments.registration ? '✅ Paid' : '❌ Unpaid'}</p><p>Term 1 + Bus: ${student.payments.term1Bus ? '✅ Paid' : '❌ Unpaid'}</p><p>Term 2 + Bus: ${student.payments.term2Bus ? '✅ Paid' : '❌ Unpaid'}</p><p>Term 3 + Bus: ${student.payments.term3Bus ? '✅ Paid' : '❌ Unpaid'}</p></div>
+            <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 Our Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>`;
+    }
+    
     function logout() { localStorage.clear(); location.reload(); }
-    function loadStudentDashboard() { /* original */ }
-    function loadTeacherDashboard() { /* original */ }
-    function loadBoardDashboard() { /* original */ }
-    function loadDirectorDashboard() { /* original */ }
-    function loadParentDashboard() { /* original */ }
-    window.switchTab = switchTab; window.closeModal = closeModal; window.openModal = openModal; window.logout = logout;
     
-    initStarRating();
     loadData();
-    if (localStorage.getItem('token')) { /* auto-login checks */ }
+    initStarRating(); // Initialize star rating for feedback
+    if (localStorage.getItem('token')) {
+        if (localStorage.getItem('token').includes('director')) loadDirectorDashboard();
+        else if (localStorage.getItem('token').includes('teacher')) { const teacher = teachers.find(t => t.id === currentUser?.id); if (teacher) loadTeacherDashboard(); }
+        else if (localStorage.getItem('token').includes('board')) loadBoardDashboard();
+        else if (localStorage.getItem('token').includes('parent')) { currentUser = { id: 999999, role: 'parent' }; loadParentDashboard(); }
+        else if (localStorage.getItem('token')) { const student = students.find(s => s.id === 999999); if (student) { currentUser = { id: 999999, name: student.fullName, role: 'student' }; loadStudentDashboard(); } }
+    }
+    
+    window.switchTab = switchTab;
+    window.logout = logout;
+    window.showGradeStudents = showGradeStudents;
+    window.startSecureExam = startSecureExam;
 </script>
 
 <div class="creator-credit">
     Created with <span>❤️</span> by <span>Muhammad Ilyas</span> | Hermana Academy Management System
 </div>
-<div class="live-call-container">
-    <div class="call-button" onclick="openSkypeCall()">
-        📞
-    </div>
-</div>
+
 </body>
-                                                                      </html>
+    </html>
