@@ -102,6 +102,8 @@
         .badge-passed { background: #48bb78; color: white; }
         .badge-failed { background: #f56565; color: white; }
         .badge-pending { background: #f59e0b; color: white; }
+        .badge-approved { background: #48bb78; color: white; }
+        .badge-rejected { background: #f56565; color: white; }
         .card { background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
         
         /* Ethiopian Style ID Card */
@@ -225,14 +227,19 @@
         .footer-links a { color: #667eea; text-decoration: none; cursor: pointer; font-weight: 500; }
         .footer-links a:hover { text-decoration: underline; }
         
-        .bank-info {
-            background: #e8f5e9;
+        .receipt-item {
+            background: white;
             padding: 15px;
+            margin-bottom: 10px;
             border-radius: 10px;
-            margin: 15px 0;
-            border-left: 4px solid #28a745;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            border-left: 4px solid #f59e0b;
         }
-        .bank-info h4 { color: #2e7d32; margin-bottom: 10px; }
+        .receipt-item.verified { border-left-color: #48bb78; }
+        .receipt-item.rejected { border-left-color: #f56565; }
         
         .creator-credit {
             text-align: center;
@@ -272,9 +279,11 @@
         
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('student')">👨‍🎓 Student Portal</button>
+            <button class="tab-btn" onclick="switchTab('teacher')">👨‍🏫 Teacher Portal</button>
+            <button class="tab-btn" onclick="switchTab('finance')">💰 Finance Portal</button>
+            <button class="tab-btn" onclick="switchTab('board')">🎯 Board Dashboard</button>
             <button class="tab-btn" onclick="switchTab('director')">📊 Director Panel</button>
             <button class="tab-btn" onclick="switchTab('parent')">👪 Parents Hub</button>
-            <button class="tab-btn" onclick="switchTab('feedback')">💬 Feedback</button>
         </div>
     </div>
 
@@ -301,8 +310,7 @@
                             <option>Grade 5</option><option>Grade 6</option><option>Grade 7</option><option>Grade 8</option>
                             <option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option>
                         </select></div>
-                        <div class="form-group"><label>Upload Your Photo (for ID Card) *</label><input type="file" id="regPhoto" accept="image/*" required></div>
-                        <div class="form-group"><label>Upload Ethiopian ID Photo *</label><input type="file" id="regIdPhoto" accept="image/*" required></div>
+                        <div class="form-group"><label>Upload Your Photo *</label><input type="file" id="regPhoto" accept="image/*" required></div>
                         <button type="submit">Register →</button>
                     </form>
                 </div>
@@ -314,14 +322,78 @@
                         <button type="submit">Login →</button>
                     </form>
                     <div class="card">
-                        <h3>📢 Demo Account</h3>
+                        <h3>📢 Demo Accounts</h3>
                         <p><strong>Student:</strong> ET999999 / student123</p>
+                        <p><strong>Teacher:</strong> teacher@hermana.edu / teacher123</p>
+                        <p><strong>Finance:</strong> finance@hermana.edu / finance123</p>
                         <p><strong>Director:</strong> director@hermana.edu / director123</p>
+                        <p><strong>Board:</strong> board@hermana.edu / board123</p>
                     </div>
                 </div>
             </div>
         </div>
         <div id="studentDashboard" style="display: none;"></div>
+    </div>
+
+    <!-- Teacher Panel -->
+    <div id="teacherPanel" class="panel">
+        <div id="teacherAuth">
+            <div class="grid-2">
+                <div>
+                    <h2>📝 New Teacher Registration</h2>
+                    <form id="teacherRegisterForm" enctype="multipart/form-data">
+                        <div class="form-group"><label>Full Name *</label><input type="text" id="teacherName" required></div>
+                        <div class="form-group"><label>Email *</label><input type="email" id="teacherEmail" required></div>
+                        <div class="form-group"><label>Password *</label><input type="password" id="teacherPassword" required></div>
+                        <div class="form-group"><label>Phone Number *</label><input type="tel" id="teacherPhone" required placeholder="+251-XXX-XXXX"></div>
+                        <div class="form-group"><label>Education Document *</label><input type="file" id="teacherDoc" accept=".pdf,.jpg,.png" required></div>
+                        <div class="form-group"><label>Teaching Grades *</label><select id="teacherGrades" multiple size="5">
+                            <option>Nursery</option><option>Lower KG</option><option>Upper KG</option>
+                            <option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option>
+                            <option>Grade 5</option><option>Grade 6</option><option>Grade 7</option><option>Grade 8</option>
+                            <option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option>
+                        </select><small>Hold Ctrl to select multiple</small></div>
+                        <div class="form-group"><label>Why join Hermana Academy? *</label><textarea rows="3" id="teacherReason" placeholder="Tell us about your teaching philosophy..."></textarea></div>
+                        <button type="submit">Submit Application →</button>
+                    </form>
+                </div>
+                <div>
+                    <h2>🔐 Teacher Login</h2>
+                    <form id="teacherLoginForm">
+                        <div class="form-group"><label>Email</label><input type="email" id="teacherLoginEmail" required></div>
+                        <div class="form-group"><label>Password</label><input type="password" id="teacherLoginPassword" required></div>
+                        <button type="submit">Login →</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div id="teacherDashboard" style="display: none;"></div>
+    </div>
+
+    <!-- Finance Panel -->
+    <div id="financePanel" class="panel">
+        <div id="financeAuth">
+            <h2>🔐 Finance Portal Login</h2>
+            <form id="financeLoginForm">
+                <div class="form-group"><label>Email</label><input type="email" id="financeEmail" required></div>
+                <div class="form-group"><label>Password</label><input type="password" id="financePassword" required></div>
+                <button type="submit">Login →</button>
+            </form>
+        </div>
+        <div id="financeDashboard" style="display: none;"></div>
+    </div>
+
+    <!-- Board Panel -->
+    <div id="boardPanel" class="panel">
+        <div id="boardAuth">
+            <h2>🔐 Board of Directors Login</h2>
+            <form id="boardLoginForm">
+                <div class="form-group"><label>Email</label><input type="email" id="boardEmail" required></div>
+                <div class="form-group"><label>Password</label><input type="password" id="boardPassword" required></div>
+                <button type="submit">Login →</button>
+            </form>
+        </div>
+        <div id="boardDashboard" style="display: none;"></div>
     </div>
 
     <!-- Director Panel -->
@@ -349,43 +421,222 @@
         </div>
         <div id="parentDashboard" style="display: none;"></div>
     </div>
-
-    <!-- Feedback Panel -->
-    <div id="feedbackPanel" class="panel">
-        <h2>💬 Share Your Feedback</h2>
-        <form id="feedbackForm">
-            <div class="form-group"><label>Your Name *</label><input type="text" id="fbName" required></div>
-            <div class="form-group"><label>Email</label><input type="email" id="fbEmail"></div>
-            <div class="form-group"><label>Role</label><select id="fbRole"><option>Student</option><option>Parent</option><option>Teacher</option><option>Administrator</option></select></div>
-            <div class="form-group"><label>Rating</label><div class="star-rating" id="starRating"><span class="star" data-rating="1">★</span><span class="star" data-rating="2">★</span><span class="star" data-rating="3">★</span><span class="star" data-rating="4">★</span><span class="star" data-rating="5">★</span></div><input type="hidden" id="fbRating" value="5"></div>
-            <div class="form-group"><label>Your Message *</label><textarea rows="4" id="fbMessage" required></textarea></div>
-            <button type="button" onclick="submitFeedback()">Submit Feedback</button>
-        </form>
-    </div>
 </div>
 
-<!-- Modals -->
+<!-- ==================== MODALS WITH LONG DETAILED CONTENT ==================== -->
+
+<!-- My Purpose Modal - Long Detailed -->
 <div id="purposeModal" class="modal">
     <div class="modal-content">
-        <div class="modal-header"><h2>🎯 My Purpose</h2><button class="close-modal" onclick="closeModal('purposeModal')">&times;</button></div>
+        <div class="modal-header">
+            <h2>🎯 My Purpose & Vision</h2>
+            <button class="close-modal" onclick="closeModal('purposeModal')">&times;</button>
+        </div>
         <div class="modal-body">
-            <p><strong>My name is Muhammad Ilyas, and I created Hermana Academy to digitize Ethiopian education.</strong></p><br>
-            <p>This system provides: Student Registration with Photo, Timed Exams, Automatic ID Card Generation upon passing, Bank Payment Integration, and Complete School Management.</p>
+            <p style="font-size: 1.1em; margin-bottom: 15px;"><strong>My name is Muhammad Ilyas, and I created Hermana Academy with a clear vision for Ethiopia's educational future.</strong></p>
+            
+            <p>As a passionate software developer and education advocate, I witnessed firsthand the challenges faced by Ethiopian schools: endless paperwork, manual fee collection, lost receipts, communication gaps between parents and teachers, and no centralized system for student records. Traditional methods were inefficient, time-consuming, and prone to errors.</p>
+            
+            <br>
+            <h3>💡 The Problem I Saw</h3>
+            <ul style="margin-left: 20px; line-height: 1.8;">
+                <li>📝 <strong>Paper-based systems</strong> - Student registrations lost, records damaged, information inaccessible</li>
+                <li>💰 <strong>Payment confusion</strong> - Parents unsure about fee status, no digital receipts, payment disputes</li>
+                <li>🎓 <strong>No student identity</strong> - No standardized ID cards, difficulty verifying student enrollment</li>
+                <li>📊 <strong>Limited oversight</strong> - Directors and boards lacked real-time data on school operations</li>
+                <li>👨‍🏫 <strong>Teacher application delays</strong> - Manual document processing, no application tracking</li>
+                <li>👪 <strong>Parent disconnect</strong> - Parents uninformed about school updates and student progress</li>
+            </ul>
+            
+            <br>
+            <h3>🚀 The Solution - Hermana Academy</h3>
+            <p>I built this complete School Management System to solve these problems with:</p>
+            <ul style="margin-left: 20px; line-height: 1.8;">
+                <li>✅ <strong>Digital Registration</strong> - Students register online with photo upload and Ethiopian ID verification</li>
+                <li>✅ <strong>Secure Timed Exams</strong> - 1-minute proctored exams with auto-submit and violation tracking</li>
+                <li>✅ <strong>Instant Student ID Cards</strong> - Ethiopian-style digital ID cards generated upon passing exams</li>
+                <li>✅ <strong>Receipt-Based Payments</strong> - Students upload payment receipts, finance team verifies them</li>
+                <li>✅ <strong>Teacher Application Portal</strong> - Teachers apply online, boards review and approve digitally</li>
+                <li>✅ <strong>Real-Time Dashboards</strong> - Directors and boards see live statistics on students, payments, and teachers</li>
+                <li>✅ <strong>Parent Communication Hub</strong> - Parents access child's progress and school announcements instantly</li>
+            </ul>
+            
+            <br>
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 10px; margin: 15px 0;">
+                <p><strong>🌟 My Vision for Ethiopia:</strong> I dream of a digitally transformed Ethiopian education system where every school has efficient management, every student has a digital identity, every payment is transparent, and every parent is informed. Hermana Academy is my contribution to this digital future.</p>
+            </div>
+            
+            <div style="background: #fff3e0; padding: 15px; border-radius: 10px; margin: 15px 0;">
+                <p><strong>🚀 Future Roadmap:</strong> Mobile app launch • Integration with Ethiopian banks (CBE, Dashen, Awash) • AI-powered student performance analytics • Online learning modules • Parent-teacher video conferencing • Multi-language support (Amharic, English, Afaan Oromo)</p>
+            </div>
+            
+            <p style="margin-top: 15px;">This system is my humble gift to Ethiopian education. I believe technology can bridge gaps, create opportunities, and build a brighter future for every Ethiopian child. <strong>🇪🇹 ኢትዮጵያ ትበልጥ! (Ethiopia First!)</strong></p>
         </div>
     </div>
 </div>
 
+<!-- Privacy Policy Modal - Long Detailed -->
 <div id="privacyModal" class="modal">
     <div class="modal-content">
-        <div class="modal-header"><h2>🔒 Privacy Policy</h2><button class="close-modal" onclick="closeModal('privacyModal')">&times;</button></div>
-        <div class="modal-body"><p>Your data is secure. We only collect necessary information for school management.</p></div>
+        <div class="modal-header">
+            <h2>🔒 Privacy Policy</h2>
+            <button class="close-modal" onclick="closeModal('privacyModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p><strong>Effective Date:</strong> January 1, 2024 | <strong>Last Updated:</strong> June 2024</p>
+            <br>
+            <p>At <strong>Hermana Academy</strong>, your privacy is our priority. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our School Management System. Please read this policy carefully.</p>
+            
+            <br>
+            <h3>📌 Information We Collect</h3>
+            <p><strong>Personal Information:</strong></p>
+            <ul style="margin-left: 20px;">
+                <li>Full name, Ethiopian ID number, date of birth</li>
+                <li>Email address, phone number, residential address</li>
+                <li>Student photographs for ID cards and verification</li>
+                <li>Parent/guardian names and contact information</li>
+                <li>Payment history, transaction records, and receipts</li>
+            </ul>
+            <p><strong>Academic Information:</strong></p>
+            <ul style="margin-left: 20px;">
+                <li>Grade level, class assignments, enrollment dates</li>
+                <li>Exam scores, completion status, violation records</li>
+                <li>Student ID numbers and academic progress</li>
+            </ul>
+            <p><strong>Teacher Information:</strong></p>
+            <ul style="margin-left: 20px;">
+                <li>Education documents, teaching certificates</li>
+                <li>Teaching grades, experience, application details</li>
+                <li>Salary records and employment history</li>
+            </ul>
+            
+            <br>
+            <h3>🔐 How We Use Your Information</h3>
+            <ul style="margin-left: 20px;">
+                <li>Student registration and identity verification</li>
+                <li>Processing fee payments and generating official receipts</li>
+                <li>Creating and managing student ID cards</li>
+                <li>Administering secure timed exams and recording results</li>
+                <li>Communicating school updates, announcements, and emergency alerts</li>
+                <li>Reviewing teacher applications and credentials</li>
+                <li>Generating reports for directors and boards</li>
+                <li>Improving our services and user experience</li>
+            </ul>
+            
+            <br>
+            <h3>🛡️ Data Protection & Security</h3>
+            <p>We implement industry-standard security measures to protect your data:</p>
+            <ul style="margin-left: 20px;">
+                <li><strong>Encryption:</strong> All data is encrypted using AES-256 standards</li>
+                <li><strong>Secure Servers:</strong> Hosted on protected servers with firewalls</li>
+                <li><strong>Access Control:</strong> Role-based access - only authorized personnel can view specific data</li>
+                <li><strong>Regular Audits:</strong> Weekly security audits and vulnerability scans</li>
+                <li><strong>Backup:</strong> Daily encrypted backups to prevent data loss</li>
+            </ul>
+            
+            <br>
+            <h3>📱 Your Rights</h3>
+            <p>You have the following rights regarding your personal data:</p>
+            <ul style="margin-left: 20px;">
+                <li><strong>Access:</strong> Request a copy of your personal data</li>
+                <li><strong>Correction:</strong> Update or correct inaccurate information</li>
+                <li><strong>Deletion:</strong> Request deletion of your data (subject to legal requirements)</li>
+                <li><strong>Restriction:</strong> Limit how we use your data</li>
+                <li><strong>Portability:</strong> Receive your data in a structured format</li>
+                <li><strong>Withdraw Consent:</strong> Opt out of communications at any time</li>
+            </ul>
+            
+            <br>
+            <h3>🍪 Cookies & Tracking</h3>
+            <p>We use cookies to remember your login session, preferences, and improve performance. You can disable cookies in your browser settings, but this may affect functionality.</p>
+            
+            <br>
+            <h3>👶 Children's Privacy</h3>
+            <p>Our services are directed at educational institutions. For student users, we collect information only with parental consent or through the school administration. Parents have full access to their child's information.</p>
+            
+            <br>
+            <h3>📞 Contact Our Privacy Team</h3>
+            <p>For privacy concerns, data requests, or questions:</p>
+            <p><strong>Email:</strong> privacy@hermanaacademy.edu.et<br>
+            <strong>Phone:</strong> +251-XXX-XXXX<br>
+            <strong>Address:</strong> Bole Road, Addis Ababa, Ethiopia</p>
+            <p>We respond to all privacy inquiries within 48 hours.</p>
+        </div>
     </div>
 </div>
 
+<!-- Contact Us Modal - Long Detailed -->
 <div id="contactModal" class="modal">
     <div class="modal-content">
-        <div class="modal-header"><h2>📞 Contact Us</h2><button class="close-modal" onclick="closeModal('contactModal')">&times;</button></div>
-        <div class="modal-body"><p>Email: info@hermanaacademy.edu.et<br>Phone: +251-XXX-XXXX<br>Addis Ababa, Ethiopia</p></div>
+        <div class="modal-header">
+            <h2>📞 Contact Us</h2>
+            <button class="close-modal" onclick="closeModal('contactModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>We're here to help! Whether you have questions about registration, payments, technical issues, or general inquiries, our dedicated team is ready to assist you.</p>
+            
+            <div style="background: #f0f7ff; padding: 20px; border-radius: 15px; margin: 15px 0;">
+                <h3>🏫 Main Campus & Headquarters</h3>
+                <p><strong>Address:</strong> Bole Road, Olympia Area, Addis Ababa, Ethiopia</p>
+                <p><strong>Phone:</strong> +251-911-XXXXXX</p>
+                <p><strong>WhatsApp:</strong> +251-911-XXXXXX</p>
+                <p><strong>Email:</strong> info@hermanaacademy.edu.et</p>
+            </div>
+            
+            <div style="background: #f5f5f5; padding: 20px; border-radius: 15px; margin: 15px 0;">
+                <h3>📧 Department-Specific Contacts</h3>
+                <p><strong>📝 Admissions Office:</strong> admissions@hermanaacademy.edu.et<br>
+                <small>For registration, enrollment, and grade placement inquiries</small></p>
+                <p><strong>💰 Finance Department:</strong> finance@hermanaacademy.edu.et<br>
+                <small>For fee payments, receipt verification, and billing questions</small></p>
+                <p><strong>📚 Academic Affairs:</strong> academics@hermanaacademy.edu.et<br>
+                <small>For exam schedules, curriculum, and student progress</small></p>
+                <p><strong>👨‍🏫 HR & Teacher Relations:</strong> hr@hermanaacademy.edu.et<br>
+                <small>For teacher applications, employment, and staffing</small></p>
+                <p><strong>💻 Technical Support:</strong> support@hermanaacademy.edu.et<br>
+                <small>For website issues, login problems, and technical assistance</small></p>
+                <p><strong>👪 Parent Relations:</strong> parents@hermanaacademy.edu.et<br>
+                <small>For parent concerns, feedback, and school-home communication</small></p>
+            </div>
+            
+            <div style="background: #e8f5e9; padding: 20px; border-radius: 15px; margin: 15px 0;">
+                <h3>⏰ Office Hours</h3>
+                <p><strong>Monday - Thursday:</strong> 8:00 AM - 5:00 PM (Lunch break: 12:30 - 1:30 PM)</p>
+                <p><strong>Friday:</strong> 8:00 AM - 1:00 PM</p>
+                <p><strong>Saturday - Sunday:</strong> Closed</p>
+                <p><strong>📞 24/7 Emergency Helpline:</strong> +251-911-000000 (For urgent school matters only)</p>
+            </div>
+            
+            <div style="background: #fff3e0; padding: 20px; border-radius: 15px; margin: 15px 0;">
+                <h3>🌐 Connect With Us Online</h3>
+                <p><strong>Website:</strong> www.hermanaacademy.edu.et</p>
+                <p><strong>Facebook:</strong> @HermanaAcademy</p>
+                <p><strong>Telegram:</strong> t.me/HermanaAcademy</p>
+                <p><strong>Twitter/X:</strong> @HermanaAcademy</p>
+            </div>
+            
+            <p style="margin-top: 15px; text-align: center;">We look forward to serving you and your family at Hermana Academy! 🇪🇹</p>
+        </div>
+    </div>
+</div>
+
+<!-- Feedback Modal -->
+<div id="feedbackModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>💬 Share Your Feedback</h2>
+            <button class="close-modal" onclick="closeModal('feedbackModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="feedbackFormModal">
+                <div class="form-group"><label>Your Name *</label><input type="text" id="fbName" required></div>
+                <div class="form-group"><label>Email</label><input type="email" id="fbEmail"></div>
+                <div class="form-group"><label>Role</label><select id="fbRole"><option>Student</option><option>Parent</option><option>Teacher</option><option>Administrator</option></select></div>
+                <div class="form-group"><label>Rating</label><div class="star-rating" id="starRating"><span class="star" data-rating="1">★</span><span class="star" data-rating="2">★</span><span class="star" data-rating="3">★</span><span class="star" data-rating="4">★</span><span class="star" data-rating="5">★</span></div><input type="hidden" id="fbRating" value="5"></div>
+                <div class="form-group"><label>Your Message *</label><textarea rows="4" id="fbMessage" placeholder="Please share your experience, suggestions, or concerns. Your feedback helps us improve!" required></textarea></div>
+                <button type="button" onclick="submitFeedback()">Submit Feedback</button>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -396,6 +647,7 @@
     let token = localStorage.getItem('token');
     let currentUser = null;
     let currentRating = 5;
+    let examTimer = null;
     let timeLeft = 60;
     let examActive = false;
 
@@ -417,13 +669,16 @@
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
         if (tab === 'student') { document.querySelector('.tab-btn').classList.add('active'); document.getElementById('studentPanel').classList.add('active'); }
-        else if (tab === 'director') { document.querySelectorAll('.tab-btn')[1].classList.add('active'); document.getElementById('directorPanel').classList.add('active'); }
-        else if (tab === 'parent') { document.querySelectorAll('.tab-btn')[2].classList.add('active'); document.getElementById('parentPanel').classList.add('active'); }
-        else { document.querySelectorAll('.tab-btn')[3].classList.add('active'); document.getElementById('feedbackPanel').classList.add('active'); }
+        else if (tab === 'teacher') { document.querySelectorAll('.tab-btn')[1].classList.add('active'); document.getElementById('teacherPanel').classList.add('active'); }
+        else if (tab === 'finance') { document.querySelectorAll('.tab-btn')[2].classList.add('active'); document.getElementById('financePanel').classList.add('active'); }
+        else if (tab === 'board') { document.querySelectorAll('.tab-btn')[3].classList.add('active'); document.getElementById('boardPanel').classList.add('active'); }
+        else if (tab === 'director') { document.querySelectorAll('.tab-btn')[4].classList.add('active'); document.getElementById('directorPanel').classList.add('active'); }
+        else { document.querySelectorAll('.tab-btn')[5].classList.add('active'); document.getElementById('parentPanel').classList.add('active'); }
     }
 
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    
     function logout() { localStorage.clear(); location.reload(); }
 
     // ==================== FEEDBACK ====================
@@ -446,8 +701,9 @@
                 body: JSON.stringify({ name, email, role, rating, message })
             });
             if (res.ok) {
-                alert('✅ Thank you for your feedback!');
-                document.getElementById('feedbackForm').reset();
+                alert('✅ Thank you for your valuable feedback! We appreciate your input.');
+                closeModal('feedbackModal');
+                document.getElementById('feedbackFormModal').reset();
                 currentRating = 5;
                 document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
                 if(document.querySelector('.star[data-rating="5"]')) document.querySelector('.star[data-rating="5"]').classList.add('active');
@@ -467,37 +723,6 @@
         });
     });
 
-    // ==================== EXAM QUESTIONS ====================
-    function generateExamQuestions(grade) {
-        if (grade === "Nursery" || grade === "Lower KG" || grade === "Upper KG") {
-            return [
-                { id: 1, text: "What color is the sun?", options: ["Red", "Yellow", "Blue", "Green"], correct: 1 },
-                { id: 2, text: "Which animal says 'Moo'?", options: ["Cat", "Dog", "Cow", "Lion"], correct: 2 },
-                { id: 3, text: "What is 1 + 1?", options: ["1", "2", "3", "4"], correct: 1 }
-            ];
-        }
-        const gradeNum = parseInt(grade.match(/\d+/)?.[0] || 5);
-        if (gradeNum <= 4) {
-            return [
-                { id: 1, text: "What is 12 + 7?", options: ["18", "19", "20", "21"], correct: 1 },
-                { id: 2, text: "የኢትዮጵያ ዋና ከተማ?", options: ["ጎንደር", "አዲስ አበባ", "ሀዋሳ", "ባህርዳር"], correct: 1 },
-                { id: 3, text: "5 × 3 = ?", options: ["12", "15", "18", "20"], correct: 1 }
-            ];
-        } else if (gradeNum <= 8) {
-            return [
-                { id: 1, text: "144 ÷ 12 = ?", options: ["10", "12", "14", "16"], correct: 1 },
-                { id: 2, text: "Capital of Ethiopia?", options: ["Adama", "Addis Ababa", "Harar", "Jimma"], correct: 1 },
-                { id: 3, text: "60 km/h for 2.5h = ? km", options: ["120", "150", "180", "100"], correct: 1 }
-            ];
-        } else {
-            return [
-                { id: 1, text: "3x - 7 = 11, x = ?", options: ["4", "5", "6", "7"], correct: 2 },
-                { id: 2, text: "Oxygen atomic number?", options: ["6", "7", "8", "9"], correct: 2 },
-                { id: 3, text: "√169 = ?", options: ["11", "12", "13", "14"], correct: 2 }
-            ];
-        }
-    }
-
     // ==================== STUDENT FUNCTIONS ====================
     document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -509,12 +734,8 @@
         formData.append('fromGrade', document.getElementById('regFromGrade').value);
         formData.append('toGrade', document.getElementById('regToGrade').value);
         formData.append('password', document.getElementById('regPassword').value || 'default');
-        
-        const studentPhoto = document.getElementById('regPhoto').files[0];
-        const idPhoto = document.getElementById('regIdPhoto').files[0];
-        
-        if (studentPhoto) formData.append('studentPhoto', studentPhoto);
-        if (idPhoto) formData.append('idPhoto', idPhoto);
+        const photo = document.getElementById('regPhoto').files[0];
+        if (photo) formData.append('idPhoto', photo);
         
         try {
             const res = await fetch(API_URL + '/auth/register', { method: 'POST', body: formData });
@@ -523,6 +744,7 @@
         } catch(err) { alert('Connection error'); }
     });
 
+    // Student Login
     document.getElementById('studentLoginForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         try {
@@ -544,6 +766,73 @@
         } catch(err) { alert('Cannot connect to server.'); }
     });
 
+    // Teacher Login
+    document.getElementById('teacherLoginForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+            const res = await fetch(API_URL + '/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    identifier: document.getElementById('teacherLoginEmail').value,
+                    password: document.getElementById('teacherLoginPassword').value
+                })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                token = data.token;
+                currentUser = data.user;
+                localStorage.setItem('token', token);
+                await loadTeacherDashboard();
+            } else alert('Login failed: ' + data.error);
+        } catch(err) { alert('Cannot connect to server.'); }
+    });
+
+    // Finance Login
+    document.getElementById('financeLoginForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+            const res = await fetch(API_URL + '/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    identifier: document.getElementById('financeEmail').value,
+                    password: document.getElementById('financePassword').value
+                })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                token = data.token;
+                currentUser = data.user;
+                localStorage.setItem('token', token);
+                await loadFinanceDashboard();
+            } else alert('Login failed: ' + data.error);
+        } catch(err) { alert('Cannot connect to server.'); }
+    });
+
+    // Board Login
+    document.getElementById('boardLoginForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+            const res = await fetch(API_URL + '/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    identifier: document.getElementById('boardEmail').value,
+                    password: document.getElementById('boardPassword').value
+                })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                token = data.token;
+                currentUser = data.user;
+                localStorage.setItem('token', token);
+                await loadBoardDashboard();
+            } else alert('Login failed: ' + data.error);
+        } catch(err) { alert('Cannot connect to server.'); }
+    });
+
+    // Director Login
     document.getElementById('directorLoginForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         try {
@@ -565,6 +854,7 @@
         } catch(err) { alert('Cannot connect to server.'); }
     });
 
+    // Parent Login
     document.getElementById('parentLoginForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         try {
@@ -584,6 +874,26 @@
                 await loadParentDashboard();
             } else alert('Login failed: ' + data.error);
         } catch(err) { alert('Cannot connect to server.'); }
+    });
+
+    // Teacher Registration
+    document.getElementById('teacherRegisterForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('fullName', document.getElementById('teacherName').value);
+        formData.append('email', document.getElementById('teacherEmail').value);
+        formData.append('password', document.getElementById('teacherPassword').value);
+        formData.append('phone', document.getElementById('teacherPhone').value);
+        formData.append('teachingGrades', Array.from(document.getElementById('teacherGrades').selectedOptions).map(opt => opt.value).join(','));
+        formData.append('reason', document.getElementById('teacherReason').value);
+        const doc = document.getElementById('teacherDoc').files[0];
+        if (doc) formData.append('educationDoc', doc);
+        
+        try {
+            const res = await fetch(API_URL + '/auth/register-teacher', { method: 'POST', body: formData });
+            const data = await res.json();
+            alert(res.ok ? '✅ Application submitted! Board will review it.' : '❌ Error: ' + data.error);
+        } catch(err) { alert('Connection error'); }
     });
 
     function startTimedExam(studentId, questions) {
@@ -615,11 +925,7 @@
             try {
                 const res = await apiCall('/exam/submit', { method: 'POST', body: JSON.stringify({ studentId, answers, timeSpent: 60 - timeLeft, violations: 0 }) });
                 const result = await res.json();
-                if (result.passed) {
-                    alert(`🎉 Exam completed!\nScore: ${result.score}/${result.total} (${result.percentage}%)\n✅ PASSED! Your Student ID Card has been generated.\nStudent ID: ${result.studentIdNumber}`);
-                } else {
-                    alert(`❌ Exam completed!\nScore: ${result.score}/${result.total} (${result.percentage}%)\n❌ FAILED! You need 50% to pass. Please retake the exam.`);
-                }
+                alert(`Exam completed!\nScore: ${result.score}/${result.total} (${result.percentage}%)\n${result.passed ? '✅ Passed! Student ID generated.' : '❌ Failed! Retake exam.'}`);
                 document.getElementById('examContainer').remove();
                 loadStudentDashboard();
             } catch(err) { alert('Error submitting exam'); }
@@ -634,97 +940,36 @@
         try {
             const studentRes = await apiCall(`/students/${currentUser.id}`);
             const student = await studentRes.json();
+            const examRes = await apiCall(`/exam/${currentUser.id}`);
+            const exam = await examRes.json();
             const payRes = await apiCall(`/payments/student/${currentUser.id}`);
             const payments = await payRes.json();
-            const bankRes = await fetch(API_URL + '/payment/bank-info');
-            const bankInfo = await bankRes.json();
             
             let examHtml = '';
             if (!student.examCompleted) {
-                const questions = generateExamQuestions(student.grade);
-                examHtml = `<div class="card"><h3>⏰ Timed Ability Exam (${student.grade} Level)</h3><div class="timer-container"><div class="timer-clock">01:00</div><div class="timer-warning">You have 1 minute to complete the exam</div></div><button onclick="startTimedExam(${currentUser.id}, ${JSON.stringify(questions).replace(/"/g, '&quot;')})" class="btn-success">⏰ Start Timed Exam →</button></div>`;
+                examHtml = `<div class="card"><h3>⏰ Timed Ability Exam (${student.grade} Level)</h3><div class="timer-container"><div class="timer-clock">01:00</div><div class="timer-warning">You have 1 minute to complete the exam</div></div><button onclick="startTimedExam(${currentUser.id}, ${JSON.stringify(exam.questions).replace(/"/g, '&quot;')})" class="btn-success">⏰ Start Timed Exam →</button></div>`;
             }
             
             const examPassed = student.examPercent >= 50;
-            
-            // Generate ID Card HTML if passed
-            let idCardHtml = '';
-            if (examPassed && student.studentIdNumber) {
-                idCardHtml = `
-                    <div class="section-title">🪪 Your Student ID Card</div>
-                    <div class="id-card-container">
-                        <div class="id-card">
-                            <div class="id-card-ethiopia"></div>
-                            <div class="id-logo">
-                                <div class="id-logo-left"><img src="logo.png" onerror="this.src='https://via.placeholder.com/60'"><small>Hermana Academy</small></div>
-                                <div class="id-logo-center"><h3>የኸርማና አካዳሚ</h3><p>STUDENT IDENTIFICATION CARD</p></div>
-                                <div class="id-logo-right"><div class="flag-icon">🇪🇹</div></div>
-                            </div>
-                            <div class="id-photo"><img class="id-photo-img" src="${student.studentPhotoUrl || 'https://via.placeholder.com/140'}" alt="Photo"></div>
-                            <div class="id-details">
-                                <div class="id-row"><span class="id-label">Full Name:</span><span class="id-value">${student.fullName}</span></div>
-                                <div class="id-row"><span class="id-label">Student ID:</span><span class="id-value">${student.studentIdNumber}</span></div>
-                                <div class="id-row"><span class="id-label">Ethiopian ID:</span><span class="id-value">${student.ethiopianId}</span></div>
-                                <div class="id-row"><span class="id-label">Grade:</span><span class="id-value">${student.grade}</span></div>
-                                <div class="id-row"><span class="id-label">Valid Until:</span><span class="id-value">${new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toLocaleDateString()}</span></div>
-                            </div>
-                            <div class="id-footer">www.hermanaacademy.edu.et</div>
-                        </div>
-                    </div>
-                    <div class="id-card-actions">
-                        <button onclick="downloadIDCard()" class="btn-small">📥 Download ID Card</button>
-                        <button onclick="printIDCard()" class="btn-small">🖨️ Print ID Card</button>
-                    </div>
-                `;
-            }
-            
             dashboard.innerHTML = `
-                <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px">
-                    <div><h2>Welcome, ${student.fullName}!</h2><p>Ethiopian ID: ${student.ethiopianId} | Grade: ${student.grade}</p><button onclick="logout()" style="background:white;color:#667eea;">Logout</button></div>
-                </div>
-                ${idCardHtml}
+                <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px"><div><h2>Welcome, ${student.fullName}!</h2><p>Ethiopian ID: ${student.ethiopianId} | Grade: ${student.grade}</p><button onclick="logout()" style="background:white;color:#667eea;">Logout</button></div></div>
+                ${student.studentIdNumber ? `<div class="card" style="background:linear-gradient(135deg,#48bb78,#38a169);color:white"><h3>🎓 Your Student ID Number</h3><p style="font-size:24px;font-weight:bold">${student.studentIdNumber}</p></div>` : ''}
+                <div class="id-card-container"><div class="id-card"><div class="id-card-ethiopia"></div><div class="id-logo"><div class="id-logo-left"><img src="logo.png" onerror="this.src='https://via.placeholder.com/60'"><small>Hermana Academy</small></div><div class="id-logo-center"><h3>የኸርማና አካዳሚ</h3><p>STUDENT ID CARD</p></div><div class="id-logo-right"><div class="flag-icon">🇪🇹</div></div></div><div class="id-photo"><img class="id-photo-img" src="${student.idPhotoUrl || 'https://via.placeholder.com/140'}" alt="Photo"></div><div class="id-details"><div class="id-row"><span class="id-label">Name:</span><span class="id-value">${student.fullName}</span></div><div class="id-row"><span class="id-label">Student ID:</span><span class="id-value">${student.studentIdNumber || 'Not Issued'}</span></div><div class="id-row"><span class="id-label">Ethiopian ID:</span><span class="id-value">${student.ethiopianId}</span></div><div class="id-row"><span class="id-label">Grade:</span><span class="id-value">${student.grade}</span></div></div><div class="id-footer">www.hermanaacademy.edu.et</div></div></div>
                 ${examHtml}
-                ${student.examCompleted ? `<div class="card"><h3>📊 Exam Result</h3><p>Score: ${student.examPercent}%</p><span class="badge ${examPassed ? 'badge-passed' : 'badge-failed'}">${examPassed ? 'PASSED - ID Card Issued' : 'FAILED - Retake Exam'}</span></div>` : ''}
-                ${examPassed ? `
-                    <div class="bank-info">
-                        <h4>🏦 School Bank Account for Payment</h4>
-                        <p><strong>Account Number:</strong> ${bankInfo.bank?.accountNumber || '100045326789431'}</p>
-                        <p><strong>Bank Name:</strong> ${bankInfo.bank?.bankName || 'Commercial Bank of Ethiopia (CBE)'}</p>
-                        <p><strong>Account Name:</strong> ${bankInfo.bank?.accountName || 'Hermana Academy'}</p>
-                        <p><strong>Payment Instructions:</strong> Transfer the exact amount and upload the receipt below.</p>
-                    </div>
-                    <div class="card"><h3>💰 Fee Payments</h3><div style="overflow-x:auto"><table><thead><tr><th>Package</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody>
-                        <tr><td>Registration Fee</td><td>1000 ETB</td><td><span class="badge ${payments.paymentStatus?.registration ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.registration ? 'Paid' : 'Unpaid'}</span></td><td>${!payments.paymentStatus?.registration ? `<button onclick="showPaymentModal('registration',1000)">Pay Now</button>` : '✅'}</td></tr>
-                        <tr><td>Term 1 + Bus</td><td>3500 ETB</td><td><span class="badge ${payments.paymentStatus?.term1Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term1Bus ? 'Paid' : 'Unpaid'}</span></td><td>${!payments.paymentStatus?.term1Bus ? `<button onclick="showPaymentModal('term1Bus',3500)">Pay Now</button>` : '✅'}</td></tr>
-                        <tr><td>Term 2 + Bus</td><td>3500 ETB</td><td><span class="badge ${payments.paymentStatus?.term2Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term2Bus ? 'Paid' : 'Unpaid'}</span></td><td>${!payments.paymentStatus?.term2Bus ? `<button onclick="showPaymentModal('term2Bus',3500)">Pay Now</button>` : '✅'}</td></tr>
-                        <tr><td>Term 3 + Bus</td><td>3500 ETB</td><td><span class="badge ${payments.paymentStatus?.term3Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term3Bus ? 'Paid' : 'Unpaid'}</span></td><td>${!payments.paymentStatus?.term3Bus ? `<button onclick="showPaymentModal('term3Bus',3500)">Pay Now</button>` : '✅'}</td></tr>
-                    </tbody></div></div>` : '<div class="card"><h3>⚠️ Payment Unavailable</h3><p>You must pass the exam (50%+) to access payments.</p></div>'}
+                ${student.examCompleted ? `<div class="card"><h3>📊 Exam Result</h3><p>Score: ${student.examPercent}%</p><span class="badge ${examPassed ? 'badge-passed' : 'badge-failed'}">${examPassed ? 'PASSED' : 'FAILED'}</span></div>` : ''}
+                ${examPassed ? `<div class="card"><h3>💰 Fee Payments</h3><div style="overflow-x:auto"><table><thead><tr><th>Package</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody>
+                    <tr><td>Registration Fee</td><td>1000 ETB</td><td class="${payments.paymentStatus?.registration ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.registration ? 'Paid' : 'Unpaid'}</td><td>${!payments.paymentStatus?.registration ? `<button onclick="showPaymentModal('registration',1000)">Pay Now</button>` : '✅'}</td></tr>
+                    <tr><td>Term 1 + Bus</td><td>3500 ETB</td><td class="${payments.paymentStatus?.term1Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term1Bus ? 'Paid' : 'Unpaid'}</td><td>${!payments.paymentStatus?.term1Bus ? `<button onclick="showPaymentModal('term1Bus',3500)">Pay Now</button>` : '✅'}</td></tr>
+                    <tr><td>Term 2 + Bus</td><td>3500 ETB</td><td class="${payments.paymentStatus?.term2Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term2Bus ? 'Paid' : 'Unpaid'}</td><td>${!payments.paymentStatus?.term2Bus ? `<button onclick="showPaymentModal('term2Bus',3500)">Pay Now</button>` : '✅'}</td></tr>
+                    <tr><td>Term 3 + Bus</td><td>3500 ETB</td><td class="${payments.paymentStatus?.term3Bus ? 'badge-paid' : 'badge-unpaid'}">${payments.paymentStatus?.term3Bus ? 'Paid' : 'Unpaid'}</td><td>${!payments.paymentStatus?.term3Bus ? `<button onclick="showPaymentModal('term3Bus',3500)">Pay Now</button>` : '✅'}</td></tr>
+                </tbody></div></div>` : '<div class="card"><h3>⚠️ Payment Unavailable</h3><p>You must pass the exam (50%+) to access payments.</p></div>'}
                 <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 My Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>
             `;
         } catch(err) { console.error(err); }
     }
 
-    window.downloadIDCard = () => {
-        const card = document.querySelector('.id-card');
-        if (!card) return;
-        html2canvas(card, { scale: 2 }).then(canvas => {
-            const link = document.createElement('a');
-            link.download = `ID_Card_${currentUser.name}.png`;
-            link.href = canvas.toDataURL();
-            link.click();
-        });
-    };
-
-    window.printIDCard = () => {
-        const card = document.querySelector('.id-card');
-        if (!card) return;
-        const win = window.open('', '_blank');
-        win.document.write(`<html><head><title>ID Card</title><style>body{display:flex;justify-content:center;align-items:center;min-height:100vh;}</style></head><body>${card.outerHTML}<script>window.print();setTimeout(()=>window.close(),500);<\/script></body></html>`);
-        win.document.close();
-    };
-
     window.showPaymentModal = (type, amount) => {
-        const modalHtml = `<div id="paymentModal" class="modal" style="display:flex"><div class="modal-content"><div class="modal-header"><h2>💰 Pay ${amount} ETB for ${type}</h2><button class="close-modal" onclick="closePaymentModal()">&times;</button></div><div class="modal-body"><div class="bank-info"><h4>🏦 Send payment to:</h4><p><strong>Account Number:</strong> 100045326789431</p><p><strong>Bank:</strong> Commercial Bank of Ethiopia (CBE)</p><p><strong>Account Name:</strong> Hermana Academy</p></div><form id="paymentForm" enctype="multipart/form-data"><div class="form-group"><label>Transaction Reference Number</label><input type="text" id="transactionRef" placeholder="Enter bank transaction reference"></div><div class="form-group"><label>Upload Payment Receipt/Screenshot *</label><input type="file" id="receiptImage" accept="image/*" required></div><div class="form-group"><label>Notes</label><textarea id="paymentNotes" rows="2"></textarea></div><button type="submit">Submit Receipt for Verification</button></form></div></div></div>`;
+        const modalHtml = `<div id="paymentModal" class="modal" style="display:flex"><div class="modal-content"><div class="modal-header"><h2>💰 Pay ${amount} ETB for ${type}</h2><button class="close-modal" onclick="closePaymentModal()">&times;</button></div><div class="modal-body"><form id="paymentForm" enctype="multipart/form-data"><div class="form-group"><label>Upload Payment Receipt *</label><input type="file" id="receiptImage" accept="image/*" required></div><div class="form-group"><label>Notes</label><textarea id="paymentNotes" rows="2"></textarea></div><button type="submit">Submit Receipt for Verification</button></form></div></div></div>`;
         document.body.insertAdjacentHTML('beforeend', modalHtml);
         
         document.getElementById('paymentForm').addEventListener('submit', async (e) => {
@@ -734,7 +979,6 @@
             formData.append('paymentType', type);
             formData.append('amount', amount);
             formData.append('notes', document.getElementById('paymentNotes').value);
-            formData.append('transactionReference', document.getElementById('transactionRef').value);
             const receipt = document.getElementById('receiptImage').files[0];
             if (receipt) formData.append('receiptImage', receipt);
             
@@ -745,11 +989,7 @@
                     body: formData
                 });
                 const data = await res.json();
-                if (res.ok) {
-                    alert(`✅ Receipt submitted! Finance team will verify within 24 hours.\nBank Account: ${data.bankAccount}\nTransaction ID: ${data.transactionId}`);
-                } else {
-                    alert('Error: ' + data.error);
-                }
+                alert(res.ok ? '✅ Receipt submitted! Finance will verify it.' : 'Error: ' + data.error);
                 closePaymentModal();
                 loadStudentDashboard();
             } catch(err) { alert('Error submitting receipt'); }
@@ -761,18 +1001,93 @@
         if (modal) modal.remove();
     };
 
+    async function loadTeacherDashboard() {
+        document.getElementById('teacherAuth').style.display = 'none';
+        const dashboard = document.getElementById('teacherDashboard');
+        dashboard.style.display = 'block';
+        try {
+            const res = await apiCall(`/teachers/${currentUser.id}`);
+            const teacher = await res.json();
+            dashboard.innerHTML = `
+                <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px"><div><h2>👨‍🏫 Welcome, ${teacher.fullName}!</h2><p>Status: <span class="badge ${teacher.teacherStatus === 'approved' ? 'badge-approved' : (teacher.teacherStatus === 'rejected' ? 'badge-rejected' : 'badge-pending')}">${teacher.teacherStatus}</span></p><button onclick="logout()" style="background:white;color:#667eea;">Logout</button></div></div>
+                <div class="card"><h3>📚 Your Information</h3><p><strong>Email:</strong> ${teacher.email}</p><p><strong>Phone:</strong> ${teacher.phone}</p><p><strong>Teaching Grades:</strong> ${teacher.teachingGrades?.join(', ') || 'N/A'}</p></div>
+                <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 My Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>
+            `;
+        } catch(err) { console.error(err); }
+    }
+
+    async function loadFinanceDashboard() {
+        document.getElementById('financeAuth').style.display = 'none';
+        const dashboard = document.getElementById('financeDashboard');
+        dashboard.style.display = 'block';
+        try {
+            const pendingRes = await apiCall('/finance/pending-receipts');
+            const pendingReceipts = await pendingRes.json();
+            const summaryRes = await apiCall('/finance/summary');
+            const summary = await summaryRes.json();
+            
+            dashboard.innerHTML = `
+                <div style="background:linear-gradient(135deg,#28a745,#20c997);color:white;padding:20px;border-radius:15px;margin-bottom:20px"><div><h2>💰 Finance Dashboard</h2><p>Welcome, ${currentUser.name}</p><button onclick="logout()" style="background:white;color:#28a745;">Logout</button></div></div>
+                <div class="grid-2"><div class="card"><h3>📊 Summary</h3><p><strong>Total Verified Payments:</strong> ${summary.totalAmount || 0} ETB</p><p><strong>Pending Receipts:</strong> ${summary.pendingCount || 0}</p><p><strong>Pending Amount:</strong> ${summary.pendingAmount || 0} ETB</p></div><div class="card"><h3>💰 Payments by Type</h3>${summary.paymentsByType?.map(p => `<p>${p.paymentType}: ${p.total} ETB (${p.count} payments)</p>`).join('') || '<p>No data</p>'}</div></div>
+                <div class="card"><h3>📋 Pending Receipts for Verification</h3>${pendingReceipts.length === 0 ? '<p>No pending receipts</p>' : pendingReceipts.map(r => `<div class="receipt-item"><div><strong>${r.studentName}</strong><br>${r.paymentType} - ${r.amount} ETB<br><small>${new Date(r.paymentDate).toLocaleDateString()}</small></div><div><button onclick="verifyReceipt(${r.id})" class="btn-small btn-success">✅ Verify</button> <button onclick="rejectReceipt(${r.id})" class="btn-small btn-danger">❌ Reject</button></div></div>`).join('')}</div>
+                <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 My Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>
+            `;
+        } catch(err) { console.error(err); }
+    }
+
+    window.verifyReceipt = async (receiptId) => {
+        const res = await apiCall(`/finance/verify-receipt/${receiptId}`, { method: 'POST' });
+        if (res.ok) { alert('Receipt verified!'); loadFinanceDashboard(); }
+        else alert('Error verifying receipt');
+    };
+    
+    window.rejectReceipt = async (receiptId) => {
+        const reason = prompt('Reason for rejection:');
+        const res = await apiCall(`/finance/reject-receipt/${receiptId}`, { method: 'POST', body: JSON.stringify({ reason }) });
+        if (res.ok) { alert('Receipt rejected'); loadFinanceDashboard(); }
+        else alert('Error rejecting receipt');
+    };
+
+    async function loadBoardDashboard() {
+        document.getElementById('boardAuth').style.display = 'none';
+        const dashboard = document.getElementById('boardDashboard');
+        dashboard.style.display = 'block';
+        try {
+            const pendingRes = await apiCall('/board/pending-teachers');
+            const pendingTeachers = await pendingRes.json();
+            const statsRes = await apiCall('/board/statistics');
+            const stats = await statsRes.json();
+            
+            dashboard.innerHTML = `
+                <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px"><div><h2>🎯 Board Dashboard</h2><p>Welcome, Board Member</p><button onclick="logout()" style="background:white;color:#667eea;">Logout</button></div></div>
+                <div class="grid-2"><div class="card"><h3>📊 Statistics</h3><p><strong>Total Students:</strong> ${stats.totalStudents}</p><p><strong>Total Teachers:</strong> ${stats.totalTeachers}</p><p><strong>Total Fees Collected:</strong> ${stats.totalFeesCollected} ETB</p><p><strong>Pending Applications:</strong> ${stats.pendingTeachers}</p></div></div>
+                <div class="card"><h3>📝 Pending Teacher Applications</h3>${pendingTeachers.length === 0 ? '<p>No pending applications</p>' : pendingTeachers.map(t => `<div class="receipt-item"><div><strong>${t.fullName}</strong><br>${t.email} | ${t.phone}<br>Grades: ${t.teachingGrades?.join(', ')}</div><div><button onclick="reviewTeacher(${t.id}, 'approved')" class="btn-small btn-success">✅ Approve</button> <button onclick="reviewTeacher(${t.id}, 'rejected')" class="btn-small btn-danger">❌ Reject</button></div></div>`).join('')}</div>
+                <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 My Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>
+            `;
+        } catch(err) { console.error(err); }
+    }
+
+    window.reviewTeacher = async (teacherId, status) => {
+        const res = await apiCall(`/board/review-teacher/${teacherId}`, { method: 'POST', body: JSON.stringify({ status }) });
+        if (res.ok) { alert(`Teacher ${status}!`); loadBoardDashboard(); }
+        else alert('Error');
+    };
+
     async function loadDirectorDashboard() {
         document.getElementById('directorAuth').style.display = 'none';
         const dashboard = document.getElementById('directorDashboard');
         dashboard.style.display = 'block';
         try {
-            const res = await apiCall('/director/students');
-            const students = await res.json();
+            const studentsRes = await apiCall('/director/students');
+            const students = await studentsRes.json();
+            const teachersRes = await apiCall('/director/teachers');
+            const teachers = await teachersRes.json();
+            
             dashboard.innerHTML = `
-                <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px"><div><h2>📊 Director Dashboard</h2><p>Total Students: ${students.length}</p><button onclick="logout()" style="background:white;color:#667eea;">Logout</button></div></div>
-                <div class="student-table"><h3>📋 All Students</h3><table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Grade</th><th>Student ID</th><th>Exam %</th><th>Passed</th><th>Payment</th></tr></thead><tbody>
-                ${students.map(s => `<tr><td>${s.fullName}</td><td>${s.ethiopianId}</td><td>${s.grade}</td><td>${s.studentIdNumber || 'Not issued'}</td><td>${s.examPercent}%</td><td>${s.examPercent >= 50 ? '✅' : '❌'}</td><td><span class="badge ${s.paymentStatus?.registration ? 'badge-paid' : 'badge-unpaid'}">${s.paymentStatus?.registration ? 'Paid' : 'Unpaid'}</span></td></tr>`).join('')}
-                </tbody></table></div>
+                <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px"><div><h2>📊 Director Dashboard</h2><p>Total Students: ${students.length} | Teachers: ${teachers.length}</p><button onclick="logout()" style="background:white;color:#667eea;">Logout</button></div></div>
+                <div class="card"><h3>📋 All Students</h3><div class="student-table"><table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Grade</th><th>Student ID</th><th>Exam %</th><th>Payment Status</th></tr></thead><tbody>
+                ${students.map(s => `<tr><td>${s.fullName}</td><td>${s.ethiopianId}</td><td>${s.grade}</td><td>${s.studentIdNumber || 'Not issued'}</td><td>${s.examPercent}%</td><td><span class="badge ${s.paymentStatus?.registration ? 'badge-paid' : 'badge-unpaid'}">${s.paymentStatus?.registration ? 'Paid' : 'Unpaid'}</span></td></tr>`).join('')}
+                </tbody></div></div>
                 <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 My Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>
             `;
         } catch(err) { console.error(err); }
@@ -790,7 +1105,7 @@
             
             dashboard.innerHTML = `
                 <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px"><div><h2>👪 Parent Hub</h2><p>Viewing: ${student.fullName}</p><button onclick="logout()" style="background:white;color:#667eea;">Logout</button></div></div>
-                <div class="card"><h3>📊 Student Information</h3><p><strong>Name:</strong> ${student.fullName}</p><p><strong>Student ID:</strong> ${student.studentIdNumber || 'Not issued'}</p><p><strong>Grade:</strong> ${student.grade}</p><p><strong>Exam Score:</strong> ${student.examPercent}%</p><p><strong>Status:</strong> ${student.examPercent >= 50 ? '✅ Passed Exam' : '❌ Not Passed Yet'}</p></div>
+                <div class="card"><h3>📊 Student Information</h3><p><strong>Name:</strong> ${student.fullName}</p><p><strong>Student ID:</strong> ${student.studentIdNumber || 'Not issued'}</p><p><strong>Grade:</strong> ${student.grade}</p><p><strong>Exam Score:</strong> ${student.examPercent}%</p></div>
                 <div class="card"><h3>📢 School Updates</h3>${updates.slice(0,5).map(u => `<div style="padding:10px; border-bottom:1px solid #ddd;"><strong>${u.title}</strong><br><small>${new Date(u.createdAt).toLocaleDateString()}</small><p>${u.description}</p></div>`).join('')}</div>
                 <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 My Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>
             `;
@@ -799,22 +1114,27 @@
 
     // Auto login check
     if (token) {
-        try {
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            currentUser = { id: payload.id, role: payload.role, name: payload.name };
-            if (currentUser.role === 'student') loadStudentDashboard();
-            else if (currentUser.role === 'director') loadDirectorDashboard();
-        } catch(e) { logout(); }
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        currentUser = { id: payload.id, role: payload.role, name: payload.name };
+        if (currentUser.role === 'student') loadStudentDashboard();
+        else if (currentUser.role === 'teacher') loadTeacherDashboard();
+        else if (currentUser.role === 'finance') loadFinanceDashboard();
+        else if (currentUser.role === 'board') loadBoardDashboard();
+        else if (currentUser.role === 'director') loadDirectorDashboard();
     }
 
     window.switchTab = switchTab;
     window.openModal = openModal;
     window.closeModal = closeModal;
     window.submitFeedback = submitFeedback;
+    window.startTimedExam = startTimedExam;
+    window.verifyReceipt = verifyReceipt;
+    window.rejectReceipt = rejectReceipt;
+    window.reviewTeacher = reviewTeacher;
 </script>
 
 <div class="creator-credit">
     Created with <span>❤️</span> by <span>Muhammad Ilyas</span> | Hermana Academy Management System
 </div>
 </body>
-                                                                           </html>
+            </html>
