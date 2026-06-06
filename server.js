@@ -1,735 +1,589 @@
+// server.js - Hermana Academy Backend API
+// Run with: node server.js
+
 const express = require('express');
 const cors = require('cors');
+const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const multer = require('multer');
-const { v4: uuidv4 } = require('uuid');
-const sqlite3 = require('sqlite3').verbose();
-require('dotenv').config();
+const nodemailer = require('nodemailer');
+const { Server } = require('socket.io');
+const http = require('http');
 
-// ==================== INITIALIZATION ====================
 const app = express();
-const PORT = process.env.PORT || 5000;
-
-// School Bank Account Information
-const SCHOOL_BANK = {
-  accountNumber: "100045326789431",
-  bankName: "Commercial Bank of Ethiopia (CBE)",
-  accountName: "Hermana Academy",
-  branch: "Bole Branch, Addis Ababa",
-  swiftCode: "CBETETAA"
-};
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+    }
+});
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static('uploads'));
 
-// Create uploads directory if not exists
-if (!fs.existsSync('./uploads')) {
-  fs.mkdirSync('./uploads');
+// File upload configuration
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const dir = './uploads';
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+        cb(null, dir);
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 } });
+
+// JWT Secret
+const JWT_SECRET = 'hermana_academy_secure_key_2026';
+const JWT_REFRESH_SECRET = 'hermana_academy_refresh_key_2026';
+
+// Email configuration (using ethereal.email for testing, replace with real SMTP)
+const transporter = nodemailer.createTransport({
+    host: 'smtp.ethereal.email',
+    port: 587,
+    secure: false,
+    auth: {
+        user: 'your_test_user@ethereal.email', // Replace with actual credentials
+        pass: 'your_test_password'
+    }
+});
+
+// In-memory storage (will be replaced with database in production)
+let students = [];
+let teachers = [];
+let payments = [];
+let examResults = [];
+let feedbacks = [];
+let liveMessages = [];
+let activeSessions = new Map();
+
+// Helper functions
+const hashPassword = async (password) => await bcrypt.hash(password, 10);
+const comparePassword = async (password, hash) => await bcrypt.compare(password, hash);
+const generateToken = (user) => jwt.sign(user, JWT_SECRET, { expiresIn: '7d' });
+const verifyToken = (token) => jwt.verify(token, JWT_SECRET);
+
+// Initialize demo data
+function initializeDemoData() {
+    // Demo students
+    const kgGrades = ["Nursery", "Lower KG", "Upper KG"];
+    kgGrades.forEach((kg, idx) => {
+        for (let i = 1; i <= (idx === 0 ? 25 : 30); i++) {
+            students.push({
+                id: 1000 + idx * 100 + i,
+                fullName: `${kg} Student ${i}`,
+                ethiopianId: `ET${100000 + idx * 100 + i}`,
+                email: `student${1000 + idx * 100 + i}@hermana.edu`,
+                password: hashPasswordSync('default123'),
+                grade: kg,
+                fromGrade: kg,
+                toGrade: kg === "Nursery" ? "Upper KG" : (kg === "Lower KG" ? "Grade 2" : "Grade 4"),
+                examPercent: Math.floor(Math.random() * 100),
+                examViolations: 0,
+                photoUrl: `https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i % 70}.jpg`,
+                payments: { registration: i <= 20, term1Bus: i <= 15, term2Bus: i <= 10, term3Bus: i <= 8 },
+                createdAt: new Date().toISOString()
+            });
+        }
+    });
+    
+    students.push({
+        id: 999999,
+        fullName: "Demo Student",
+        ethiopianId: "ET999999",
+        email: "demo@hermana.edu",
+        password: hashPasswordSync('student123'),
+        grade: "Grade 10",
+        fromGrade: "Grade 5",
+        toGrade: "Grade 12",
+        examPercent: 0,
+        examViolations: 0,
+        photoUrl: "https://randomuser.me/api/portraits/men/1.jpg",
+        payments: { registration: false, term1Bus: false, term2Bus: false, term3Bus: false },
+        createdAt: new Date().toISOString()
+    });
+    
+    // Demo teacher
+    teachers.push({
+        id: 1,
+        fullName: "Demo Teacher",
+        email: "teacher@hermana.edu",
+        password: hashPasswordSync('teacher123'),
+        phone: "+251-911-000000",
+        teachingGrades: ["Grade 1", "Grade 2", "Grade 3"],
+        status: "approved",
+        appliedDate: new Date().toISOString(),
+        reason: "Passionate about education",
+        createdAt: new Date().toISOString()
+    });
 }
 
-// ==================== DATABASE SETUP ====================
-const db = new sqlite3.Database(path.join(__dirname, 'hermana.db'));
+function hashPasswordSync(password) {
+    return bcrypt.hashSync(password, 10);
+}
 
-db.serialize(() => {
-  // Users table with photo storage
-  db.run(`
-    CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      fullName TEXT NOT NULL,
-      email TEXT UNIQUE,
-      ethiopianId TEXT UNIQUE,
-      idPhotoUrl TEXT,
-      studentPhotoUrl TEXT,
-      password TEXT,
-      role TEXT DEFAULT 'student',
-      grade TEXT,
-      examScore INTEGER DEFAULT 0,
-      examPercent INTEGER DEFAULT 0,
-      examCompleted BOOLEAN DEFAULT 0,
-      examViolations INTEGER DEFAULT 0,
-      studentIdNumber TEXT,
-      studentIdCardUrl TEXT,
-      fromGrade TEXT,
-      toGrade TEXT,
-      phone TEXT,
-      teacherStatus TEXT DEFAULT 'pending',
-      registrationDate DATETIME DEFAULT CURRENT_TIMESTAMP,
-      isActive BOOLEAN DEFAULT 1
-    )
-  `);
+// ==================== API ROUTES ====================
 
-  // Payments table with bank transaction tracking
-  db.run(`
-    CREATE TABLE IF NOT EXISTS payments (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      studentId INTEGER NOT NULL,
-      studentName TEXT,
-      studentEthiopianId TEXT,
-      paymentType TEXT,
-      amount INTEGER NOT NULL,
-      transactionId TEXT UNIQUE NOT NULL,
-      bankAccountNumber TEXT,
-      bankName TEXT,
-      receiptImage TEXT,
-      status TEXT DEFAULT 'pending',
-      verifiedBy INTEGER,
-      verifiedAt DATETIME,
-      paymentDate DATETIME DEFAULT CURRENT_TIMESTAMP,
-      notes TEXT
-    )
-  `);
-
-  // Exams table
-  db.run(`
-    CREATE TABLE IF NOT EXISTS exams (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      studentId INTEGER NOT NULL,
-      grade TEXT NOT NULL,
-      questions TEXT,
-      answers TEXT,
-      score INTEGER,
-      percentage INTEGER,
-      timeSpent INTEGER,
-      violations INTEGER,
-      completedAt DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-
-  // Updates table
-  db.run(`
-    CREATE TABLE IF NOT EXISTS updates (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      title TEXT NOT NULL,
-      description TEXT,
-      type TEXT,
-      createdBy INTEGER,
-      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-
-  // Feedback table
-  db.run(`
-    CREATE TABLE IF NOT EXISTS feedback (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      email TEXT,
-      role TEXT,
-      rating INTEGER,
-      message TEXT,
-      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-
-  // Insert default director
-  db.get("SELECT * FROM users WHERE role = 'director'", (err, row) => {
-    if (!row && !err) {
-      const hashedPassword = bcrypt.hashSync('director123', 10);
-      db.run(`
-        INSERT INTO users (fullName, email, password, role, isActive)
-        VALUES (?, ?, ?, ?, ?)
-      `, ['Dr. Alemu Bekele', 'director@hermana.edu', hashedPassword, 'director', 1]);
-      console.log('✅ Default director created');
-    }
-  });
-
-  // Insert test student with photo
-  db.get("SELECT * FROM users WHERE ethiopianId = 'ET999999'", (err, row) => {
-    if (!row && !err) {
-      const hashedPassword = bcrypt.hashSync('student123', 10);
-      db.run(`
-        INSERT INTO users (fullName, email, ethiopianId, password, grade, role, studentIdNumber, studentPhotoUrl, isActive)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `, ['Test Student', 'test@hermana.edu', 'ET999999', hashedPassword, 'Grade 10', 'student', 'HA20240001', '/uploads/default-student.jpg', 1]);
-      console.log('✅ Demo student created');
-    }
-  });
-});
-
-// ==================== HELPER FUNCTIONS ====================
-const generateExamQuestions = (grade) => {
-  const gradeNum = parseInt(grade.match(/\d+/)?.[0] || 5);
-  if (grade === "Nursery" || grade === "Lower KG" || grade === "Upper KG") {
-    return [
-      { id: 1, text: "What color is the sun?", options: ["Red", "Yellow", "Blue", "Green"], correct: 1 },
-      { id: 2, text: "Which animal says 'Moo'?", options: ["Cat", "Dog", "Cow", "Lion"], correct: 2 },
-      { id: 3, text: "What is 1 + 1?", options: ["1", "2", "3", "4"], correct: 1 }
-    ];
-  }
-  const gradeNum = parseInt(grade.match(/\d+/)?.[0] || 5);
-  if (gradeNum <= 4) {
-    return [
-      { id: 1, text: "What is 12 + 7?", options: ["18", "19", "20", "21"], correct: 1 },
-      { id: 2, text: "የኢትዮጵያ ዋና ከተማ ማንነው?", options: ["ጎንደር", "አዲስ አበባ", "ሀዋሳ", "ባህርዳር"], correct: 1 },
-      { id: 3, text: "5 × 3 = ?", options: ["12", "15", "18", "20"], correct: 1 }
-    ];
-  } else if (gradeNum <= 8) {
-    return [
-      { id: 1, text: "144 ÷ 12 = ?", options: ["10", "12", "14", "16"], correct: 1 },
-      { id: 2, text: "Capital of Ethiopia?", options: ["Adama", "Addis Ababa", "Harar", "Jimma"], correct: 1 },
-      { id: 3, text: "60 km/h for 2.5 hours = ? km", options: ["120", "150", "180", "100"], correct: 1 }
-    ];
-  } else {
-    return [
-      { id: 1, text: "Solve: 3x - 7 = 11, x = ?", options: ["4", "5", "6", "7"], correct: 2 },
-      { id: 2, text: "Oxygen atomic number?", options: ["6", "7", "8", "9"], correct: 2 },
-      { id: 3, text: "What is √169?", options: ["11", "12", "13", "14"], correct: 2 }
-    ];
-  }
-};
-
-const generateStudentIdNumber = () => {
-  const year = new Date().getFullYear();
-  const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-  return `HA${year}${random}`;
-};
-
-const generateStudentIdCard = (student) => {
-  const studentId = student.studentIdNumber || generateStudentIdNumber();
-  const expiryDate = new Date();
-  expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-  
-  return {
-    studentId: studentId,
-    fullName: student.fullName,
-    ethiopianId: student.ethiopianId,
-    grade: student.grade,
-    fromGrade: student.fromGrade,
-    toGrade: student.toGrade,
-    issuedDate: new Date().toISOString(),
-    expiryDate: expiryDate.toISOString(),
-    photoUrl: student.studentPhotoUrl
-  };
-};
-
-// Authentication middleware
-const authenticate = (req, res, next) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
-  if (!token) {
-    return res.status(401).json({ error: 'Access denied. No token provided.' });
-  }
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'hermana_secret_key');
-    req.user = decoded;
-    next();
-  } catch (err) {
-    res.status(401).json({ error: 'Invalid token.' });
-  }
-};
-
-const authorize = (...roles) => {
-  return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ error: 'Forbidden: Insufficient permissions.' });
-    }
-    next();
-  };
-};
-
-// Multer configuration for file uploads (student photo and ID photo)
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, './uploads');
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + '-' + file.originalname);
-  }
-});
-const upload = multer({ 
-  storage, 
-  limits: { fileSize: 5 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => {
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
-    if (allowedTypes.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error('Only image files are allowed'), false);
-    }
-  }
-});
-
-// ==================== BANK INFO ROUTE ====================
-app.get('/api/bank-info', (req, res) => {
-  res.json({
-    success: true,
-    bank: SCHOOL_BANK
-  });
+// Health check
+app.get('/api/health', (req, res) => {
+    res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
 // ==================== AUTHENTICATION ROUTES ====================
 
-// Register new student with photo
-app.post('/api/auth/register', upload.fields([
-  { name: 'idPhoto', maxCount: 1 },
-  { name: 'studentPhoto', maxCount: 1 }
-]), async (req, res) => {
-  try {
-    const { fullName, ethiopianId, grade, password, email, fromGrade, toGrade } = req.body;
-    const idPhotoUrl = req.files?.idPhoto ? `/uploads/${req.files.idPhoto[0].filename}` : null;
-    const studentPhotoUrl = req.files?.studentPhoto ? `/uploads/${req.files.studentPhoto[0].filename}` : null;
-    
-    if (!fullName || !ethiopianId || !grade) {
-      return res.status(400).json({ error: 'Full name, Ethiopian ID, and grade are required' });
-    }
-    
-    if (!studentPhotoUrl) {
-      return res.status(400).json({ error: 'Student photo is required for ID card' });
-    }
-    
-    db.get("SELECT id FROM users WHERE ethiopianId = ?", [ethiopianId], async (err, existing) => {
-      if (err) return res.status(500).json({ error: err.message });
-      if (existing) return res.status(400).json({ error: 'Ethiopian ID already registered' });
-      
-      const hashedPassword = password ? await bcrypt.hash(password, 10) : await bcrypt.hash('default', 10);
-      
-      db.run(`
-        INSERT INTO users (fullName, email, ethiopianId, idPhotoUrl, studentPhotoUrl, password, grade, role, fromGrade, toGrade)
-        VALUES (?, ?, ?, ?, ?, ?, ?, 'student', ?, ?)
-      `, [fullName, email || null, ethiopianId, idPhotoUrl, studentPhotoUrl, hashedPassword, grade, fromGrade || grade, toGrade || grade], function(err) {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ 
-          message: 'Registration successful! Please login to continue.',
-          studentId: this.lastID 
-        });
-      });
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Login
-app.post('/api/auth/login', (req, res) => {
-  const { identifier, password } = req.body;
-  
-  if (!identifier) {
-    return res.status(400).json({ error: 'Email or Ethiopian ID required' });
-  }
-  
-  db.get(`
-    SELECT * FROM users WHERE email = ? OR ethiopianId = ?
-  `, [identifier, identifier], async (err, user) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (!user) return res.status(401).json({ error: 'Invalid credentials' });
-    
-    let validPassword = false;
-    if (user.password) {
-      validPassword = await bcrypt.compare(password, user.password);
-    } else {
-      validPassword = password === 'default';
-    }
-    
-    if (!validPassword) return res.status(401).json({ error: 'Invalid credentials' });
-    
-    const token = jwt.sign(
-      { id: user.id, role: user.role, name: user.fullName, grade: user.grade },
-      process.env.JWT_SECRET || 'hermana_secret_key',
-      { expiresIn: '7d' }
-    );
-    
-    res.json({
-      token,
-      user: {
-        id: user.id,
-        name: user.fullName,
-        email: user.email,
-        ethiopianId: user.ethiopianId,
-        role: user.role,
-        grade: user.grade,
-        examPercent: user.examPercent,
-        examCompleted: user.examCompleted,
-        studentIdNumber: user.studentIdNumber,
-        studentPhotoUrl: user.studentPhotoUrl,
-        idPhotoUrl: user.idPhotoUrl
-      }
-    });
-  });
-});
-
-// ==================== EXAM ROUTES ====================
-
-app.get('/api/exam/:studentId', authenticate, (req, res) => {
-  const studentId = req.params.studentId;
-  
-  if (req.user.role !== 'student' && req.user.id !== parseInt(studentId)) {
-    return res.status(403).json({ error: 'Access denied' });
-  }
-  
-  db.get("SELECT grade FROM users WHERE id = ? AND role = 'student'", [studentId], (err, student) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (!student) return res.status(404).json({ error: 'Student not found' });
-    
-    const questions = generateExamQuestions(student.grade);
-    res.json({ questions, grade: student.grade });
-  });
-});
-
-app.post('/api/exam/submit', authenticate, (req, res) => {
-  const { studentId, answers, timeSpent, violations } = req.body;
-  
-  db.get("SELECT grade FROM users WHERE id = ?", [studentId], (err, student) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (!student) return res.status(404).json({ error: 'Student not found' });
-    
-    const questions = generateExamQuestions(student.grade);
-    let correct = 0;
-    
-    answers.forEach((answer, index) => {
-      if (answer === questions[index].correct) correct++;
-    });
-    
-    const percentage = Math.round((correct / questions.length) * 100);
-    const passed = percentage >= 50;
-    let studentIdNumber = null;
-    let studentIdCard = null;
-    
-    if (passed) {
-      studentIdNumber = generateStudentIdNumber();
-      studentIdCard = `/uploads/id_cards/${studentIdNumber}.png`;
-    }
-    
-    db.run(`
-      UPDATE users SET 
-        examScore = ?, 
-        examPercent = ?, 
-        examCompleted = ?, 
-        examViolations = ?,
-        studentIdNumber = COALESCE(?, studentIdNumber),
-        studentIdCardUrl = COALESCE(?, studentIdCardUrl)
-      WHERE id = ?
-    `, [correct, percentage, true, violations || 0, studentIdNumber, studentIdCard, studentId], (err) => {
-      if (err) return res.status(500).json({ error: err.message });
-      
-      db.run(`
-        INSERT INTO exams (studentId, grade, questions, answers, score, percentage, timeSpent, violations)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-      `, [studentId, student.grade, JSON.stringify(questions), JSON.stringify(answers), correct, percentage, timeSpent, violations || 0]);
-      
-      // Get updated student info for ID card
-      db.get("SELECT * FROM users WHERE id = ?", [studentId], (err, updatedStudent) => {
-        const idCard = passed ? generateStudentIdCard(updatedStudent) : null;
+// Student Registration
+app.post('/api/auth/student/register', upload.single('photo'), async (req, res) => {
+    try {
+        const { fullName, ethiopianId, email, password, fromGrade, toGrade } = req.body;
         
-        res.json({ 
-          score: correct, 
-          total: questions.length, 
-          percentage,
-          passed,
-          studentIdNumber: studentIdNumber,
-          studentIdCard: idCard,
-          message: passed ? '🎉 Congratulations! You passed the exam. Your Student ID Card has been generated!' : '❌ Sorry, you did not pass. Please retake the exam.'
-        });
-      });
-    });
-  });
+        // Check if student already exists
+        const existingStudent = students.find(s => s.ethiopianId === ethiopianId || s.email === email);
+        if (existingStudent) {
+            return res.status(400).json({ error: 'Student already exists with this Ethiopian ID or email' });
+        }
+        
+        const newStudent = {
+            id: Date.now(),
+            fullName,
+            ethiopianId,
+            email: email || `${ethiopianId}@hermana.edu`,
+            password: await hashPassword(password || 'default123'),
+            grade: fromGrade,
+            fromGrade,
+            toGrade,
+            examPercent: 0,
+            examViolations: 0,
+            photoUrl: req.file ? `/uploads/${req.file.filename}` : null,
+            payments: { registration: false, term1Bus: false, term2Bus: false, term3Bus: false },
+            createdAt: new Date().toISOString()
+        };
+        
+        students.push(newStudent);
+        
+        // Send welcome email
+        await transporter.sendMail({
+            from: '"Hermana Academy" <noreply@hermana.edu>',
+            to: newStudent.email,
+            subject: 'Welcome to Hermana Academy!',
+            html: `<h2>Welcome ${fullName}!</h2><p>Your registration is successful. Your Ethiopian ID is: ${ethiopianId}</p><p>Please login to complete your profile and take the entrance exam.</p>`
+        }).catch(err => console.log('Email error:', err));
+        
+        const token = generateToken({ id: newStudent.id, role: 'student', email: newStudent.email });
+        res.status(201).json({ success: true, token, student: { id: newStudent.id, fullName, ethiopianId, email: newStudent.email } });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Student Login
+app.post('/api/auth/student/login', async (req, res) => {
+    try {
+        const { identifier, password } = req.body;
+        const student = students.find(s => s.ethiopianId === identifier || s.email === identifier);
+        
+        if (!student || !await comparePassword(password, student.password)) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+        
+        const token = generateToken({ id: student.id, role: 'student', email: student.email });
+        res.json({ success: true, token, student: { id: student.id, fullName: student.fullName, ethiopianId: student.ethiopianId, grade: student.grade } });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Teacher Registration
+app.post('/api/auth/teacher/register', upload.single('document'), async (req, res) => {
+    try {
+        const { fullName, email, password, phone, teachingGrades, reason } = req.body;
+        
+        const existingTeacher = teachers.find(t => t.email === email);
+        if (existingTeacher) {
+            return res.status(400).json({ error: 'Teacher already registered with this email' });
+        }
+        
+        const newTeacher = {
+            id: Date.now(),
+            fullName,
+            email,
+            password: await hashPassword(password),
+            phone,
+            teachingGrades: JSON.parse(teachingGrades),
+            educationDoc: req.file ? `/uploads/${req.file.filename}` : null,
+            reason,
+            status: 'pending',
+            appliedDate: new Date().toISOString(),
+            createdAt: new Date().toISOString()
+        };
+        
+        teachers.push(newTeacher);
+        
+        // Send application confirmation
+        await transporter.sendMail({
+            from: '"Hermana Academy" <noreply@hermana.edu>',
+            to: email,
+            subject: 'Teacher Application Received',
+            html: `<h2>Thank you ${fullName}</h2><p>Your application has been submitted. The board will review it within 3-5 business days.</p><p>You will receive an email once a decision is made.</p>`
+        }).catch(err => console.log('Email error:', err));
+        
+        res.status(201).json({ success: true, message: 'Application submitted successfully', teacherId: newTeacher.id });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Teacher Login
+app.post('/api/auth/teacher/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const teacher = teachers.find(t => t.email === email);
+        
+        if (!teacher || !await comparePassword(password, teacher.password)) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+        
+        if (teacher.status !== 'approved') {
+            return res.status(403).json({ error: `Application status: ${teacher.status}. Please wait for approval.` });
+        }
+        
+        const token = generateToken({ id: teacher.id, role: 'teacher', email: teacher.email });
+        res.json({ success: true, token, teacher: { id: teacher.id, fullName: teacher.fullName, email: teacher.email, status: teacher.status } });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Board Login
+app.post('/api/auth/board/login', async (req, res) => {
+    const { email, password } = req.body;
+    if (email === 'board@hermana.edu' && password === 'board123') {
+        const token = generateToken({ role: 'board', email });
+        res.json({ success: true, token, role: 'board' });
+    } else {
+        res.status(401).json({ error: 'Invalid credentials' });
+    }
+});
+
+// Director Login
+app.post('/api/auth/director/login', async (req, res) => {
+    const { email, password } = req.body;
+    if (email === 'director@hermana.edu' && password === 'director123') {
+        const token = generateToken({ role: 'director', email });
+        res.json({ success: true, token, role: 'director' });
+    } else {
+        res.status(401).json({ error: 'Invalid credentials' });
+    }
+});
+
+// Parent Login (view student data)
+app.post('/api/auth/parent/login', async (req, res) => {
+    try {
+        const { identifier, password } = req.body;
+        const student = students.find(s => s.ethiopianId === identifier || s.email === identifier);
+        
+        if (!student || !await comparePassword(password, student.password)) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+        
+        const token = generateToken({ id: student.id, role: 'parent', studentId: student.id });
+        res.json({ success: true, token, student: { id: student.id, fullName: student.fullName, ethiopianId: student.ethiopianId, grade: student.grade } });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 // ==================== STUDENT ROUTES ====================
 
-app.get('/api/students/:id', authenticate, (req, res) => {
-  const studentId = req.params.id;
-  
-  db.get(`
-    SELECT id, fullName, ethiopianId, idPhotoUrl, studentPhotoUrl, grade, examScore, examPercent, examCompleted, 
-           examViolations, studentIdNumber, studentIdCardUrl, fromGrade, toGrade, registrationDate
-    FROM users WHERE id = ? AND role = 'student'
-  `, [studentId], (err, student) => {
-    if (err) return res.status(500).json({ error: err.message });
+// Get student dashboard data
+app.get('/api/student/:id', authenticateToken, (req, res) => {
+    const student = students.find(s => s.id === parseInt(req.params.id));
     if (!student) return res.status(404).json({ error: 'Student not found' });
-    
-    // Generate ID card if student has passed but no card URL
-    if (student.examCompleted && student.examPercent >= 50 && !student.studentIdCardUrl) {
-      const idCard = generateStudentIdCard(student);
-      student.studentIdCard = idCard;
-    }
-    
     res.json(student);
-  });
 });
 
-// Get student ID card
-app.get('/api/students/:id/id-card', authenticate, (req, res) => {
-  const studentId = req.params.id;
-  
-  db.get(`
-    SELECT id, fullName, ethiopianId, studentPhotoUrl, grade, studentIdNumber, fromGrade, toGrade, examPercent
-    FROM users WHERE id = ? AND role = 'student'
-  `, [studentId], (err, student) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (!student) return res.status(404).json({ error: 'Student not found' });
-    
-    if (student.examPercent < 50) {
-      return res.status(403).json({ error: 'ID Card available only after passing the exam (50% or higher)' });
+// Submit exam
+app.post('/api/student/:id/exam', authenticateToken, async (req, res) => {
+    try {
+        const { answers, questions, violations } = req.body;
+        const student = students.find(s => s.id === parseInt(req.params.id));
+        
+        if (!student) return res.status(404).json({ error: 'Student not found' });
+        
+        let correct = 0;
+        answers.forEach((ans, i) => { if (ans === questions[i].correct) correct++; });
+        const percentage = Math.round((correct / questions.length) * 100);
+        
+        const examResult = {
+            id: Date.now(),
+            studentId: student.id,
+            score: correct,
+            percentage,
+            violations,
+            passed: percentage >= 50,
+            date: new Date().toISOString()
+        };
+        
+        examResults.push(examResult);
+        student.examPercent = percentage;
+        student.examViolations = violations;
+        
+        res.json({ success: true, percentage, passed: percentage >= 50, violations });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Make payment
+app.post('/api/student/:id/payment', authenticateToken, async (req, res) => {
+    try {
+        const { paymentType, amount } = req.body;
+        const student = students.find(s => s.id === parseInt(req.params.id));
+        
+        if (!student) return res.status(404).json({ error: 'Student not found' });
+        
+        student.payments[paymentType] = true;
+        
+        const payment = {
+            id: Date.now(),
+            transactionId: `TXN-${Date.now()}`,
+            studentId: student.id,
+            studentName: student.fullName,
+            paymentType,
+            amount,
+            status: 'completed',
+            date: new Date().toISOString()
+        };
+        
+        payments.push(payment);
+        
+        res.json({ success: true, payment });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ==================== TEACHER ROUTES ====================
+
+// Get all teachers (for board)
+app.get('/api/teachers', authenticateToken, (req, res) => {
+    if (req.user.role !== 'board' && req.user.role !== 'director') {
+        return res.status(403).json({ error: 'Unauthorized' });
+    }
+    res.json(teachers);
+});
+
+// Review teacher application (board only)
+app.put('/api/teacher/:id/review', authenticateToken, async (req, res) => {
+    if (req.user.role !== 'board') {
+        return res.status(403).json({ error: 'Only board members can review applications' });
     }
     
-    const idCard = generateStudentIdCard(student);
-    res.json(idCard);
-  });
-});
-
-// ==================== PAYMENT ROUTES ====================
-
-const paymentPrices = {
-  registration: 1000,
-  term1Bus: 3500,
-  term2Bus: 3500,
-  term3Bus: 3500
-};
-
-// Get bank info for payment
-app.get('/api/payment/bank-info', (req, res) => {
-  res.json({
-    success: true,
-    bank: SCHOOL_BANK,
-    instructions: [
-      "1. Transfer the exact amount to the school bank account",
-      "2. Use your Student ID (or Ethiopian ID) as payment reference",
-      "3. Upload the bank receipt/transaction screenshot below",
-      "4. Wait for finance team verification (within 24 hours)"
-    ]
-  });
-});
-
-// Student submits payment receipt
-app.post('/api/payment/submit-receipt', authenticate, upload.single('receiptImage'), (req, res) => {
-  const { studentId, paymentType, amount, notes, transactionReference } = req.body;
-  const receiptImage = req.file ? `/uploads/${req.file.filename}` : null;
-  
-  if (!receiptImage) {
-    return res.status(400).json({ error: 'Payment receipt image is required' });
-  }
-  
-  const transactionId = 'RCPT-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-  
-  db.get("SELECT fullName, ethiopianId FROM users WHERE id = ?", [studentId], (err, student) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (!student) return res.status(404).json({ error: 'Student not found' });
+    const { status } = req.body;
+    const teacher = teachers.find(t => t.id === parseInt(req.params.id));
     
-    db.run(`
-      INSERT INTO payments (studentId, studentName, studentEthiopianId, paymentType, amount, transactionId, bankAccountNumber, bankName, receiptImage, status, notes)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)
-    `, [studentId, student.fullName, student.ethiopianId, paymentType, amount || paymentPrices[paymentType], transactionId, SCHOOL_BANK.accountNumber, SCHOOL_BANK.bankName, receiptImage, notes || `Reference: ${transactionReference || student.ethiopianId}`], function(err) {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json({ 
-        success: true, 
-        message: 'Payment receipt submitted! Finance team will verify within 24 hours.',
-        transactionId: transactionId,
-        status: 'pending',
-        bankAccount: SCHOOL_BANK.accountNumber
-      });
-    });
-  });
+    if (!teacher) return res.status(404).json({ error: 'Teacher not found' });
+    
+    teacher.status = status;
+    
+    // Send email notification
+    await transporter.sendMail({
+        from: '"Hermana Academy Board" <board@hermana.edu>',
+        to: teacher.email,
+        subject: `Teacher Application ${status.toUpperCase()}`,
+        html: `<h2>Dear ${teacher.fullName},</h2><p>Your application has been ${status}.</p>${status === 'approved' ? '<p>Welcome to Hermana Academy! Please login to access your dashboard.</p>' : '<p>Thank you for your interest. We encourage you to reapply in the future.</p>'}`
+    }).catch(err => console.log('Email error:', err));
+    
+    res.json({ success: true, status });
 });
 
-// Get student payment status
-app.get('/api/payments/student/:studentId', authenticate, (req, res) => {
-  const studentId = req.params.studentId;
-  
-  db.all(`
-    SELECT paymentType, amount, transactionId, paymentDate, status, receiptImage, bankAccountNumber
-    FROM payments WHERE studentId = ?
-  `, [studentId], (err, payments) => {
-    if (err) return res.status(500).json({ error: err.message });
+// ==================== BOARD ROUTES ====================
+
+// Get statistics
+app.get('/api/statistics', authenticateToken, (req, res) => {
+    if (req.user.role !== 'board' && req.user.role !== 'director') {
+        return res.status(403).json({ error: 'Unauthorized' });
+    }
     
-    const paymentStatus = {
-      registration: false,
-      term1Bus: false,
-      term2Bus: false,
-      term3Bus: false
+    const stats = {
+        totalStudents: students.length,
+        totalTeachers: teachers.length,
+        approvedTeachers: teachers.filter(t => t.status === 'approved').length,
+        pendingTeachers: teachers.filter(t => t.status === 'pending').length,
+        totalRegistrationFees: students.filter(s => s.payments.registration).length * 1000,
+        totalTermFees: students.filter(s => s.payments.term1Bus).length * 3500,
+        examPassRate: examResults.length > 0 ? (examResults.filter(e => e.passed).length / examResults.length * 100).toFixed(2) : 0,
+        totalPayments: payments.length
     };
     
-    payments.forEach(payment => {
-      if (payment.status === 'verified') {
-        paymentStatus[payment.paymentType] = true;
-      }
-    });
-    
-    res.json({ 
-      payments, 
-      paymentStatus,
-      schoolBankAccount: SCHOOL_BANK.accountNumber
-    });
-  });
+    res.json(stats);
 });
 
-// ==================== DIRECTOR ROUTES ====================
-
-app.get('/api/director/students', authenticate, authorize('director'), (req, res) => {
-  db.all(`
-    SELECT id, fullName, ethiopianId, grade, examPercent, examCompleted, studentIdNumber, studentPhotoUrl, registrationDate 
-    FROM users WHERE role = 'student'
-  `, (err, students) => {
-    if (err) return res.status(500).json({ error: err.message });
-    
-    const promises = students.map(student => {
-      return new Promise((resolve) => {
-        db.all("SELECT paymentType, status FROM payments WHERE studentId = ?", [student.id], (err, payments) => {
-          const paymentStatus = {
-            registration: false, term1Bus: false, term2Bus: false, term3Bus: false
-          };
-          payments.forEach(p => { 
-            if (p.status === 'verified') {
-              paymentStatus[p.paymentType] = true;
-            }
-          });
-          student.paymentStatus = paymentStatus;
-          resolve(student);
-        });
-      });
-    });
-    
-    Promise.all(promises).then(results => {
-      res.json(results);
-    });
-  });
+// Get all students
+app.get('/api/students', authenticateToken, (req, res) => {
+    if (req.user.role !== 'board' && req.user.role !== 'director') {
+        return res.status(403).json({ error: 'Unauthorized' });
+    }
+    res.json(students);
 });
 
-// ==================== PARENT ROUTES ====================
-
-app.get('/api/parent/updates', authenticate, (req, res) => {
-  db.all(`
-    SELECT * FROM updates 
-    ORDER BY createdAt DESC 
-    LIMIT 50
-  `, (err, updates) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(updates || []);
-  });
-});
-
-app.get('/api/parent/student/:id', authenticate, (req, res) => {
-  const studentId = req.params.id;
-  
-  db.get(`
-    SELECT id, fullName, ethiopianId, grade, examPercent, studentIdNumber, studentPhotoUrl, fromGrade, toGrade
-    FROM users WHERE id = ? AND role = 'student'
-  `, [studentId], (err, student) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (!student) return res.status(404).json({ error: 'Student not found' });
-    
-    db.all("SELECT paymentType, amount, paymentDate, status FROM payments WHERE studentId = ?", [studentId], (err, payments) => {
-      student.payments = payments;
-      res.json(student);
-    });
-  });
+// Get students by grade
+app.get('/api/students/grade/:grade', authenticateToken, (req, res) => {
+    const gradeStudents = students.filter(s => s.grade === req.params.grade);
+    res.json(gradeStudents);
 });
 
 // ==================== FEEDBACK ROUTES ====================
 
-app.post('/api/feedback', (req, res) => {
-  const { name, email, role, rating, message } = req.body;
-  
-  if (!name || !message) {
-    return res.status(400).json({ error: 'Name and message are required' });
-  }
-  
-  db.run(`
-    INSERT INTO feedback (name, email, role, rating, message)
-    VALUES (?, ?, ?, ?, ?)
-  `, [name, email || null, role || null, rating || null, message], function(err) {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ message: 'Feedback submitted successfully!', id: this.lastID });
-  });
-});
-
-// ==================== UPDATES ROUTES ====================
-
-app.post('/api/updates', authenticate, authorize('director'), (req, res) => {
-  const { title, description, type } = req.body;
-  
-  if (!title || !description) {
-    return res.status(400).json({ error: 'Title and description are required' });
-  }
-  
-  db.run(`
-    INSERT INTO updates (title, description, type, createdBy)
-    VALUES (?, ?, ?, ?)
-  `, [title, description, type || 'announcement', req.user.id], function(err) {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ message: 'Update posted successfully!', updateId: this.lastID });
-  });
-});
-
-app.get('/api/updates', (req, res) => {
-  db.all(`
-    SELECT * FROM updates ORDER BY createdAt DESC LIMIT 20
-  `, (err, updates) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(updates);
-  });
-});
-
-// ==================== HEALTH CHECK ====================
-app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
-    message: 'Hermana Academy Backend is running',
-    timestamp: new Date().toISOString(),
-    version: '2.0.0'
-  });
-});
-
-// Root route
-app.get('/', (req, res) => {
-  res.json({
-    status: 'online',
-    message: 'Hermana Academy API is running!',
-    version: '2.0.0',
-    developer: 'Muhammad Ilyas',
-    purpose: 'To digitize Ethiopian education - making registration, payments, exams, and ID card generation easy and accessible.',
-    schoolBankAccount: SCHOOL_BANK.accountNumber,
-    endpoints: {
-      auth: '/api/auth/register, /api/auth/login',
-      exam: '/api/exam/:studentId, /api/exam/submit',
-      payment: '/api/payment/bank-info, /api/payment/submit-receipt, /api/payments/student/:studentId',
-      director: '/api/director/students',
-      parent: '/api/parent/updates, /api/parent/student/:id',
-      feedback: '/api/feedback',
-      idCard: '/api/students/:id/id-card',
-      health: '/api/health'
+// Submit feedback
+app.post('/api/feedback', authenticateToken, async (req, res) => {
+    try {
+        const { rating, text } = req.body;
+        const feedback = {
+            id: Date.now(),
+            userId: req.user.id,
+            userRole: req.user.role,
+            rating: parseInt(rating),
+            text,
+            date: new Date().toISOString()
+        };
+        
+        feedbacks.push(feedback);
+        res.json({ success: true, feedback });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-  });
 });
 
-// ==================== ERROR HANDLER ====================
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!', message: err.message });
+// Get all feedbacks (board/director only)
+app.get('/api/feedbacks', authenticateToken, (req, res) => {
+    if (req.user.role !== 'board' && req.user.role !== 'director') {
+        return res.status(403).json({ error: 'Unauthorized' });
+    }
+    res.json(feedbacks);
 });
 
-// ==================== START SERVER ====================
-app.listen(PORT, () => {
-  console.log(`
-  ╔═══════════════════════════════════════════════════════════════════╗
-  ║                    🏫 HERMANA ACADEMY BACKEND                      ║
-  ║                         Version 2.0.0                              ║
-  ║                    Developed by: Muhammad Ilyas                    ║
-  ╠═══════════════════════════════════════════════════════════════════╣
-  ║  📍 Server running on: http://localhost:${PORT}                     ║
-  ║  ✅ Status: Online                                                 ║
-  ╠═══════════════════════════════════════════════════════════════════╣
-  ║  🏦 SCHOOL BANK ACCOUNT:                                           ║
-  ║     Account Number: ${SCHOOL_BANK.accountNumber}                     ║
-  ║     Bank Name: ${SCHOOL_BANK.bankName}                              ║
-  ║     Account Name: ${SCHOOL_BANK.accountName}                        ║
-  ╠═══════════════════════════════════════════════════════════════════╣
-  ║  🔐 Default Login Credentials:                                     ║
-  ║  👨‍🎓 Student: ET999999 / student123                                 ║
-  ║  📊 Director: director@hermana.edu / director123                   ║
-  ╠═══════════════════════════════════════════════════════════════════╣
-  ║  📝 Features:                                                      ║
-  ║  ✅ Student Registration with Photo                                ║
-  ║  ✅ Timed Exam (1 minute)                                          ║
-  ║  ✅ Automatic ID Card Generation after Passing                     ║
-  ║  ✅ Bank Payment Integration                                       ║
-  ║  ✅ Receipt Upload & Verification                                  ║
-  ╚═══════════════════════════════════════════════════════════════════╝
-  `);
+// ==================== ID CARD GENERATION ====================
+
+app.get('/api/student/:id/idcard', authenticateToken, (req, res) => {
+    const student = students.find(s => s.id === parseInt(req.params.id));
+    if (!student) return res.status(404).json({ error: 'Student not found' });
+    
+    const idCard = {
+        studentId: `HA${student.id}${new Date().getFullYear()}`,
+        fullName: student.fullName,
+        ethiopianId: student.ethiopianId,
+        grade: student.grade,
+        fromGrade: student.fromGrade,
+        toGrade: student.toGrade,
+        issuedDate: new Date().toISOString(),
+        validUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString(),
+        photoUrl: student.photoUrl
+    };
+    
+    res.json(idCard);
 });
 
-module.exports = { app, db };
+// ==================== REAL-TIME CHAT (Socket.IO) ====================
+
+io.use((socket, next) => {
+    const token = socket.handshake.auth.token;
+    if (token) {
+        try {
+            const decoded = verifyToken(token);
+            socket.user = decoded;
+            next();
+        } catch (err) {
+            next(new Error('Authentication error'));
+        }
+    } else {
+        next(new Error('Authentication required'));
+    }
+});
+
+io.on('connection', (socket) => {
+    console.log(`User connected: ${socket.user?.email || 'unknown'}`);
+    
+    socket.on('join', (room) => {
+        socket.join(room);
+        console.log(`${socket.user?.email} joined ${room}`);
+    });
+    
+    socket.on('send_message', (data) => {
+        const message = {
+            id: Date.now(),
+            userId: socket.user?.id,
+            userName: socket.user?.email,
+            message: data.message,
+            room: data.room,
+            timestamp: new Date().toISOString()
+        };
+        
+        liveMessages.push(message);
+        io.to(data.room).emit('receive_message', message);
+    });
+    
+    socket.on('typing', (data) => {
+        socket.to(data.room).emit('user_typing', { user: socket.user?.email });
+    });
+    
+    socket.on('disconnect', () => {
+        console.log(`User disconnected: ${socket.user?.email}`);
+    });
+});
+
+// ==================== MIDDLEWARE ====================
+
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    
+    if (!token) {
+        return res.status(401).json({ error: 'Access token required' });
+    }
+    
+    try {
+        const decoded = verifyToken(token);
+        req.user = decoded;
+        next();
+    } catch (error) {
+        return res.status(403).json({ error: 'Invalid or expired token' });
+    }
+}
+
+// ==================== SERVER STARTUP ====================
+
+initializeDemoData();
+
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`
+    ╔════════════════════════════════════════╗
+    ║     Hermana Academy Server Started     ║
+    ╠════════════════════════════════════════╣
+    ║  Server: http://localhost:${PORT}        ║
+    ║  WebSocket: ws://localhost:${PORT}       ║
+    ║  API Ready! 🚀                         ║
+    ╚════════════════════════════════════════╝
+    `);
+    
+    console.log('\n📋 Demo Credentials:');
+    console.log('   Student: ET999999 / student123');
+    console.log('   Teacher: teacher@hermana.edu / teacher123');
+    console.log('   Director: director@hermana.edu / director123');
+    console.log('   Board: board@hermana.edu / board123\n');
+});
+
+// Error handling
+process.on('unhandledRejection', (error) => {
+    console.error('Unhandled Rejection:', error);
+});
+
+// Export for testing
+module.exports = { app, server, io };
