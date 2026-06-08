@@ -339,7 +339,7 @@
             font-weight: 600;
         }
         
-        /* Finance Dashboard Styles - ADDED */
+        /* Finance Dashboard Styles */
         .finance-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -361,7 +361,7 @@
 </head>
 <body>
 
-<!-- ADDITION 1: ROLE SELECTION MODAL -->
+<!-- ROLE SELECTION MODAL -->
 <div id="roleModal" class="role-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:20000; display:flex; justify-content:center; align-items:center;">
     <div style="background:white; border-radius:30px; padding:40px; max-width:500px; width:90%; text-align:center;">
         <h2>🏫 Welcome to Hermana Academy</h2>
@@ -373,6 +373,7 @@
             <button onclick="selectRole('board')" style="padding:15px; background:#8B0000; color:white; border:none; border-radius:15px; cursor:pointer;">🎯 Board</button>
             <button onclick="selectRole('director')" style="padding:15px; background:#764ba2; color:white; border:none; border-radius:15px; cursor:pointer;">📊 Director</button>
         </div>
+        <p style="margin-top:20px; font-size:12px; color:#666;">Demo Accounts: Student(ET999999/student123) | Teacher(teacher@hermana.edu/teacher123) | Board(board@hermana.edu/board123) | Director(director@hermana.edu/director123)</p>
     </div>
 </div>
 
@@ -380,7 +381,6 @@
     ⚠️ Warning: You left the exam window! Your exam attempt has been recorded. ⚠️
 </div>
 
-<!-- ORIGINAL CONTAINER WRAPPED WITH mainContainer (ADDITION 6) -->
 <div id="mainContainer" style="display: none;">
 <div class="container">
     <div class="header">
@@ -401,7 +401,6 @@
             <button class="tab-btn" onclick="switchTab('board')">🎯 Board Dashboard</button>
             <button class="tab-btn" onclick="switchTab('director')">📊 Director Panel</button>
             <button class="tab-btn" onclick="switchTab('parent')">👪 Parents Hub</button>
-            <!-- ADDITION 3: FINANCE TAB BUTTON -->
             <button class="tab-btn" onclick="switchTab('finance')">💰 Finance Dashboard</button>
         </div>
     </div>
@@ -531,7 +530,7 @@
         <div id="parentDashboard" style="display: none;"></div>
     </div>
 
-    <!-- ADDITION 4: FINANCE PANEL -->
+    <!-- Finance Panel -->
     <div id="financePanel" class="panel">
         <h2>💰 Finance & Payment Dashboard</h2>
         <div id="financeStats" style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:20px;"></div>
@@ -540,7 +539,7 @@
 </div>
 </div>
 
-<!-- Skype Call Modal (ORIGINAL - UNCHANGED) -->
+<!-- Skype Call Modal -->
 <div id="skypeModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -569,7 +568,7 @@
     </div>
 </div>
 
-<!-- ADDITION 2: INTERNAL CALL MODAL -->
+<!-- Internal Call Modal -->
 <div id="internalCallModal" class="modal">
     <div class="modal-content" style="max-width:600px;">
         <div class="modal-header">
@@ -589,7 +588,7 @@
     </div>
 </div>
 
-<!-- Modals (ORIGINAL - UNCHANGED) -->
+<!-- Modals -->
 <div id="purposeModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>🎯 Our Purpose</h2><button class="close-modal" onclick="closeModal('purposeModal')">&times;</button></div><p>To digitize Ethiopian education - making registration, payments, and ID cards easy and accessible for all students and parents from Nursery to Grade 12.</p></div></div>
 <div id="feedbackModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>💬 Feedback</h2><button class="close-modal" onclick="closeModal('feedbackModal')">&times;</button></div><form id="feedbackForm"><textarea rows="3" placeholder="Your feedback..." style="width:100%;margin-bottom:10px;"></textarea><button type="submit">Submit</button></form></div></div>
 <div id="privacyModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>🔒 Privacy Policy</h2><button class="close-modal" onclick="closeModal('privacyModal')">&times;</button></div><p>Your data is secure. We only collect information for school management purposes.</p></div></div>
@@ -597,14 +596,14 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
-    // ==================== ORIGINAL EXAM SECURITY VARIABLES (UNCHANGED) ====================
+    // ==================== EXAM SECURITY VARIABLES ====================
     let examActive = false;
     let examStartTime = null;
     let examViolations = 0;
     let examPhoto = null;
     let mediaStream = null;
     
-    // ==================== ORIGINAL DATA (UNCHANGED) ====================
+    // ==================== DATA ====================
     let students = [];
     let teachers = [];
     let currentUser = null;
@@ -612,7 +611,6 @@
 
     const allGrades = ["Nursery", "Lower KG", "Upper KG", "Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5", "Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12"];
 
-    // ==================== ORIGINAL FUNCTIONS (UNCHANGED) ====================
     function loadData() {
         const storedStudents = localStorage.getItem('hermana_students');
         const storedTeachers = localStorage.getItem('hermana_teachers');
@@ -621,7 +619,6 @@
             students = JSON.parse(storedStudents);
         } else {
             students = [];
-            // Demo students for KG sections
             const kgStudents = ["Nursery", "Lower KG", "Upper KG"];
             kgStudents.forEach((kg, idx) => {
                 for (let i = 1; i <= (idx === 0 ? 25 : 30); i++) {
@@ -640,7 +637,6 @@
                     });
                 }
             });
-            // Demo students for Grade 1
             for (let i = 1; i <= 45; i++) {
                 students.push({
                     id: 2000 + i,
@@ -683,13 +679,59 @@
     function saveStudents() { localStorage.setItem('hermana_students', JSON.stringify(students)); }
     function saveTeachers() { localStorage.setItem('hermana_teachers', JSON.stringify(teachers)); }
     
-    // ==================== ORIGINAL EXAM SECURITY FUNCTIONS (UNCHANGED) ====================
+    // ==================== PERSISTENT LOGIN FUNCTIONS (ADDED/FIXED) ====================
+    function saveLoginState(role, userData) {
+        localStorage.setItem('hermana_logged_in', 'true');
+        localStorage.setItem('hermana_user_role', role);
+        localStorage.setItem('hermana_user_data', JSON.stringify(userData));
+    }
+    
+    function clearLoginState() {
+        localStorage.removeItem('hermana_logged_in');
+        localStorage.removeItem('hermana_user_role');
+        localStorage.removeItem('hermana_user_data');
+    }
+    
+    function restoreLoginState() {
+        const isLoggedIn = localStorage.getItem('hermana_logged_in');
+        if (isLoggedIn === 'true') {
+            const role = localStorage.getItem('hermana_user_role');
+            const userData = JSON.parse(localStorage.getItem('hermana_user_data') || '{}');
+            currentUser = userData;
+            
+            // Hide role modal and show main container
+            document.getElementById('roleModal').style.display = 'none';
+            document.getElementById('mainContainer').style.display = 'block';
+            
+            // Restore tabs based on role
+            const tabs = document.querySelectorAll('.tab-btn');
+            if (role === 'student') {
+                tabs.forEach((tab, i) => { tab.style.display = i === 0 ? 'inline-block' : 'none'; });
+                loadStudentDashboard();
+            } else if (role === 'teacher') {
+                tabs.forEach((tab, i) => { tab.style.display = i === 1 ? 'inline-block' : 'none'; });
+                loadTeacherDashboard();
+            } else if (role === 'parent') {
+                tabs.forEach((tab, i) => { tab.style.display = i === 4 ? 'inline-block' : 'none'; });
+                loadParentDashboard();
+            } else if (role === 'board') {
+                tabs.forEach((tab, i) => { tab.style.display = (i === 2 || i === 5) ? 'inline-block' : 'none'; });
+                loadBoardDashboard();
+            } else if (role === 'director') {
+                tabs.forEach((tab, i) => { tab.style.display = (i === 3 || i === 5) ? 'inline-block' : 'none'; });
+                loadDirectorDashboard();
+            }
+            return true;
+        }
+        return false;
+    }
+    
+    // ==================== EXAM SECURITY FUNCTIONS ====================
     async function startSecureExam(studentId, examQuestions) {
         examActive = true;
         examStartTime = Date.now();
         examViolations = 0;
         
-        // Request camera access
         try {
             mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
             const videoTrack = mediaStream.getVideoTracks()[0];
@@ -697,7 +739,6 @@
             const blob = await imageCapture.takePhoto();
             examPhoto = URL.createObjectURL(blob);
             
-            // Save photo to student record
             const student = students.find(s => s.id === studentId);
             if (student) {
                 student.examPhoto = examPhoto;
@@ -708,12 +749,10 @@
             alert("Camera access is required for exam. Please allow camera access.");
         }
         
-        // Lock body scroll and prevent right click
         document.body.style.overflow = 'hidden';
         document.addEventListener('contextmenu', preventContextMenu);
         document.addEventListener('keydown', preventKeyShortcuts);
         
-        // Show exam interface
         showExamInterface(examQuestions, studentId);
     }
     
@@ -727,7 +766,6 @@
     
     function preventKeyShortcuts(e) {
         if (examActive) {
-            // Prevent F12, Ctrl+Shift+I, Ctrl+U, Ctrl+R, Alt+Tab
             if (e.key === 'F12' || 
                 (e.ctrlKey && e.shiftKey && e.key === 'I') ||
                 (e.ctrlKey && e.key === 'u') ||
@@ -804,14 +842,8 @@
         `;
         
         document.body.insertAdjacentHTML('beforeend', examHTML);
-        
-        // Request fullscreen
         document.documentElement.requestFullscreen().catch(err => console.log("Fullscreen error:", err));
-        
-        // Handle tab visibility change
         document.addEventListener('visibilitychange', handleVisibilityChange);
-        
-        // Handle window blur
         window.addEventListener('blur', handleWindowBlur);
         
         document.getElementById('secureExamForm').addEventListener('submit', async (e) => {
@@ -836,7 +868,6 @@
             
             alert(`Exam completed!\nScore: ${correct}/${questions.length} (${percentage}%)\nViolations: ${examViolations}\n${percentage >= 50 ? '✅ You passed!' : '❌ You failed!'}`);
             
-            // Clean up
             examActive = false;
             if (mediaStream) mediaStream.getTracks().forEach(track => track.stop());
             document.exitFullscreen();
@@ -900,8 +931,6 @@
         return { sectionA: gradeStudents, sectionB: [] };
     }
     
-    // ORIGINAL switchTab - MODIFIED to include finance (ADDITION)
-    const originalSwitchTab = window.switchTab;
     function switchTab(tab) {
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -917,11 +946,10 @@
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     window.openModal = openModal; window.closeModal = closeModal;
     
-    // ORIGINAL Teacher Registration (UNCHANGED)
+    // ==================== TEACHER REGISTRATION ====================
     document.getElementById('teacherRegisterForm')?.addEventListener('submit', (e) => {
         e.preventDefault();
         const docFile = document.getElementById('teacherDoc').files[0];
-        let docUrl = null;
         if (docFile) {
             const reader = new FileReader();
             reader.onload = function(ev) {
@@ -949,75 +977,79 @@
         }
     });
     
-    // ORIGINAL Teacher Login (UNCHANGED)
+    // ==================== TEACHER LOGIN (with persistence) ====================
     document.getElementById('teacherLoginForm')?.addEventListener('submit', (e) => {
         e.preventDefault();
         const email = document.getElementById('teacherLoginEmail').value;
         const password = document.getElementById('teacherLoginPassword').value;
         const teacher = teachers.find(t => t.email === email && atob(t.password) === password);
         if (teacher) {
-            currentUser = { id: teacher.id, name: teacher.fullName, role: 'teacher', status: teacher.status };
-            localStorage.setItem('token', 'teacher-token');
+            if(teacher.status !== 'approved') {
+                alert(`Your application is ${teacher.status}. Please wait for approval.`);
+                return;
+            }
+            currentUser = { id: teacher.id, name: teacher.fullName, role: 'teacher', status: teacher.status, email: teacher.email };
+            saveLoginState('teacher', currentUser);
             loadTeacherDashboard();
         } else {
             alert('Invalid credentials or application not approved yet!');
         }
     });
     
-    // ORIGINAL Board Login (UNCHANGED)
+    // ==================== BOARD LOGIN (with persistence) ====================
     document.getElementById('boardLoginForm')?.addEventListener('submit', (e) => {
         e.preventDefault();
         const email = document.getElementById('boardEmail').value;
         const password = document.getElementById('boardPassword').value;
         if (email === 'board@hermana.edu' && password === 'board123') {
-            currentUser = { name: 'Board Member', role: 'board' };
-            localStorage.setItem('token', 'board-token');
+            currentUser = { name: 'Board Member', role: 'board', email: email };
+            saveLoginState('board', currentUser);
             loadBoardDashboard();
         } else {
             alert('Invalid credentials!');
         }
     });
     
-    // ORIGINAL Director Login (UNCHANGED)
+    // ==================== DIRECTOR LOGIN (with persistence) ====================
     document.getElementById('directorLoginForm')?.addEventListener('submit', (e) => {
         e.preventDefault();
         if (document.getElementById('directorEmail').value === 'director@hermana.edu' && document.getElementById('directorPassword').value === 'director123') {
-            currentUser = { name: 'Director', role: 'director' };
-            localStorage.setItem('token', 'director-token');
+            currentUser = { name: 'Director', role: 'director', email: 'director@hermana.edu' };
+            saveLoginState('director', currentUser);
             loadDirectorDashboard();
         } else alert('Invalid credentials!');
     });
     
-    // ORIGINAL Parent Login (UNCHANGED)
+    // ==================== PARENT LOGIN (with persistence) ====================
     document.getElementById('parentLoginForm')?.addEventListener('submit', (e) => {
         e.preventDefault();
         const student = students.find(s => s.ethiopianId === document.getElementById('parentIdentifier').value || s.email === document.getElementById('parentIdentifier').value);
         if (!student) { alert('Student not found!'); return; }
         if (atob(student.password) !== (document.getElementById('parentPassword').value || 'default')) { alert('Wrong password!'); return; }
-        currentUser = { id: student.id, name: student.fullName, role: 'parent' };
-        localStorage.setItem('token', 'parent-token');
+        currentUser = { id: student.id, name: student.fullName, role: 'parent', studentId: student.id };
+        saveLoginState('parent', currentUser);
         loadParentDashboard();
     });
     
-    // ORIGINAL Student Login (UNCHANGED)
+    // ==================== STUDENT LOGIN (with persistence) ====================
     document.getElementById('studentLoginForm')?.addEventListener('submit', (e) => {
         e.preventDefault();
         const student = students.find(s => s.ethiopianId === document.getElementById('studentIdentifier').value || s.email === document.getElementById('studentIdentifier').value);
         if (!student) { alert('Student not found!'); return; }
         if (atob(student.password) !== (document.getElementById('studentPassword').value || 'default')) { alert('Wrong password!'); return; }
-        currentUser = { id: student.id, name: student.fullName, role: 'student', grade: student.grade };
-        localStorage.setItem('token', 'student-token');
+        currentUser = { id: student.id, name: student.fullName, role: 'student', grade: student.grade, ethiopianId: student.ethiopianId };
+        saveLoginState('student', currentUser);
         loadStudentDashboard();
     });
     
-    // ORIGINAL Student Registration (UNCHANGED)
+    // ==================== STUDENT REGISTRATION ====================
     document.getElementById('registerForm')?.addEventListener('submit', (e) => {
         e.preventDefault();
         const photoFile = document.getElementById('regPhoto').files[0];
         if (!photoFile) { alert('Please upload photo!'); return; }
         const reader = new FileReader();
         reader.onload = function(ev) {
-            students.push({
+            const newStudent = {
                 id: Date.now(),
                 fullName: document.getElementById('regName').value,
                 ethiopianId: document.getElementById('regEthiopianId').value,
@@ -1031,7 +1063,8 @@
                 examViolations: 0,
                 photoUrl: ev.target.result,
                 payments: { registration: false, term1Bus: false, term2Bus: false, term3Bus: false }
-            });
+            };
+            students.push(newStudent);
             saveStudents();
             alert('✅ Registration successful! Please login.');
             document.getElementById('registerForm').reset();
@@ -1039,7 +1072,7 @@
         reader.readAsDataURL(photoFile);
     });
     
-    // ORIGINAL generateIDCard (UNCHANGED)
+    // ==================== ID CARD FUNCTIONS ====================
     function generateIDCard(student) {
         const studentId = 'HA' + student.id + new Date().getFullYear();
         return `
@@ -1064,7 +1097,6 @@
             </div>`;
     }
     
-    // ORIGINAL downloadIDCard (UNCHANGED)
     window.downloadIDCard = () => {
         const card = document.getElementById('student-id-card');
         if (!card) return;
@@ -1076,7 +1108,6 @@
         });
     };
     
-    // ORIGINAL printIDCard (UNCHANGED)
     window.printIDCard = () => {
         const card = document.getElementById('student-id-card');
         if (!card) return;
@@ -1085,7 +1116,6 @@
         win.document.close();
     };
     
-    // ORIGINAL makePayment (UNCHANGED)
     window.makePayment = (type, amount) => {
         if (!confirm(`Pay ${amount} ETB for ${type}?`)) return;
         const student = students.find(s => s.id === currentUser.id);
@@ -1100,7 +1130,6 @@
         }
     };
     
-    // ORIGINAL downloadReceipt (UNCHANGED)
     window.downloadReceipt = (transactionId) => {
         const payment = localPayments.find(p => p.transactionId === transactionId);
         if (!payment) return;
@@ -1112,7 +1141,7 @@
         a.click();
     };
     
-    // ORIGINAL loadStudentDashboard (UNCHANGED)
+    // ==================== LOAD DASHBOARDS ====================
     async function loadStudentDashboard() {
         document.getElementById('studentAuth').style.display = 'none';
         const dashboard = document.getElementById('studentDashboard');
@@ -1153,7 +1182,6 @@
             <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 Our Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>`;
     }
     
-    // ORIGINAL loadTeacherDashboard (UNCHANGED)
     function loadTeacherDashboard() {
         document.getElementById('teacherAuth').style.display = 'none';
         const dashboard = document.getElementById('teacherDashboard');
@@ -1171,7 +1199,6 @@
             <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 Our Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>`;
     }
     
-    // ORIGINAL loadBoardDashboard (UNCHANGED)
     function loadBoardDashboard() {
         document.getElementById('boardAuth').style.display = 'none';
         const dashboard = document.getElementById('boardDashboard');
@@ -1213,13 +1240,12 @@
                 <div class="card"><h3>💰 Financial Overview</h3><p><strong>Total Registration Fees Collected:</strong> ${students.filter(s => s.payments.registration).length * 1000} ETB</p><p><strong>Total Term Fees Collected:</strong> ${students.filter(s => s.payments.term1Bus).length * 3500} ETB</p><p><strong>Pending Payments:</strong> ${students.filter(s => !s.payments.registration).length} Students</p></div>
             </div>
             ${teachersHtml}
-            <div class="card"><h3>📋 Recent Student Registrations</h3><div class="student-table"><table><thead> hilab<th>Name</th><th>Ethiopian ID</th><th>Grade</th><th>Exam %</th><th>Payment Status</th></tr></thead><tbody>
-                ${allStudents.slice(0, 10).map(s => `<tr><td>${s.fullName}</span><td>${s.ethiopianId}</span><td>${s.grade}</span><td>${s.examPercent}%</span><td>${s.payments.registration ? '✅ Paid' : '❌ Unpaid'}</span></tr>`).join('')}
+            <div class="card"><h3>📋 Recent Student Registrations</h3><div class="student-table"><table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Grade</th><th>Exam %</th><th>Payment Status</th></tr></thead><tbody>
+                ${allStudents.slice(0, 10).map(s => `<tr><td style="padding:10px;">${s.fullName}</td><td style="padding:10px;">${s.ethiopianId}</td><td style="padding:10px;">${s.grade}</td><td style="padding:10px;">${s.examPercent}%</td><td style="padding:10px;">${s.payments.registration ? '✅ Paid' : '❌ Unpaid'}</td></tr>`).join('')}
             </tbody></div></div>
             <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 Our Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>`;
     }
     
-    // ORIGINAL reviewTeacher (UNCHANGED)
     window.reviewTeacher = (teacherId, status) => {
         const teacher = teachers.find(t => t.id === teacherId);
         if (teacher) {
@@ -1230,12 +1256,10 @@
         }
     };
     
-    // ORIGINAL openSkypeCall (UNCHANGED)
     window.openSkypeCall = () => {
         openModal('skypeModal');
     };
     
-    // ORIGINAL loadDirectorDashboard (UNCHANGED)
     function loadDirectorDashboard() {
         document.getElementById('directorAuth').style.display = 'none';
         const dashboard = document.getElementById('directorDashboard');
@@ -1257,7 +1281,6 @@
             <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 Our Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>`;
     }
     
-    // ORIGINAL showGradeStudents (UNCHANGED)
     window.showGradeStudents = (grade) => {
         const gradeStudents = students.filter(s => s.grade === grade);
         const sections = getGradeSections(grade);
@@ -1266,21 +1289,20 @@
         
         if (sections.sectionB.length > 0) {
             tableHtml += `<h4>Section A (${sections.sectionA.length} students)</h4><table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Exam %</th><th>Violations</th><th>Registration</th><th>Term1+Bus</th></tr></thead><tbody>
-                ${sections.sectionA.map(s => `<tr><td>${s.fullName}</span><td>${s.ethiopianId}</span><td>${s.examPercent}%</span><td>${s.examViolations || 0}</span><td>${s.payments.registration ? '✅' : '❌'}</span><td>${s.payments.term1Bus ? '✅' : '❌'}</span></tr>`).join('')}
+                ${sections.sectionA.map(s => `<tr><td>${s.fullName}</td><td>${s.ethiopianId}</td><td>${s.examPercent}%</td><td>${s.examViolations || 0}</td><td>${s.payments.registration ? '✅' : '❌'}</td><td>${s.payments.term1Bus ? '✅' : '❌'}</td></tr>`).join('')}
             </tbody></table>
             <h4>Section B (${sections.sectionB.length} students)</h4><table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Exam %</th><th>Violations</th><th>Registration</th><th>Term1+Bus</th></tr></thead><tbody>
-                ${sections.sectionB.map(s => `<tr><td>${s.fullName}</span><td>${s.ethiopianId}</span><td>${s.examPercent}%</span><td>${s.examViolations || 0}</span><td>${s.payments.registration ? '✅' : '❌'}</span><td>${s.payments.term1Bus ? '✅' : '❌'}</span></tr>`).join('')}
+                ${sections.sectionB.map(s => `<tr><td>${s.fullName}</td><td>${s.ethiopianId}</td><td>${s.examPercent}%</td><td>${s.examViolations || 0}</td><td>${s.payments.registration ? '✅' : '❌'}</td><td>${s.payments.term1Bus ? '✅' : '❌'}</td></tr>`).join('')}
             </tbody></table>`;
         } else {
             tableHtml += `<table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Exam %</th><th>Violations</th><th>Registration</th><th>Term1+Bus</th></tr></thead><tbody>
-                ${sections.sectionA.map(s => `<tr><td>${s.fullName}</span><td>${s.ethiopianId}</span><td>${s.examPercent}%</span><td>${s.examViolations || 0}</span><td>${s.payments.registration ? '✅' : '❌'}</span><td>${s.payments.term1Bus ? '✅' : '❌'}</span></tr>`).join('')}
+                ${sections.sectionA.map(s => `<tr><td>${s.fullName}</td><td>${s.ethiopianId}</td><td>${s.examPercent}%</td><td>${s.examViolations || 0}</td><td>${s.payments.registration ? '✅' : '❌'}</td><td>${s.payments.term1Bus ? '✅' : '❌'}</td></tr>`).join('')}
             </tbody></table>`;
         }
         
         document.getElementById('studentsDisplay').innerHTML = tableHtml;
     };
     
-    // ORIGINAL loadParentDashboard (UNCHANGED)
     async function loadParentDashboard() {
         document.getElementById('parentAuth').style.display = 'none';
         const dashboard = document.getElementById('parentDashboard');
@@ -1293,10 +1315,14 @@
             <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 Our Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>`;
     }
     
-    // ORIGINAL logout (UNCHANGED)
-    function logout() { localStorage.clear(); location.reload(); }
+    // ==================== LOGOUT (clears persistence) ====================
+    function logout() { 
+        clearLoginState();
+        localStorage.clear(); 
+        location.reload(); 
+    }
     
-    // ==================== ADDITION 5: NEW FUNCTIONS (Internal Call, Finance, Role Selection) ====================
+    // ==================== ADDITIONAL FUNCTIONS ====================
     let currentRole = null;
     let localStreamCall = null;
     let callActiveFlag = false;
@@ -1394,17 +1420,18 @@
         if (endBtn) endBtn.onclick = endInternalCall;
     }, 100);
     
-    // ORIGINAL loadData and startup (UNCHANGED)
+    // ==================== INITIALIZATION ====================
     loadData();
-    if (localStorage.getItem('token')) {
-        if (localStorage.getItem('token').includes('director')) loadDirectorDashboard();
-        else if (localStorage.getItem('token').includes('teacher')) { const teacher = teachers.find(t => t.id === currentUser?.id); if (teacher) loadTeacherDashboard(); }
-        else if (localStorage.getItem('token').includes('board')) loadBoardDashboard();
-        else if (localStorage.getItem('token').includes('parent')) { currentUser = { id: 999999, role: 'parent' }; loadParentDashboard(); }
-        else if (localStorage.getItem('token')) { const student = students.find(s => s.id === 999999); if (student) { currentUser = { id: 999999, name: student.fullName, role: 'student' }; loadStudentDashboard(); } }
+    
+    // Try to restore login session FIRST
+    const sessionRestored = restoreLoginState();
+    
+    // If no session restored, show role selection modal
+    if (!sessionRestored) {
+        document.getElementById('roleModal').style.display = 'flex';
     }
     
-    // Expose new functions globally
+    // Expose functions globally
     window.selectRole = selectRole;
     window.openInternalCall = openInternalCallModal;
     window.loadFinanceDashboard = loadFinanceDashboard;
@@ -1412,6 +1439,7 @@
     window.switchTab = switchTab;
     window.logout = logout;
     window.showGradeStudents = showGradeStudents;
+    window.openSkypeCall = openSkypeCall;
 </script>
 
 <div class="creator-credit">
@@ -1419,4 +1447,4 @@
 </div>
 
 </body>
-                                                                           </html>
+                </html>
