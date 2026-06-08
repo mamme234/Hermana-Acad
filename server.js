@@ -19,6 +19,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
+app.use(express.static('.')); // Serve HTML files
 
 // Create uploads directory
 if (!fs.existsSync('./uploads')) {
@@ -34,7 +35,7 @@ const storage = multer.diskStorage({
         cb(null, Date.now() + path.extname(file.originalname));
     }
 });
-const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 } });
+const upload = multer({ storage: storage, limits: { fileSize: 10 * 1024 * 1024 } });
 
 // JWT Secret
 const JWT_SECRET = process.env.JWT_SECRET || 'hermana_academy_secret_2026';
@@ -118,6 +119,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/hermana_a
     initializeDemoData();
 }).catch(err => {
     console.error('❌ MongoDB Connection Error:', err);
+    console.log('⚠️ Make sure MongoDB is running: mongod');
 });
 
 // ==================== DEMO DATA INITIALIZATION ====================
@@ -134,7 +136,7 @@ async function initializeDemoData() {
             grade: 'Grade 10',
             fromGrade: 'Grade 5',
             toGrade: 'Grade 12',
-            examPercent: 0,
+            examPercent: 75,
             photoUrl: 'https://randomuser.me/api/portraits/men/1.jpg'
         });
         console.log('✅ Demo student created');
@@ -155,11 +157,13 @@ async function initializeDemoData() {
         });
         console.log('✅ Demo teacher created');
     }
+    
+    console.log('📊 Database ready with demo data');
 }
 
 // ==================== HELPER FUNCTIONS ====================
 function generateToken(userId, role, email) {
-    return jwt.sign({ id: userId, role: role, email: email }, JWT_SECRET, { expiresIn: '7d' });
+    return jwt.sign({ id: userId, role: role, email: email }, JWT_SECRET, { expiresIn: '30d' });
 }
 
 function verifyToken(token) {
@@ -201,10 +205,9 @@ app.post('/api/auth/student/register', upload.single('photo'), async (req, res) 
     try {
         const { fullName, ethiopianId, email, password, fromGrade, toGrade } = req.body;
         
-        // Check if student exists
         const existingStudent = await Student.findOne({ $or: [{ ethiopianId }, { email }] });
         if (existingStudent) {
-            return res.status(400).json({ error: 'Student already exists with this Ethiopian ID or email' });
+            return res.status(400).json({ error: 'Student already exists' });
         }
         
         const hashedPassword = await bcrypt.hash(password || 'default123', 10);
@@ -225,7 +228,7 @@ app.post('/api/auth/student/register', upload.single('photo'), async (req, res) 
         res.status(201).json({ 
             success: true, 
             token, 
-            student: { id: student._id, fullName, ethiopianId, email: student.email }
+            student: { id: student._id, fullName, ethiopianId, email: student.email, grade: student.grade }
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -257,6 +260,10 @@ app.post('/api/auth/student/login', async (req, res) => {
                 ethiopianId: student.ethiopianId, 
                 grade: student.grade,
                 examPercent: student.examPercent,
+                examViolations: student.examViolations,
+                photoUrl: student.photoUrl,
+                fromGrade: student.fromGrade,
+                toGrade: student.toGrade,
                 payments: {
                     registration: student.registration_paid,
                     term1Bus: student.term1_paid,
@@ -270,7 +277,7 @@ app.post('/api/auth/student/login', async (req, res) => {
     }
 });
 
-// Get Student Data
+// Get Student Dashboard Data
 app.get('/api/student/:id', authenticateToken, async (req, res) => {
     try {
         const student = await Student.findById(req.params.id);
@@ -348,7 +355,7 @@ app.post('/api/student/:id/payment', authenticateToken, async (req, res) => {
             amount
         });
         
-        res.json({ success: true, transactionId });
+        res.json({ success: true, transactionId, payment: { transactionId, amount, paymentType, date: new Date() } });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -373,7 +380,7 @@ app.post('/api/auth/teacher/register', upload.single('document'), async (req, re
         
         const existingTeacher = await Teacher.findOne({ email });
         if (existingTeacher) {
-            return res.status(400).json({ error: 'Teacher already registered with this email' });
+            return res.status(400).json({ error: 'Teacher already registered' });
         }
         
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -390,7 +397,7 @@ app.post('/api/auth/teacher/register', upload.single('document'), async (req, re
             status: 'pending'
         });
         
-        res.status(201).json({ success: true, message: 'Application submitted successfully', teacherId: teacher._id });
+        res.status(201).json({ success: true, message: 'Application submitted', teacherId: teacher._id });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -412,7 +419,7 @@ app.post('/api/auth/teacher/login', async (req, res) => {
         }
         
         if (teacher.status !== 'approved') {
-            return res.status(403).json({ error: `Application status: ${teacher.status}. Please wait for approval.` });
+            return res.status(403).json({ error: `Application status: ${teacher.status}` });
         }
         
         const token = generateToken(teacher._id, 'teacher', teacher.email);
@@ -435,7 +442,7 @@ app.get('/api/teachers', authenticateToken, async (req, res) => {
 // Review teacher application (Board only)
 app.put('/api/teacher/:id/review', authenticateToken, async (req, res) => {
     if (req.user.role !== 'board') {
-        return res.status(403).json({ error: 'Only board members can review applications' });
+        return res.status(403).json({ error: 'Only board members can review' });
     }
     
     const { status } = req.body;
@@ -451,7 +458,7 @@ app.get('/api/students', authenticateToken, async (req, res) => {
         return res.status(403).json({ error: 'Unauthorized' });
     }
     
-    const students = await Student.find({}).select('-password');
+    const students = await Student.find({}).select('-password').sort({ createdAt: -1 });
     res.json(students);
 });
 
@@ -467,13 +474,15 @@ app.get('/api/statistics', authenticateToken, async (req, res) => {
     const pendingTeachers = await Teacher.countDocuments({ status: 'pending' });
     const payments = await Payment.aggregate([{ $group: { _id: null, total: { $sum: '$amount' } } }]);
     const totalRevenue = payments[0]?.total || 0;
+    const paidStudents = await Student.countDocuments({ registration_paid: true });
     
     res.json({
         totalStudents,
         totalTeachers,
         approvedTeachers,
         pendingTeachers,
-        totalRevenue
+        totalRevenue,
+        paidStudents
     });
 });
 
@@ -559,6 +568,11 @@ app.post('/api/auth/director/login', (req, res) => {
     } else {
         res.status(401).json({ error: 'Invalid credentials' });
     }
+});
+
+// ==================== SERVE HTML FILE ====================
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // ==================== START SERVER ====================
