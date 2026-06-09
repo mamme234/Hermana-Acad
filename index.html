@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Hermana Academy - Secure School Management System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Hermana Academy - Complete School Management System</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -41,32 +41,72 @@
         .flag .red { background: #da121a; }
         .motto { font-style: italic; color: #667eea; font-size: 0.85em; margin-top: 5px; }
         
-        .tabs {
+        /* Role Selection Modal */
+        .role-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 20000;
             display: flex;
-            gap: 15px;
             justify-content: center;
-            margin-top: 20px;
-            flex-wrap: wrap;
+            align-items: center;
+            flex-direction: column;
         }
-        .tab-btn {
-            padding: 12px 30px;
+        .role-container {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .role-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .role-btn {
+            padding: 15px;
             border: none;
-            background: #e0e0e0;
-            cursor: pointer;
-            border-radius: 10px;
+            border-radius: 15px;
             font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
         }
-        .tab-btn.active { background: #667eea; color: white; }
-        .panel {
+        .role-btn:hover { transform: translateY(-3px); }
+        .role-student { background: #667eea; color: white; }
+        .role-teacher { background: #28a745; color: white; }
+        .role-director { background: #8B0000; color: white; }
+        .role-board { background: #764ba2; color: white; }
+        
+        /* Dashboard Containers */
+        .dashboard-container {
+            display: none;
             background: white;
             border-radius: 20px;
             padding: 30px;
-            display: none;
+            margin-top: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
-        .panel.active { display: block; }
+        .dashboard-container.active { display: block; }
+        
+        .form-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
         input, select, textarea {
@@ -77,6 +117,7 @@
             font-size: 14px;
         }
         input:focus, select:focus { outline: none; border-color: #667eea; }
+        
         button {
             background: #667eea;
             color: white;
@@ -89,75 +130,39 @@
             transition: all 0.3s;
         }
         button:hover { background: #5a67d8; transform: translateY(-2px); }
-        .btn-small { padding: 8px 16px; font-size: 14px; }
-        .btn-danger { background: #dc3545; }
-        .btn-danger:hover { background: #c82333; }
         .btn-success { background: #28a745; }
         .btn-success:hover { background: #218838; }
+        .btn-danger { background: #dc3545; }
+        .btn-danger:hover { background: #c82333; }
+        .btn-warning { background: #f59e0b; }
+        .btn-warning:hover { background: #d97706; }
+        
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
         
-        .badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-        .badge-paid { background: #48bb78; color: white; }
-        .badge-unpaid { background: #f56565; color: white; }
-        .badge-passed { background: #48bb78; color: white; }
-        .badge-failed { background: #f56565; color: white; }
-        .badge-pending { background: #f59e0b; color: white; }
-        .badge-approved { background: #48bb78; color: white; }
-        .badge-rejected { background: #f56565; color: white; }
-        .card { background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
-        
-        /* Exam Security Styles */
-        .exam-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.95);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            text-align: center;
-            flex-direction: column;
-        }
-        .exam-container {
+        .card {
             background: white;
-            color: #333;
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
-        }
-        .camera-preview {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin: 20px auto;
-            border: 3px solid #667eea;
-        }
-        .camera-preview video, .camera-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .warning-banner {
-            background: #dc3545;
-            color: white;
-            padding: 10px;
-            text-align: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 10000;
-            display: none;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: 1px solid #e0e0e0;
         }
         
-        /* Ethiopian Style ID Card */
-        .id-card-container { display: flex; justify-content: center; margin: 20px 0; }
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .badge-passed { background: #28a745; color: white; }
+        .badge-failed { background: #dc3545; color: white; }
+        .badge-pending { background: #f59e0b; color: white; }
+        .badge-approved { background: #28a745; color: white; }
+        
+        /* ID Card Styles */
         .id-card {
             width: 450px;
             background: linear-gradient(145deg, #f5f5f5 0%, #e8e8e8 100%);
@@ -165,8 +170,7 @@
             padding: 20px;
             box-shadow: 0 20px 35px rgba(0,0,0,0.3);
             border: 1px solid #c0a080;
-            position: relative;
-            font-family: 'Courier New', monospace;
+            margin: 20px auto;
         }
         .id-card-ethiopia {
             background: linear-gradient(90deg, #078930 0%, #078930 33%, #fcdd09 33%, #fcdd09 66%, #da121a 66%, #da121a 100%);
@@ -175,114 +179,62 @@
             margin-bottom: 15px;
             border-radius: 5px;
         }
-        .id-logo {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #c0a080;
+        .id-photo-img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #c0a080;
+            margin: 10px auto;
+            display: block;
         }
-        .id-logo-left { text-align: center; }
-        .id-logo-left img { width: 60px; height: 60px; border-radius: 50%; }
-        .id-logo-left small { font-size: 10px; display: block; }
-        .id-logo-center { text-align: center; }
-        .id-logo-center h3 { color: #8B0000; font-size: 16px; }
-        .id-logo-center p { font-size: 10px; color: #555; }
-        .id-logo-right { text-align: center; }
-        .id-logo-right .flag-icon { font-size: 30px; }
-        .id-photo { text-align: center; margin: 15px 0; }
-        .id-photo-img { width: 140px; height: 160px; object-fit: cover; border: 3px solid #c0a080; background: white; }
-        .id-details { background: white; padding: 12px; border-radius: 8px; margin: 10px 0; }
-        .id-row { display: flex; margin-bottom: 5px; font-size: 11px; }
-        .id-label { width: 100px; font-weight: bold; color: #8B0000; }
-        .id-value { flex: 1; }
-        .id-footer { text-align: center; margin-top: 10px; font-size: 8px; color: #666; }
-        .id-signature { font-family: cursive; font-size: 12px; margin-top: 5px; }
-        .id-card-actions { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
-        .section-title { font-size: 1.2em; font-weight: 600; margin: 20px 0 10px; color: #333; border-left: 4px solid #667eea; padding-left: 10px; }
         
-        /* Grade Buttons */
-        .grade-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .grade-btn {
-            background: #667eea;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-        .grade-btn:hover { background: #5a67d8; transform: translateY(-2px); }
-        .grade-btn.kg { background: #28a745; }
-        .grade-btn.kg:hover { background: #218838; }
-        .student-table { width: 100%; overflow-x: auto; }
-        .student-table table { width: 100%; border-collapse: collapse; }
-        .student-table th, .student-table td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
-        .student-table th { background: #667eea; color: white; }
-        
-        /* Modal Styles */
-        .modal {
-            display: none;
+        /* Exam Styles */
+        .exam-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
             background: white;
-            border-radius: 20px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 85vh;
+            z-index: 10001;
             overflow-y: auto;
-            padding: 30px;
-            position: relative;
+            padding: 20px;
         }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 10px;
+        .exam-question {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
             margin-bottom: 20px;
         }
-        .modal-header h2 { color: #667eea; }
-        .close-modal {
-            background: none;
-            font-size: 28px;
+        .exam-option {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
             cursor: pointer;
-            padding: 0;
-            width: 30px;
-            color: #999;
+            text-align: left;
         }
-        .close-modal:hover { color: #333; background: none; transform: none; }
-        
-        /* Star Rating */
-        .star-rating {
-            display: flex;
-            gap: 8px;
-            margin: 15px 0;
-            justify-content: center;
+        .exam-option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
         }
-        .star {
-            font-size: 35px;
-            cursor: pointer;
-            color: #ccc;
-            transition: 0.2s;
+        .exam-timer {
+            position: sticky;
+            top: 0;
+            background: #dc3545;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 10px;
+            margin-bottom: 20px;
         }
-        .star:hover, .star.active { color: #ffc107; }
         
         .footer-links {
             margin-top: 30px;
@@ -297,20 +249,6 @@
             color: #667eea;
             text-decoration: none;
             cursor: pointer;
-            font-weight: 500;
-        }
-        .footer-links a:hover { text-decoration: underline; }
-        
-        .payment-history { margin-top: 20px; }
-        .payment-item {
-            background: white;
-            padding: 10px;
-            margin-bottom: 8px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-left: 3px solid #48bb78;
         }
         
         .creator-credit {
@@ -322,912 +260,1145 @@
             color: white;
             font-size: 14px;
         }
-        .creator-credit span { color: #ffd700; font-weight: bold; }
         
-        .teacher-card, .board-card {
-            background: white;
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        @media (max-width: 768px) { 
-            .grid-2 { grid-template-columns: 1fr; }
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
             .id-card { width: 95%; }
+            .role-buttons { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-<div class="warning-banner" id="warningBanner">
-    ⚠️ Warning: You left the exam window! Your exam attempt has been recorded. ⚠️
-</div>
 
-<div class="container">
-    <div class="header">
-        <div class="school-logo">
-            <img src="logo.png" alt="Hermana Academy Logo" onerror="this.src='https://via.placeholder.com/120x120?text=HA'">
-        </div>
-        <h1>🏫 Hermana Academy</h1>
-        <div class="ethiopia">
-            <div class="flag"><span class="green"></span><span class="yellow"></span><span class="red"></span></div>
-            <span>Ethiopia's Premier Educational Institution</span>
-        </div>
-        <div class="motto">"እውቀት ብርሃን ነው | Quality Education for Future Leaders"</div>
-        <p>ኸርማና አካዳሚ | የኢትዮጵያ መሪ ትምህርት ተቋም</p>
-        
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('student')">👨‍🎓 Student Portal</button>
-            <button class="tab-btn" onclick="switchTab('teacher')">👨‍🏫 Teacher Portal</button>
-            <button class="tab-btn" onclick="switchTab('board')">🎯 Board Dashboard</button>
-            <button class="tab-btn" onclick="switchTab('director')">📊 Director Panel</button>
-            <button class="tab-btn" onclick="switchTab('parent')">👪 Parents Hub</button>
+<!-- ROLE SELECTION MODAL -->
+<div id="roleModal" class="role-overlay">
+    <div class="role-container">
+        <h2>🏫 Welcome to Hermana Academy</h2>
+        <p style="margin: 15px 0; color: #666;">Please select your role to continue</p>
+        <div class="role-buttons">
+            <button class="role-btn role-student" onclick="selectRole('student')">👨‍🎓 Student</button>
+            <button class="role-btn role-teacher" onclick="selectRole('teacher')">👨‍🏫 Teacher</button>
+            <button class="role-btn role-director" onclick="selectRole('director')">📊 Director</button>
+            <button class="role-btn role-board" onclick="selectRole('board')">🎯 Board</button>
         </div>
     </div>
+</div>
 
-    <!-- Student Panel -->
-    <div id="studentPanel" class="panel active">
-        <div id="studentAuth">
-            <div class="grid-2">
-                <div>
-                    <h2>📝 New Student Registration</h2>
-                    <form id="registerForm">
-                        <div class="form-group"><label>Full Name *</label><input type="text" id="regName" required></div>
-                        <div class="form-group"><label>Ethiopian ID *</label><input type="text" id="regEthiopianId" placeholder="ET1234567" required></div>
-                        <div class="form-group"><label>Email</label><input type="email" id="regEmail"></div>
-                        <div class="form-group"><label>Password</label><input type="password" id="regPassword" placeholder="Leave empty for 'default'"></div>
-                        <div class="form-group"><label>From Grade *</label><select id="regFromGrade">
-                            <option value="Nursery">🎨 Nursery</option>
-                            <option value="Lower KG">📖 Lower KG</option>
-                            <option value="Upper KG">✏️ Upper KG</option>
-                            <option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option>
-                            <option>Grade 5</option><option>Grade 6</option><option>Grade 7</option><option>Grade 8</option>
-                            <option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option>
-                        </select></div>
-                        <div class="form-group"><label>To Grade *</label><select id="regToGrade">
-                            <option value="Nursery">🎨 Nursery</option>
-                            <option value="Lower KG">📖 Lower KG</option>
-                            <option value="Upper KG">✏️ Upper KG</option>
-                            <option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option>
-                            <option>Grade 5</option><option>Grade 6</option><option>Grade 7</option><option>Grade 8</option>
-                            <option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option>
-                        </select></div>
-                        <div class="form-group"><label>Upload Your Photo *</label><input type="file" id="regPhoto" accept="image/*" required></div>
-                        <button type="submit">Register →</button>
+<!-- Main Container -->
+<div id="mainContainer" style="display: none;">
+    <div class="container">
+        <div class="header">
+            <div class="school-logo">
+                <img src="logo.png" alt="Hermana Academy Logo" onerror="this.src='https://via.placeholder.com/120x120?text=HA'">
+            </div>
+            <h1>🏫 Hermana Academy</h1>
+            <div class="ethiopia">
+                <div class="flag"><span class="green"></span><span class="yellow"></span><span class="red"></span></div>
+                <span>Ethiopia's Premier Educational Institution</span>
+            </div>
+            <div class="motto">"እውቀት ብርሃን ነው | Quality Education for Future Leaders"</div>
+        </div>
+
+        <!-- STUDENT DASHBOARD -->
+        <div id="studentDashboard" class="dashboard-container">
+            <div id="studentRegistrationSection">
+                <div class="form-card">
+                    <h2>📝 Student Registration</h2>
+                    <form id="studentRegForm" enctype="multipart/form-data">
+                        <div class="grid-2">
+                            <div class="form-group"><label>Full Name *</label><input type="text" id="stuFullName" required></div>
+                            <div class="form-group"><label>Email *</label><input type="email" id="stuEmail" required></div>
+                            <div class="form-group"><label>Phone Number</label><input type="tel" id="stuPhone"></div>
+                            <div class="form-group"><label>Grade Level *</label>
+                                <select id="stuGrade">
+                                    <option>Nursery</option><option>Lower KG</option><option>Upper KG</option>
+                                    <option>Grade 1</option><option>Grade 2</option><option>Grade 3</option>
+                                    <option>Grade 4</option><option>Grade 5</option><option>Grade 6</option>
+                                    <option>Grade 7</option><option>Grade 8</option><option>Grade 9</option>
+                                    <option>Grade 10</option><option>Grade 11</option><option>Grade 12</option>
+                                </select>
+                            </div>
+                            <div class="form-group"><label>Parent Name</label><input type="text" id="stuParentName"></div>
+                            <div class="form-group"><label>Parent Phone</label><input type="tel" id="stuParentPhone"></div>
+                            <div class="form-group"><label>Address</label><input type="text" id="stuAddress"></div>
+                            <div class="form-group"><label>Upload Photo *</label><input type="file" id="stuPhoto" accept="image/*" required></div>
+                        </div>
+                        <button type="submit" class="btn-success">📝 Register & Take Exam →</button>
                     </form>
                 </div>
-                <div>
-                    <h2>🔐 Login to Dashboard</h2>
+            </div>
+            
+            <div id="studentLoginSection" style="display: none;">
+                <div class="form-card">
+                    <h2>🔐 Student Login</h2>
+                    <p style="margin-bottom: 15px; color: #28a745;">✅ Your ID has been sent to your email. Please login below.</p>
                     <form id="studentLoginForm">
-                        <div class="form-group"><label>Ethiopian ID or Email</label><input type="text" id="studentIdentifier" required></div>
-                        <div class="form-group"><label>Password</label><input type="password" id="studentPassword"></div>
+                        <div class="form-group"><label>Student ID Number</label><input type="text" id="studentLoginId" required></div>
+                        <div class="form-group"><label>Full Name</label><input type="text" id="studentLoginName" required></div>
                         <button type="submit">Login →</button>
                     </form>
-                    <div class="card">
-                        <h3>📢 Demo Accounts</h3>
-                        <p><strong>Student:</strong> ET999999 / student123</p>
-                        <p><strong>Teacher:</strong> teacher@hermana.edu / teacher123</p>
-                        <p><strong>Director:</strong> director@hermana.edu / director123</p>
-                        <p><strong>Board:</strong> board@hermana.edu / board123</p>
-                    </div>
                 </div>
             </div>
+            
+            <div id="studentProfileSection" style="display: none;">
+                <div id="studentProfileContent"></div>
+            </div>
         </div>
-        <div id="studentDashboard" style="display: none;"></div>
-    </div>
 
-    <!-- Teacher Panel -->
-    <div id="teacherPanel" class="panel">
-        <div id="teacherAuth">
-            <div class="grid-2">
-                <div>
-                    <h2>📝 New Teacher Registration</h2>
-                    <form id="teacherRegisterForm">
-                        <div class="form-group"><label>Full Name *</label><input type="text" id="teacherName" required></div>
-                        <div class="form-group"><label>Email *</label><input type="email" id="teacherEmail" required></div>
-                        <div class="form-group"><label>Password *</label><input type="password" id="teacherPassword" required></div>
-                        <div class="form-group"><label>Phone Number *</label><input type="tel" id="teacherPhone" required placeholder="+251-XXX-XXXX"></div>
-                        <div class="form-group"><label>Education Document (Degree/Certificate) *</label><input type="file" id="teacherDoc" accept=".pdf,.jpg,.png" required></div>
-                        <div class="form-group"><label>Teaching Grades *</label><select id="teacherGrades" multiple size="5">
-                            <option>Nursery</option><option>Lower KG</option><option>Upper KG</option>
-                            <option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option>
-                            <option>Grade 5</option><option>Grade 6</option><option>Grade 7</option><option>Grade 8</option>
-                            <option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option>
-                        </select><small>Hold Ctrl to select multiple</small></div>
-                        <div class="form-group"><label>Why do you want to join Hermana Academy? *</label><textarea rows="3" id="teacherReason" placeholder="Tell us about your teaching philosophy and why you want to join us..."></textarea></div>
-                        <button type="submit">Submit Application →</button>
+        <!-- TEACHER DASHBOARD -->
+        <div id="teacherDashboard" class="dashboard-container">
+            <div id="teacherRegistrationSection">
+                <div class="form-card">
+                    <h2>📝 Teacher Registration</h2>
+                    <form id="teacherRegForm" enctype="multipart/form-data">
+                        <div class="grid-2">
+                            <div class="form-group"><label>Full Name *</label><input type="text" id="teacherFullName" required></div>
+                            <div class="form-group"><label>Email *</label><input type="email" id="teacherEmail" required></div>
+                            <div class="form-group"><label>Phone Number *</label><input type="tel" id="teacherPhone" required></div>
+                            <div class="form-group"><label>Teaching Grade Level *</label>
+                                <select id="teacherGradeLevel">
+                                    <option>KG</option><option>Elementary (1-4)</option><option>Middle (5-8)</option><option>High (9-12)</option>
+                                </select>
+                            </div>
+                            <div class="form-group"><label>Subject Specialization</label><input type="text" id="teacherSubject"></div>
+                            <div class="form-group"><label>Years of Experience</label><input type="number" id="teacherExperience"></div>
+                            <div class="form-group"><label>Education Document *</label><input type="file" id="teacherDoc" accept=".pdf,.jpg,.png" required></div>
+                            <div class="form-group"><label>Upload Photo *</label><input type="file" id="teacherPhoto" accept="image/*" required></div>
+                        </div>
+                        <div class="form-group"><label>Why do you want to join Hermana Academy?</label><textarea rows="3" id="teacherReason"></textarea></div>
+                        <button type="submit" class="btn-success">📝 Register & Take Exam →</button>
                     </form>
                 </div>
-                <div>
+            </div>
+            
+            <div id="teacherWaitingSection" style="display: none;">
+                <div class="card" style="text-align: center;">
+                    <h2>⏳ Application Submitted!</h2>
+                    <p>Your application is under review by the board.</p>
+                    <p>You will receive an approval code via email within 2 days.</p>
+                    <p>Once approved, login with the code and your full name.</p>
+                </div>
+            </div>
+            
+            <div id="teacherLoginSection" style="display: none;">
+                <div class="form-card">
                     <h2>🔐 Teacher Login</h2>
+                    <p style="margin-bottom: 15px; color: #28a745;">✅ Your approval code has been sent to your email.</p>
                     <form id="teacherLoginForm">
-                        <div class="form-group"><label>Email</label><input type="email" id="teacherLoginEmail" required></div>
-                        <div class="form-group"><label>Password</label><input type="password" id="teacherLoginPassword" required></div>
+                        <div class="form-group"><label>Approval Code</label><input type="text" id="teacherCode" required></div>
+                        <div class="form-group"><label>Full Name</label><input type="text" id="teacherLoginName" required></div>
                         <button type="submit">Login →</button>
                     </form>
                 </div>
             </div>
+            
+            <div id="teacherProfileSection" style="display: none;">
+                <div id="teacherProfileContent"></div>
+            </div>
         </div>
-        <div id="teacherDashboard" style="display: none;"></div>
-    </div>
 
-    <!-- Board Panel -->
-    <div id="boardPanel" class="panel">
-        <div id="boardAuth">
-            <h2>🔐 Board of Directors Login</h2>
-            <form id="boardLoginForm">
-                <div class="form-group"><label>Email</label><input type="email" id="boardEmail" required></div>
-                <div class="form-group"><label>Password</label><input type="password" id="boardPassword" required></div>
-                <button type="submit">Login →</button>
-            </form>
+        <!-- DIRECTOR DASHBOARD -->
+        <div id="directorDashboard" class="dashboard-container">
+            <div id="directorLoginSection">
+                <div class="form-card">
+                    <h2>🔐 Director Login</h2>
+                    <form id="directorLoginForm">
+                        <div class="form-group"><label>Director Type</label>
+                            <select id="directorType">
+                                <option value="kg">KG Director</option>
+                                <option value="elementary">Elementary Director</option>
+                                <option value="high">High School Director</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Password</label><input type="password" id="directorPassword" required></div>
+                        <div class="form-group"><label>Upload Your Photo for Verification</label><input type="file" id="directorPhoto" accept="image/*" required></div>
+                        <button type="submit">Login →</button>
+                    </form>
+                </div>
+            </div>
+            <div id="directorProfileSection" style="display: none;">
+                <div id="directorProfileContent"></div>
+            </div>
         </div>
-        <div id="boardDashboard" style="display: none;"></div>
-    </div>
 
-    <!-- Director Panel -->
-    <div id="directorPanel" class="panel">
-        <div id="directorAuth">
-            <h2>🔐 Director Login</h2>
-            <form id="directorLoginForm">
-                <div class="form-group"><label>Email</label><input type="email" id="directorEmail" required></div>
-                <div class="form-group"><label>Password</label><input type="password" id="directorPassword" required></div>
-                <button type="submit">Login →</button>
-            </form>
-        </div>
-        <div id="directorDashboard" style="display: none;"></div>
-    </div>
-
-    <!-- Parent Panel -->
-    <div id="parentPanel" class="panel">
-        <div id="parentAuth">
-            <h2>🔐 Parent/Guardian Access</h2>
-            <form id="parentLoginForm">
-                <div class="form-group"><label>Student Ethiopian ID or Email</label><input type="text" id="parentIdentifier" required></div>
-                <div class="form-group"><label>Password</label><input type="password" id="parentPassword"></div>
-                <button type="submit">View →</button>
-            </form>
-        </div>
-        <div id="parentDashboard" style="display: none;"></div>
-    </div>
-</div>
-
-<!-- Skype Call Modal -->
-<div id="skypeModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>🎥 Board Meeting - Skype Call</h2>
-            <button class="close-modal" onclick="closeModal('skypeModal')">&times;</button>
-        </div>
-        <div class="modal-body">
-            <div style="text-align: center; padding: 20px;">
-                <i class="fas fa-video" style="font-size: 60px; color: #667eea;"></i>
-                <h3>Join Board Meeting</h3>
-                <p>Click below to start or join the Skype meeting</p>
-                <br>
-                <a href="https://join.skype.com/8fXqVZLwQw6d" target="_blank" class="btn-small" style="display: inline-block; background: #0078ff; padding: 12px 30px; border-radius: 10px; color: white; text-decoration: none;">Join Skype Meeting →</a>
-                <br><br>
-                <p><small>Meeting ID: hermana.board@skype.com</small></p>
-                <hr style="margin: 20px 0;">
-                <h4>📋 Current Agenda Items:</h4>
-                <ul style="text-align: left; margin-top: 10px;">
-                    <li>Teacher applications review</li>
-                    <li>Student enrollment updates</li>
-                    <li>Financial reports</li>
-                    <li>New academic year planning</li>
-                </ul>
+        <!-- BOARD DASHBOARD -->
+        <div id="boardDashboard" class="dashboard-container">
+            <div id="boardLoginSection">
+                <div class="form-card">
+                    <h2>🔐 Board of Directors Login</h2>
+                    <form id="boardLoginForm">
+                        <div class="form-group"><label>Email</label><input type="email" id="boardEmail" required></div>
+                        <div class="form-group"><label>Password</label><input type="password" id="boardPassword" required></div>
+                        <div class="form-group"><label>Upload Your Photo for Verification</label><input type="file" id="boardPhoto" accept="image/*" required></div>
+                        <button type="submit">Login →</button>
+                    </form>
+                </div>
+            </div>
+            <div id="boardProfileSection" style="display: none;">
+                <div id="boardProfileContent"></div>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Modals -->
-<div id="purposeModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>🎯 Our Purpose</h2><button class="close-modal" onclick="closeModal('purposeModal')">&times;</button></div><p>To digitize Ethiopian education - making registration, payments, and ID cards easy and accessible for all students and parents from Nursery to Grade 12.</p></div></div>
-<div id="feedbackModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>💬 Feedback</h2><button class="close-modal" onclick="closeModal('feedbackModal')">&times;</button></div><form id="feedbackForm"><textarea rows="3" placeholder="Your feedback..." style="width:100%;margin-bottom:10px;"></textarea><button type="submit">Submit</button></form></div></div>
-<div id="privacyModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>🔒 Privacy Policy</h2><button class="close-modal" onclick="closeModal('privacyModal')">&times;</button></div><p>Your data is secure. We only collect information for school management purposes.</p></div></div>
-<div id="contactModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📞 Contact Us</h2><button class="close-modal" onclick="closeModal('contactModal')">&times;</button></div><p>Email: info@hermanaacademy.edu.et<br>Phone: +251-XXX-XXXX<br>Addis Ababa, Ethiopia</p></div></div>
+<div id="purposeModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; justify-content:center; align-items:center;">
+    <div class="modal-content" style="background:white; border-radius:20px; max-width:600px; width:90%; padding:30px;">
+        <div class="modal-header" style="display:flex; justify-content:space-between;"><h2>🎯 Our Purpose</h2><button onclick="closeModal('purposeModal')" style="background:none; font-size:24px;">&times;</button></div>
+        <p>Hermana Academy was built to digitize Ethiopian education. We provide secure student registration, teacher management, and financial tracking for schools from Nursery to Grade 12.</p>
+    </div>
+</div>
+<div id="feedbackModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; justify-content:center; align-items:center;">
+    <div class="modal-content" style="background:white; border-radius:20px; max-width:500px; width:90%; padding:30px;">
+        <div class="modal-header" style="display:flex; justify-content:space-between;"><h2>💬 Feedback</h2><button onclick="closeModal('feedbackModal')" style="background:none; font-size:24px;">&times;</button></div>
+        <textarea rows="4" placeholder="Your feedback..." style="width:100%; padding:10px; border-radius:10px;"></textarea>
+        <button onclick="alert('Thank you!')" style="margin-top:10px;">Submit</button>
+    </div>
+</div>
+<div id="privacyModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; justify-content:center; align-items:center;">
+    <div class="modal-content" style="background:white; border-radius:20px; max-width:500px; width:90%; padding:30px;">
+        <div class="modal-header" style="display:flex; justify-content:space-between;"><h2>🔒 Privacy Policy</h2><button onclick="closeModal('privacyModal')" style="background:none; font-size:24px;">&times;</button></div>
+        <p>Your data is secure. We only collect information for educational purposes.</p>
+    </div>
+</div>
+<div id="contactModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; justify-content:center; align-items:center;">
+    <div class="modal-content" style="background:white; border-radius:20px; max-width:500px; width:90%; padding:30px;">
+        <div class="modal-header" style="display:flex; justify-content:space-between;"><h2>📞 Contact</h2><button onclick="closeModal('contactModal')" style="background:none; font-size:24px;">&times;</button></div>
+        <p>Email: info@hermanaacademy.edu.et<br>Phone: +251-900-123456</p>
+    </div>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
-    // ==================== EXAM SECURITY VARIABLES ====================
+    // ==================== DATA STORAGE ====================
+    let students = JSON.parse(localStorage.getItem('hermana_students') || '[]');
+    let teachers = JSON.parse(localStorage.getItem('hermana_teachers') || '[]');
+    let directors = JSON.parse(localStorage.getItem('hermana_directors') || '[]');
+    let pendingTeachers = JSON.parse(localStorage.getItem('hermana_pending_teachers') || '[]');
+    let pendingStudents = JSON.parse(localStorage.getItem('hermana_pending_students') || '[]');
+    
+    // Demo directors
+    if (directors.length === 0) {
+        directors = [
+            { type: 'kg', password: 'kg123', name: 'KG Director', photo: null },
+            { type: 'elementary', password: 'elem123', name: 'Elementary Director', photo: null },
+            { type: 'high', password: 'high123', name: 'High School Director', photo: null }
+        ];
+        localStorage.setItem('hermana_directors', JSON.stringify(directors));
+    }
+    
+    let currentRole = null;
     let examActive = false;
-    let examStartTime = null;
     let examViolations = 0;
-    let examPhoto = null;
     let mediaStream = null;
     
-    // ==================== DATA ====================
-    let students = [];
-    let teachers = [];
-    let currentUser = null;
-    let localPayments = [];
-
-    const allGrades = ["Nursery", "Lower KG", "Upper KG", "Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5", "Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12"];
-
-    function loadData() {
-        const storedStudents = localStorage.getItem('hermana_students');
-        const storedTeachers = localStorage.getItem('hermana_teachers');
-        
-        if (storedStudents) {
-            students = JSON.parse(storedStudents);
-        } else {
-            students = [];
-            // Demo students for KG sections
-            const kgStudents = ["Nursery", "Lower KG", "Upper KG"];
-            kgStudents.forEach((kg, idx) => {
-                for (let i = 1; i <= (idx === 0 ? 25 : 30); i++) {
-                    students.push({
-                        id: 1000 + idx * 100 + i,
-                        fullName: `${kg} Student ${i}`,
-                        ethiopianId: `ET${100000 + idx * 100 + i}`,
-                        grade: kg,
-                        fromGrade: kg,
-                        toGrade: kg === "Nursery" ? "Upper KG" : (kg === "Lower KG" ? "Grade 2" : "Grade 4"),
-                        examPercent: Math.floor(Math.random() * 100),
-                        examPhoto: null,
-                        examViolations: 0,
-                        photoUrl: `https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i % 70}.jpg`,
-                        payments: { registration: i <= 20, term1Bus: i <= 15, term2Bus: i <= 10, term3Bus: i <= 8 }
-                    });
-                }
-            });
-            // Demo students for Grade 1
-            for (let i = 1; i <= 45; i++) {
-                students.push({
-                    id: 2000 + i,
-                    fullName: `Grade 1 Student ${i}`,
-                    ethiopianId: `ET${200000 + i}`,
-                    grade: "Grade 1",
-                    fromGrade: "Nursery",
-                    toGrade: "Grade 6",
-                    examPercent: Math.floor(Math.random() * 100),
-                    examPhoto: null,
-                    examViolations: 0,
-                    photoUrl: `https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i % 70}.jpg`,
-                    payments: { registration: i <= 30, term1Bus: i <= 25, term2Bus: i <= 20, term3Bus: i <= 15 }
-                });
-            }
-            students.push({
-                id: 999999,
-                fullName: "Test Student",
-                ethiopianId: "ET999999",
-                grade: "Grade 10",
-                fromGrade: "Grade 5",
-                toGrade: "Grade 12",
-                examPercent: 0,
-                examPhoto: null,
-                examViolations: 0,
-                photoUrl: "https://randomuser.me/api/portraits/men/1.jpg",
-                payments: { registration: false, term1Bus: false, term2Bus: false, term3Bus: false }
-            });
-            saveStudents();
-        }
-        
-        if (storedTeachers) {
-            teachers = JSON.parse(storedTeachers);
-        } else {
-            teachers = [];
-            saveTeachers();
-        }
+    // ==================== HELPER FUNCTIONS ====================
+    function saveData() {
+        localStorage.setItem('hermana_students', JSON.stringify(students));
+        localStorage.setItem('hermana_teachers', JSON.stringify(teachers));
+        localStorage.setItem('hermana_pending_teachers', JSON.stringify(pendingTeachers));
+        localStorage.setItem('hermana_pending_students', JSON.stringify(pendingStudents));
     }
     
-    function saveStudents() { localStorage.setItem('hermana_students', JSON.stringify(students)); }
-    function saveTeachers() { localStorage.setItem('hermana_teachers', JSON.stringify(teachers)); }
-        // ==================== EXAM SECURITY FUNCTIONS ====================
-    async function startSecureExam(studentId, examQuestions) {
-        examActive = true;
-        examStartTime = Date.now();
-        examViolations = 0;
-        
-        // Request camera access
-        try {
-            mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
-            const videoTrack = mediaStream.getVideoTracks()[0];
-            const imageCapture = new ImageCapture(videoTrack);
-            const blob = await imageCapture.takePhoto();
-            examPhoto = URL.createObjectURL(blob);
-            
-            // Save photo to student record
-            const student = students.find(s => s.id === studentId);
-            if (student) {
-                student.examPhoto = examPhoto;
-                saveStudents();
-            }
-        } catch (err) {
-            console.log("Camera access denied:", err);
-            alert("Camera access is required for exam. Please allow camera access.");
-        }
-        
-        // Lock body scroll and prevent right click
-        document.body.style.overflow = 'hidden';
-        document.addEventListener('contextmenu', preventContextMenu);
-        document.addEventListener('keydown', preventKeyShortcuts);
-        
-        // Show exam interface
-        showExamInterface(examQuestions, studentId);
+    function generateStudentId() {
+        return 'HA' + new Date().getFullYear() + Math.floor(Math.random() * 100000).toString().padStart(5, '0');
     }
     
-    function preventContextMenu(e) {
-        if (examActive) {
-            e.preventDefault();
-            recordViolation("Right click detected");
-            return false;
-        }
+    function generateTeacherId() {
+        return 'TCH' + new Date().getFullYear() + Math.floor(Math.random() * 10000).toString().padStart(4, '0');
     }
     
-    function preventKeyShortcuts(e) {
-        if (examActive) {
-            // Prevent F12, Ctrl+Shift+I, Ctrl+U, Ctrl+R, Alt+Tab
-            if (e.key === 'F12' || 
-                (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-                (e.ctrlKey && e.key === 'u') ||
-                (e.ctrlKey && e.key === 'r') ||
-                (e.altKey && e.key === 'Tab')) {
-                e.preventDefault();
-                recordViolation("Keyboard shortcut detected");
-                return false;
-            }
-        }
+    function generateApprovalCode() {
+        return 'AP-' + Math.random().toString(36).substring(2, 8).toUpperCase();
     }
     
-    function recordViolation(reason) {
-        examViolations++;
-        const warningBanner = document.getElementById('warningBanner');
-        warningBanner.style.display = 'block';
-        setTimeout(() => {
-            warningBanner.style.display = 'none';
-        }, 3000);
-        
-        if (examViolations >= 3) {
-            alert("⚠️ You have violated exam rules 3 times! Your exam has been terminated.");
-            terminateExam();
-        }
-    }
-    
-    function terminateExam() {
-        examActive = false;
-        if (mediaStream) {
-            mediaStream.getTracks().forEach(track => track.stop());
-        }
-        document.body.style.overflow = '';
-        document.removeEventListener('contextmenu', preventContextMenu);
-        document.removeEventListener('keydown', preventKeyShortcuts);
-        
-        const examContainer = document.getElementById('examContainer');
-        if (examContainer) {
-            examContainer.remove();
-        }
-        alert("Exam terminated due to rule violations.");
-        location.reload();
-    }
-    
-    function showExamInterface(questions, studentId) {
-        const examHTML = `
-            <div id="examContainer" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 10001; overflow-y: auto; padding: 30px;">
-                <div style="max-width: 800px; margin: 0 auto;">
-                    <div style="background: #dc3545; color: white; padding: 10px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
-                        ⚠️ Exam in Progress - Do NOT leave this window! Your photo has been taken. ⚠️
-                    </div>
-                    <div style="background: #f0f0f0; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
-                        <p><strong>📸 Your exam photo has been captured for verification</strong></p>
-                        <p>⚠️ Leaving this page will terminate your exam</p>
-                        <p>⚠️ Right-click is disabled</p>
-                        <p>⚠️ Keyboard shortcuts are disabled</p>
-                    </div>
-                    <form id="secureExamForm">
-                        ${questions.map((q, i) => `
-                            <div style="margin-bottom: 30px; padding: 20px; background: #f8f9fa; border-radius: 15px;">
-                                <h4>Question ${i+1}: ${q.text}</h4>
-                                <div style="margin-top: 15px;">
-                                    ${q.options.map((opt, oi) => `
-                                        <label style="display: block; margin: 10px 0; cursor: pointer;">
-                                            <input type="radio" name="q${i}" value="${oi}" required> ${opt}
-                                        </label>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        `).join('')}
-                        <button type="submit" style="width: 100%; padding: 15px; font-size: 18px;">Submit Exam</button>
-                    </form>
-                </div>
-            </div>
-        `;
-        
-        document.body.insertAdjacentHTML('beforeend', examHTML);
-        
-        // Request fullscreen
-        document.documentElement.requestFullscreen().catch(err => console.log("Fullscreen error:", err));
-        
-        // Handle tab visibility change
-        document.addEventListener('visibilitychange', handleVisibilityChange);
-        
-        // Handle window blur
-        window.addEventListener('blur', handleWindowBlur);
-        
-        document.getElementById('secureExamForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const answers = [];
-            for (let i = 0; i < questions.length; i++) {
-                const selected = document.querySelector(`input[name="q${i}"]:checked`);
-                answers.push(selected ? parseInt(selected.value) : -1);
-            }
-            
-            let correct = 0;
-            answers.forEach((ans, i) => { if (ans === questions[i].correct) correct++; });
-            const percentage = Math.round((correct / questions.length) * 100);
-            
-            const student = students.find(s => s.id === studentId);
-            if (student) {
-                student.examScore = correct;
-                student.examPercent = percentage;
-                student.examViolations = examViolations;
-                saveStudents();
-            }
-            
-            alert(`Exam completed!\nScore: ${correct}/${questions.length} (${percentage}%)\nViolations: ${examViolations}\n${percentage >= 50 ? '✅ You passed!' : '❌ You failed!'}`);
-            
-            // Clean up
-            examActive = false;
-            if (mediaStream) mediaStream.getTracks().forEach(track => track.stop());
-            document.exitFullscreen();
-            document.removeEventListener('visibilitychange', handleVisibilityChange);
-            window.removeEventListener('blur', handleWindowBlur);
-            document.body.style.overflow = '';
-            document.removeEventListener('contextmenu', preventContextMenu);
-            document.removeEventListener('keydown', preventKeyShortcuts);
-            
-            document.getElementById('examContainer').remove();
-            loadStudentDashboard();
-        });
-    }
-    
-    function handleVisibilityChange() {
-        if (examActive && document.hidden) {
-            recordViolation("Tab switch detected");
-            if (examViolations >= 3) terminateExam();
-        }
-    }
-    
-    function handleWindowBlur() {
-        if (examActive) {
-            recordViolation("Window focus lost");
-            if (examViolations >= 3) terminateExam();
-        }
-    }
-    
-    function generateExamQuestions(grade) {
-        if (grade === "Nursery" || grade === "Lower KG" || grade === "Upper KG") {
-            return [
-                { id: 1, text: "What color is the sun?", options: ["Red", "Yellow", "Blue", "Green"], correct: 1 },
-                { id: 2, text: "Which animal says 'Moo'?", options: ["Cat", "Dog", "Cow", "Lion"], correct: 2 },
-                { id: 3, text: "What is 1 + 1?", options: ["1", "2", "3", "4"], correct: 1 }
-            ];
-        }
-        const gradeNum = parseInt(grade.match(/\d+/)?.[0] || 5);
-        if (gradeNum <= 4) return [
-            { id: 1, text: "What is 12 + 7?", options: ["18", "19", "20", "21"], correct: 1 },
-            { id: 2, text: "የኢትዮጵያ ዋና ከተማ?", options: ["ጎንደር", "አዲስ አበባ", "ሀዋሳ", "ባህርዳር"], correct: 1 },
-            { id: 3, text: "5 × 3 = ?", options: ["12", "15", "18", "20"], correct: 1 }
-        ];
-        else if (gradeNum <= 8) return [
-            { id: 1, text: "144 ÷ 12 = ?", options: ["10", "12", "14", "16"], correct: 1 },
-            { id: 2, text: "Capital of Ethiopia?", options: ["Adama", "Addis Ababa", "Harar", "Jimma"], correct: 1 },
-            { id: 3, text: "60 km/h for 2.5h = ? km", options: ["120", "150", "180", "100"], correct: 1 }
-        ];
-        else return [
-            { id: 1, text: "3x - 7 = 11, x = ?", options: ["4", "5", "6", "7"], correct: 2 },
-            { id: 2, text: "Oxygen atomic number?", options: ["6", "7", "8", "9"], correct: 2 },
-            { id: 3, text: "√169 = ?", options: ["11", "12", "13", "14"], correct: 2 }
-        ];
-    }
-    
-    function getGradeSections(grade) {
-        const gradeStudents = students.filter(s => s.grade === grade);
-        if (gradeStudents.length > 40) {
-            const mid = Math.ceil(gradeStudents.length / 2);
-            return { sectionA: gradeStudents.slice(0, mid), sectionB: gradeStudents.slice(mid) };
-        }
-        return { sectionA: gradeStudents, sectionB: [] };
-    }
-    
-    function switchTab(tab) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        if (tab === 'student') { document.querySelector('.tab-btn').classList.add('active'); document.getElementById('studentPanel').classList.add('active'); }
-        else if (tab === 'teacher') { document.querySelectorAll('.tab-btn')[1].classList.add('active'); document.getElementById('teacherPanel').classList.add('active'); }
-        else if (tab === 'board') { document.querySelectorAll('.tab-btn')[2].classList.add('active'); document.getElementById('boardPanel').classList.add('active'); }
-        else if (tab === 'director') { document.querySelectorAll('.tab-btn')[3].classList.add('active'); document.getElementById('directorPanel').classList.add('active'); }
-        else { document.querySelectorAll('.tab-btn')[4].classList.add('active'); document.getElementById('parentPanel').classList.add('active'); }
+    function sendEmail(to, subject, message) {
+        // Simulate email sending (in production, this would call a backend API)
+        console.log(`📧 Email sent to ${to}: ${subject} - ${message}`);
+        alert(`📧 [DEMO] Email sent to ${to}\nSubject: ${subject}\nMessage: ${message}\n\nIn production, this would be a real email.`);
+        return true;
     }
     
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-    window.openModal = openModal; window.closeModal = closeModal;
     
-    // Teacher Registration
-    document.getElementById('teacherRegisterForm')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const docFile = document.getElementById('teacherDoc').files[0];
-        let docUrl = null;
-        if (docFile) {
-            const reader = new FileReader();
-            reader.onload = function(ev) {
-                const grades = Array.from(document.getElementById('teacherGrades').selectedOptions).map(opt => opt.value);
-                const newTeacher = {
-                    id: Date.now(),
-                    fullName: document.getElementById('teacherName').value,
-                    email: document.getElementById('teacherEmail').value,
-                    password: btoa(document.getElementById('teacherPassword').value),
-                    phone: document.getElementById('teacherPhone').value,
-                    educationDoc: ev.target.result,
-                    teachingGrades: grades,
-                    reason: document.getElementById('teacherReason').value,
-                    status: 'pending',
-                    appliedDate: new Date().toISOString()
-                };
-                teachers.push(newTeacher);
-                saveTeachers();
-                alert('✅ Application submitted! Board will review your application.');
-                document.getElementById('teacherRegisterForm').reset();
+    // ==================== ROLE SELECTION ====================
+    function selectRole(role) {
+        currentRole = role;
+        document.getElementById('roleModal').style.display = 'none';
+        document.getElementById('mainContainer').style.display = 'block';
+        
+        // Show appropriate dashboard and hide others
+        document.getElementById('studentDashboard').classList.remove('active');
+        document.getElementById('teacherDashboard').classList.remove('active');
+        document.getElementById('directorDashboard').classList.remove('active');
+        document.getElementById('boardDashboard').classList.remove('active');
+        
+        if (role === 'student') {
+            document.getElementById('studentDashboard').classList.add('active');
+            document.getElementById('studentRegistrationSection').style.display = 'block';
+            document.getElementById('studentLoginSection').style.display = 'none';
+            document.getElementById('studentProfileSection').style.display = 'none';
+        } else if (role === 'teacher') {
+            document.getElementById('teacherDashboard').classList.add('active');
+            document.getElementById('teacherRegistrationSection').style.display = 'block';
+            document.getElementById('teacherWaitingSection').style.display = 'none';
+            document.getElementById('teacherLoginSection').style.display = 'none';
+            document.getElementById('teacherProfileSection').style.display = 'none';
+        } else if (role === 'director') {
+            document.getElementById('directorDashboard').classList.add('active');
+            document.getElementById('directorLoginSection').style.display = 'block';
+            document.getElementById('directorProfileSection').style.display = 'none';
+        } else if (role === 'board') {
+            document.getElementById('boardDashboard').classList.add('active');
+            document.getElementById('boardLoginSection').style.display = 'block';
+            document.getElementById('boardProfileSection').style.display = 'none';
+        }
+    }// ==================== STUDENT EXAM QUESTIONS ====================
+function generateStudentExamQuestions(grade) {
+    if (grade.includes("KG") || grade === "Nursery") {
+        return [
+            { text: "What color is the sun?", options: ["Red", "Yellow", "Blue", "Green"], correct: 1 },
+            { text: "Which animal says 'Moo'?", options: ["Cat", "Dog", "Cow", "Lion"], correct: 2 },
+            { text: "What is 1 + 1?", options: ["1", "2", "3", "4"], correct: 1 },
+            { text: "Which letter is the first letter of the alphabet?", options: ["B", "C", "A", "D"], correct: 2 },
+            { text: "What shape has 3 sides?", options: ["Square", "Circle", "Triangle", "Rectangle"], correct: 2 }
+        ];
+    } else {
+        return [
+            { text: "What is 15 + 27?", options: ["42", "40", "38", "45"], correct: 0 },
+            { text: "የኢትዮጵያ ዋና ከተማ?", options: ["ጎንደር", "አዲስ አበባ", "ሀዋሳ", "ባህርዳር"], correct: 1 },
+            { text: "What is 8 × 7?", options: ["48", "56", "64", "49"], correct: 1 },
+            { text: "Which planet is known as the Red Planet?", options: ["Jupiter", "Mars", "Venus", "Saturn"], correct: 1 },
+            { text: "What is the capital of Ethiopia?", options: ["Adama", "Addis Ababa", "Harar", "Dire Dawa"], correct: 1 }
+        ];
+    }
+}
+
+// Student Exam Function
+async function startStudentExam(studentData, photoFile) {
+    const questions = generateStudentExamQuestions(studentData.grade);
+    let currentQuestion = 0;
+    let answers = new Array(questions.length).fill(-1);
+    let timeLeft = 300; // 5 minutes
+    
+    // Take photo first
+    let studentPhoto = null;
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const video = document.createElement('video');
+        video.srcObject = stream;
+        await video.play();
+        const canvas = document.createElement('canvas');
+        canvas.width = canvas.height = 200;
+        canvas.getContext('2d').drawImage(video, 0, 0, 200, 200);
+        studentPhoto = canvas.toDataURL();
+        stream.getTracks().forEach(t => t.stop());
+    } catch(e) { console.log("Camera error:", e); }
+    
+    const examHTML = `
+        <div id="examContainer" class="exam-container">
+            <div class="exam-timer">⏱️ Time Remaining: <span id="timer">05:00</span></div>
+            <div id="examContent"></div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', examHTML);
+    
+    function renderQuestion() {
+        const q = questions[currentQuestion];
+        const isSelected = (val) => answers[currentQuestion] === val ? 'selected' : '';
+        document.getElementById('examContent').innerHTML = `
+            <div class="exam-question">
+                <h3>Question ${currentQuestion + 1}/${questions.length}</h3>
+                <p style="font-size: 18px; margin: 15px 0;">${q.text}</p>
+                ${q.options.map((opt, idx) => `<div class="exam-option ${isSelected(idx)}" onclick="selectAnswer(${idx})">${String.fromCharCode(65+idx)}. ${opt}</div>`).join('')}
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button onclick="prevQuestion()" class="${currentQuestion === 0 ? 'btn-danger' : 'btn-success'}" ${currentQuestion === 0 ? 'disabled' : ''}>◀ Previous</button>
+                <button onclick="nextQuestion()" class="btn-success" style="flex:1;">${currentQuestion === questions.length - 1 ? 'Submit Exam' : 'Next ▶'}</button>
+            </div>
+        `;
+    }
+    
+    window.selectAnswer = (idx) => {
+        answers[currentQuestion] = idx;
+        renderQuestion();
+    };
+    
+    window.nextQuestion = () => {
+        if (currentQuestion === questions.length - 1) {
+            submitExam();
+        } else {
+            currentQuestion++;
+            renderQuestion();
+        }
+    };
+    
+    window.prevQuestion = () => {
+        if (currentQuestion > 0) {
+            currentQuestion--;
+            renderQuestion();
+        }
+    };
+    
+    function submitExam() {
+        let correct = 0;
+        answers.forEach((ans, i) => { if (ans === questions[i].correct) correct++; });
+        const percentage = (correct / questions.length) * 100;
+        
+        clearInterval(timerInterval);
+        document.getElementById('examContainer').remove();
+        
+        if (percentage >= 50) {
+            // PASS - Generate student ID and send email
+            const studentId = generateStudentId();
+            const newStudent = {
+                id: studentId,
+                fullName: studentData.fullName,
+                email: studentData.email,
+                phone: studentData.phone,
+                grade: studentData.grade,
+                parentName: studentData.parentName,
+                parentPhone: studentData.parentPhone,
+                address: studentData.address,
+                photo: studentPhoto,
+                examScore: percentage,
+                payments: { registration: false, term1: false, term2: false, term3: false },
+                teachers: [],
+                createdAt: new Date().toISOString()
             };
-            reader.readAsDataURL(docFile);
+            students.push(newStudent);
+            saveData();
+            
+            // Send email with student ID
+            sendEmail(studentData.email, 'Your Hermana Academy Student ID', 
+                `Congratulations ${studentData.fullName}! You passed the exam with ${percentage}%.\n\nYour Student ID is: ${studentId}\n\nYou can now login using this ID and your full name.`);
+            
+            alert(`✅ You passed! Score: ${percentage}%\nYour Student ID has been sent to ${studentData.email}`);
+            
+            // Show login section
+            document.getElementById('studentRegistrationSection').style.display = 'none';
+            document.getElementById('studentLoginSection').style.display = 'block';
         } else {
-            alert('Please upload your education document!');
+            // FAIL
+            alert(`❌ You failed! Score: ${percentage}%\nYou need 50% to pass. Please try again.`);
+            document.getElementById('studentRegistrationSection').style.display = 'block';
+            document.getElementById('studentLoginSection').style.display = 'none';
         }
+    }
+    
+    const timerInterval = setInterval(() => {
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            document.getElementById('examContainer').remove();
+            alert("Time's up! Exam auto-submitted.");
+            submitExam();
+        } else {
+            timeLeft--;
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            document.getElementById('timer').innerText = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+        }
+    }, 1000);
+    
+    renderQuestion();
+}
+
+// Student Registration Form Submit
+document.getElementById('studentRegForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const photoFile = document.getElementById('stuPhoto').files[0];
+    if (!photoFile) { alert('Please upload your photo!'); return; }
+    
+    let photoBase64 = null;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+        photoBase64 = ev.target.result;
+        const studentData = {
+            fullName: document.getElementById('stuFullName').value,
+            email: document.getElementById('stuEmail').value,
+            phone: document.getElementById('stuPhone').value,
+            grade: document.getElementById('stuGrade').value,
+            parentName: document.getElementById('stuParentName').value,
+            parentPhone: document.getElementById('stuParentPhone').value,
+            address: document.getElementById('stuAddress').value,
+            photo: photoBase64
+        };
+        startStudentExam(studentData, photoFile);
+    };
+    reader.readAsDataURL(photoFile);
+});
+
+// Student Login
+document.getElementById('studentLoginForm')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const studentId = document.getElementById('studentLoginId').value;
+    const fullName = document.getElementById('studentLoginName').value;
+    
+    const student = students.find(s => s.id === studentId && s.fullName.toLowerCase() === fullName.toLowerCase());
+    if (student) {
+        displayStudentProfile(student);
+    } else {
+        alert('Invalid Student ID or Name. Please check your email.');
+    }
+});
+
+function displayStudentProfile(student) {
+    document.getElementById('studentRegistrationSection').style.display = 'none';
+    document.getElementById('studentLoginSection').style.display = 'none';
+    document.getElementById('studentProfileSection').style.display = 'block';
+    
+    const studentId = student.id;
+    document.getElementById('studentProfileContent').innerHTML = `
+        <div class="form-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                <h2>🎓 Welcome, ${student.fullName}!</h2>
+                <button onclick="logout()" class="btn-danger">Logout</button>
+            </div>
+        </div>
+        
+        <!-- ID CARD -->
+        <div class="id-card" id="student-id-card">
+            <div class="id-card-ethiopia"></div>
+            <div style="text-align: center;">
+                <img class="id-photo-img" src="${student.photo}" alt="Photo">
+                <h3 style="margin: 10px 0;">${student.fullName}</h3>
+                <p><strong>Student ID:</strong> ${student.id}</p>
+                <p><strong>Grade:</strong> ${student.grade}</p>
+                <p><strong>Parent:</strong> ${student.parentName || 'N/A'}</p>
+                <p><strong>Parent Phone:</strong> ${student.parentPhone || 'N/A'}</p>
+                <p><strong>Exam Score:</strong> ${student.examScore}%</p>
+                <hr style="margin: 10px 0;">
+                <p><small>Hermana Academy - Ethiopia</small></p>
+            </div>
+        </div>
+        <div style="text-align: center; margin-bottom: 20px;">
+            <button onclick="downloadStudentIDCard()" class="btn-small">📥 Download ID Card</button>
+        </div>
+        
+        <!-- TEACHERS -->
+        <div class="card">
+            <h3>👨‍🏫 Your Teachers</h3>
+            <div id="studentTeachersList"></div>
+        </div>
+        
+        <!-- PAYMENTS -->
+        <div class="card">
+            <h3>💰 Fee Payments</h3>
+            <div class="grid-3">
+                <div class="card"><h4>Registration Fee</h4><p>1000 ETB</p><span class="badge ${student.payments.registration ? 'badge-passed' : 'badge-pending'}">${student.payments.registration ? 'Paid' : 'Unpaid'}</span>${!student.payments.registration ? '<br><button onclick="makeStudentPayment(\'registration\', 1000)" class="btn-small" style="margin-top:10px;">Pay Now</button>' : ''}</div>
+                <div class="card"><h4>Term 1 + Bus</h4><p>3500 ETB</p><span class="badge ${student.payments.term1 ? 'badge-passed' : 'badge-pending'}">${student.payments.term1 ? 'Paid' : 'Unpaid'}</span>${!student.payments.term1 ? '<br><button onclick="makeStudentPayment(\'term1\', 3500)" class="btn-small" style="margin-top:10px;">Pay Now</button>' : ''}</div>
+                <div class="card"><h4>Term 2 + Bus</h4><p>3500 ETB</p><span class="badge ${student.payments.term2 ? 'badge-passed' : 'badge-pending'}">${student.payments.term2 ? 'Paid' : 'Unpaid'}</span>${!student.payments.term2 ? '<br><button onclick="makeStudentPayment(\'term2\', 3500)" class="btn-small" style="margin-top:10px;">Pay Now</button>' : ''}</div>
+            </div>
+        </div>
+        
+        <div class="footer-links">
+            <a onclick="openModal('purposeModal')">🎯 Our Purpose</a>
+            <a onclick="openModal('feedbackModal')">💬 Feedback</a>
+            <a onclick="openModal('privacyModal')">🔒 Privacy</a>
+            <a onclick="openModal('contactModal')">📞 Contact</a>
+        </div>
+    `;
+    
+    // Display teachers for this student's grade
+    const studentTeachers = teachers.filter(t => t.gradeLevel === student.grade.split(' ')[0] || 
+        (student.grade.includes('KG') && t.gradeLevel === 'KG') ||
+        (student.grade.includes('Grade 1') && t.gradeLevel === 'Elementary'));
+    
+    document.getElementById('studentTeachersList').innerHTML = studentTeachers.length ? 
+        studentTeachers.map(t => `<p>📖 ${t.fullName} - ${t.subject || 'General Education'}</p>`).join('') :
+        '<p>Teachers will be assigned soon.</p>';
+}
+
+window.makeStudentPayment = (type, amount) => {
+    const student = students.find(s => s.id === document.getElementById('studentLoginId')?.value);
+    if (student) {
+        student.payments[type] = true;
+        saveData();
+        alert(`✅ Payment of ${amount} ETB for ${type} successful!`);
+        displayStudentProfile(student);
+    }
+};
+
+window.downloadStudentIDCard = () => {
+    const card = document.getElementById('student-id-card');
+    if (card) {
+        html2canvas(card, { scale: 2 }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'Student_ID_Card.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+    }
+};// ==================== TEACHER EXAM ====================
+function generateTeacherExamQuestions() {
+    return [
+        { text: "What is your teaching philosophy?", options: ["Student-centered", "Teacher-centered", "Both", "None"], correct: 0 },
+        { text: "How do you handle classroom discipline?", options: ["Strict rules", "Positive reinforcement", "Ignore minor issues", "Send to principal"], correct: 1 },
+        { text: "What is the best way to assess student learning?", options: ["Final exam only", "Continuous assessment", "Homework only", "Class participation only"], correct: 1 },
+        { text: "How do you engage struggling students?", options: ["Extra homework", "One-on-one support", "Ignore them", "Move them to back"], correct: 1 },
+        { text: "What is your approach to parent communication?", options: ["Only when issues arise", "Regular updates", "Never", "Only at parent-teacher conferences"], correct: 1 }
+    ];
+}
+
+async function startTeacherExam(teacherData, photoFile, docFile) {
+    const questions = generateTeacherExamQuestions();
+    let currentQuestion = 0;
+    let answers = new Array(questions.length).fill(-1);
+    let timeLeft = 300;
+    
+    // Take photo
+    let teacherPhoto = null;
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const video = document.createElement('video');
+        video.srcObject = stream;
+        await video.play();
+        const canvas = document.createElement('canvas');
+        canvas.width = canvas.height = 200;
+        canvas.getContext('2d').drawImage(video, 0, 0, 200, 200);
+        teacherPhoto = canvas.toDataURL();
+        stream.getTracks().forEach(t => t.stop());
+    } catch(e) { console.log("Camera error:", e); }
+    
+    const examHTML = `
+        <div id="examContainer" class="exam-container">
+            <div class="exam-timer">⏱️ Time Remaining: <span id="timer">05:00</span></div>
+            <div id="examContent"></div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', examHTML);
+    
+    function renderQuestion() {
+        const q = questions[currentQuestion];
+        document.getElementById('examContent').innerHTML = `
+            <div class="exam-question">
+                <h3>Question ${currentQuestion + 1}/${questions.length}</h3>
+                <p style="font-size: 18px; margin: 15px 0;">${q.text}</p>
+                ${q.options.map((opt, idx) => `<div class="exam-option ${answers[currentQuestion] === idx ? 'selected' : ''}" onclick="selectTeacherAnswer(${idx})">${String.fromCharCode(65+idx)}. ${opt}</div>`).join('')}
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button onclick="prevTeacherQuestion()" class="${currentQuestion === 0 ? 'btn-danger' : 'btn-success'}">◀ Previous</button>
+                <button onclick="nextTeacherQuestion()" class="btn-success" style="flex:1;">${currentQuestion === questions.length - 1 ? 'Submit Exam' : 'Next ▶'}</button>
+            </div>
+        `;
+    }
+    
+    window.selectTeacherAnswer = (idx) => {
+        answers[currentQuestion] = idx;
+        renderQuestion();
+    };
+    
+    window.nextTeacherQuestion = () => {
+        if (currentQuestion === questions.length - 1) {
+            submitTeacherExam();
+        } else {
+            currentQuestion++;
+            renderQuestion();
+        }
+    };
+    
+    window.prevTeacherQuestion = () => {
+        if (currentQuestion > 0) {
+            currentQuestion--;
+            renderQuestion();
+        }
+    };
+    
+    function submitTeacherExam() {
+        let correct = 0;
+        answers.forEach((ans, i) => { if (ans === questions[i].correct) correct++; });
+        const percentage = (correct / questions.length) * 100;
+        
+        clearInterval(timerInterval);
+        document.getElementById('examContainer').remove();
+        
+        if (percentage >= 60) {
+            // PASS - Add to pending teachers for board approval
+            const approvalCode = generateApprovalCode();
+            const pendingTeacher = {
+                id: Date.now(),
+                fullName: teacherData.fullName,
+                email: teacherData.email,
+                phone: teacherData.phone,
+                gradeLevel: teacherData.gradeLevel,
+                subject: teacherData.subject,
+                experience: teacherData.experience,
+                reason: teacherData.reason,
+                photo: teacherPhoto,
+                document: docFile,
+                examScore: percentage,
+                approvalCode: approvalCode,
+                status: 'pending',
+                appliedDate: new Date().toISOString()
+            };
+            pendingTeachers.push(pendingTeacher);
+            saveData();
+            
+            sendEmail(teacherData.email, 'Hermana Academy Teacher Application Received', 
+                `Dear ${teacherData.fullName},\n\nYour application has been received. You passed the exam with ${percentage}%.\n\nYour application is now under review by the board. You will receive an approval code within 2 days.\n\nThank you for your interest in Hermana Academy!`);
+            
+            alert(`✅ Exam passed! Score: ${percentage}%\nYour application has been submitted for board review.\nYou will receive an email with your approval code within 2 days.`);
+            
+            document.getElementById('teacherRegistrationSection').style.display = 'none';
+            document.getElementById('teacherWaitingSection').style.display = 'block';
+        } else {
+            alert(`❌ You failed the exam! Score: ${percentage}%\nYou need 60% to pass. Please try again.`);
+        }
+    }
+    
+    const timerInterval = setInterval(() => {
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            document.getElementById('examContainer').remove();
+            alert("Time's up! Exam auto-submitted.");
+            submitTeacherExam();
+        } else {
+            timeLeft--;
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            document.getElementById('timer').innerText = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+        }
+    }, 1000);
+    
+    renderQuestion();
+}
+
+// Teacher Registration Form Submit
+document.getElementById('teacherRegForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const docFile = document.getElementById('teacherDoc').files[0];
+    const photoFile = document.getElementById('teacherPhoto').files[0];
+    
+    if (!docFile) { alert('Please upload your education document!'); return; }
+    if (!photoFile) { alert('Please upload your photo!'); return; }
+    
+    let docBase64 = null;
+    let photoBase64 = null;
+    
+    const readDoc = new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (ev) => { docBase64 = ev.target.result; resolve(); };
+        reader.readAsDataURL(docFile);
     });
     
-    // Teacher Login
-    document.getElementById('teacherLoginForm')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = document.getElementById('teacherLoginEmail').value;
-        const password = document.getElementById('teacherLoginPassword').value;
-        const teacher = teachers.find(t => t.email === email && atob(t.password) === password);
-        if (teacher) {
-            currentUser = { id: teacher.id, name: teacher.fullName, role: 'teacher', status: teacher.status };
-            localStorage.setItem('token', 'teacher-token');
-            loadTeacherDashboard();
-        } else {
-            alert('Invalid credentials or application not approved yet!');
-        }
+    const readPhoto = new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (ev) => { photoBase64 = ev.target.result; resolve(); };
+        reader.readAsDataURL(photoFile);
     });
     
-    // Board Login
-    document.getElementById('boardLoginForm')?.addEventListener('submit', (e) => {
+    await Promise.all([readDoc, readPhoto]);
+    
+    const teacherData = {
+        fullName: document.getElementById('teacherFullName').value,
+        email: document.getElementById('teacherEmail').value,
+        phone: document.getElementById('teacherPhone').value,
+        gradeLevel: document.getElementById('teacherGradeLevel').value,
+        subject: document.getElementById('teacherSubject').value,
+        experience: document.getElementById('teacherExperience').value,
+        reason: document.getElementById('teacherReason').value,
+        photo: photoBase64
+    };
+    
+    startTeacherExam(teacherData, photoBase64, docBase64);
+});
+
+// Teacher Login (with approval code)
+document.getElementById('teacherLoginForm')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const code = document.getElementById('teacherCode').value;
+    const fullName = document.getElementById('teacherLoginName').value;
+    
+    const pendingTeacher = pendingTeachers.find(t => t.approvalCode === code && t.fullName.toLowerCase() === fullName.toLowerCase());
+    
+    if (pendingTeacher) {
+        if (pendingTeacher.status === 'approved') {
+            // Move to approved teachers
+            const newTeacher = {
+                id: generateTeacherId(),
+                fullName: pendingTeacher.fullName,
+                email: pendingTeacher.email,
+                phone: pendingTeacher.phone,
+                gradeLevel: pendingTeacher.gradeLevel,
+                subject: pendingTeacher.subject,
+                experience: pendingTeacher.experience,
+                photo: pendingTeacher.photo,
+                students: [],
+                salary: 0,
+                status: 'active',
+                joinedDate: new Date().toISOString()
+            };
+            teachers.push(newTeacher);
+            
+            // Remove from pending
+            const index = pendingTeachers.findIndex(t => t.id === pendingTeacher.id);
+            if (index !== -1) pendingTeachers.splice(index, 1);
+            saveData();
+            
+            displayTeacherProfile(newTeacher);
+        } else {
+            alert('Your application is still pending board approval. Please wait.');
+        }
+    } else {
+        alert('Invalid approval code or name.');
+    }
+});
+
+function displayTeacherProfile(teacher) {
+    document.getElementById('teacherRegistrationSection').style.display = 'none';
+    document.getElementById('teacherWaitingSection').style.display = 'none';
+    document.getElementById('teacherLoginSection').style.display = 'none';
+    document.getElementById('teacherProfileSection').style.display = 'block';
+    
+    // Get students assigned to this teacher (by grade level)
+    const assignedStudents = students.filter(s => {
+        if (teacher.gradeLevel === 'KG') return s.grade.includes('KG') || s.grade === 'Nursery';
+        if (teacher.gradeLevel === 'Elementary') return s.grade.includes('Grade 1') || s.grade.includes('Grade 2') || s.grade.includes('Grade 3') || s.grade.includes('Grade 4');
+        if (teacher.gradeLevel === 'Middle') return s.grade.includes('Grade 5') || s.grade.includes('Grade 6') || s.grade.includes('Grade 7') || s.grade.includes('Grade 8');
+        if (teacher.gradeLevel === 'High') return s.grade.includes('Grade 9') || s.grade.includes('Grade 10') || s.grade.includes('Grade 11') || s.grade.includes('Grade 12');
+        return false;
+    });
+    
+    document.getElementById('teacherProfileContent').innerHTML = `
+        <div class="form-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>👨‍🏫 Welcome, Teacher ${teacher.fullName}!</h2>
+                <button onclick="logout()" class="btn-danger">Logout</button>
+            </div>
+        </div>
+        
+        <div class="id-card" id="teacher-id-card">
+            <div class="id-card-ethiopia"></div>
+            <div style="text-align: center;">
+                <img class="id-photo-img" src="${teacher.photo}" alt="Photo">
+                <h3 style="margin: 10px 0;">${teacher.fullName}</h3>
+                <p><strong>Teacher ID:</strong> ${teacher.id}</p>
+                <p><strong>Grade Level:</strong> ${teacher.gradeLevel}</p>
+                <p><strong>Subject:</strong> ${teacher.subject || 'General Education'}</p>
+                <p><strong>Experience:</strong> ${teacher.experience || 0} years</p>
+                <hr style="margin: 10px 0;">
+                <p><small>Hermana Academy - Ethiopia</small></p>
+            </div>
+        </div>
+        <div style="text-align: center; margin-bottom: 20px;">
+            <button onclick="downloadTeacherIDCard()" class="btn-small">📥 Download Teacher ID Card</button>
+        </div>
+        
+        <div class="card">
+            <h3>📚 Your Students (${assignedStudents.length})</h3>
+            <div class="student-table">
+                <table style="width:100%">
+                    <thead><tr><th>Name</th><th>Student ID</th><th>Grade</th><th>Exam Score</th></tr></thead>
+                    <tbody>
+                        ${assignedStudents.map(s => `<tr><td>${s.fullName}</td><td>${s.id}</td><td>${s.grade}</td><td>${s.examScore}%</td></tr>`).join('')}
+                        ${assignedStudents.length === 0 ? '<tr><td colspan="4">No students assigned yet.</td></tr>' : ''}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="footer-links">
+            <a onclick="openModal('purposeModal')">🎯 Our Purpose</a>
+            <a onclick="openModal('feedbackModal')">💬 Feedback</a>
+            <a onclick="openModal('privacyModal')">🔒 Privacy</a>
+            <a onclick="openModal('contactModal')">📞 Contact</a>
+        </div>
+    `;
+}
+
+window.downloadTeacherIDCard = () => {
+    const card = document.getElementById('teacher-id-card');
+    if (card) {
+        html2canvas(card, { scale: 2 }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'Teacher_ID_Card.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+    }    // ==================== DIRECTOR LOGIN ====================
+    document.getElementById('directorLoginForm')?.addEventListener('submit', (e) => {
         e.preventDefault();
-        const email = document.getElementById('boardEmail').value;
-        const password = document.getElementById('boardPassword').value;
-        if (email === 'board@hermana.edu' && password === 'board123') {
-            currentUser = { name: 'Board Member', role: 'board' };
-            localStorage.setItem('token', 'board-token');
-            loadBoardDashboard();
+        const directorType = document.getElementById('directorType').value;
+        const password = document.getElementById('directorPassword').value;
+        const photoFile = document.getElementById('directorPhoto').files[0];
+        
+        if (!photoFile) { alert('Please upload your photo for verification!'); return; }
+        
+        const director = directors.find(d => d.type === directorType && d.password === password);
+        if (director) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                displayDirectorDashboard(directorType, ev.target.result);
+            };
+            reader.readAsDataURL(photoFile);
         } else {
             alert('Invalid credentials!');
         }
     });
     
-    // Director Login
-    document.getElementById('directorLoginForm')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        if (document.getElementById('directorEmail').value === 'director@hermana.edu' && document.getElementById('directorPassword').value === 'director123') {
-            currentUser = { name: 'Director', role: 'director' };
-            localStorage.setItem('token', 'director-token');
-            loadDirectorDashboard();
-        } else alert('Invalid credentials!');
-    });
-    
-    // Parent Login
-    document.getElementById('parentLoginForm')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const student = students.find(s => s.ethiopianId === document.getElementById('parentIdentifier').value || s.email === document.getElementById('parentIdentifier').value);
-        if (!student) { alert('Student not found!'); return; }
-        if (atob(student.password) !== (document.getElementById('parentPassword').value || 'default')) { alert('Wrong password!'); return; }
-        currentUser = { id: student.id, name: student.fullName, role: 'parent' };
-        localStorage.setItem('token', 'parent-token');
-        loadParentDashboard();
-    });
-    
-    // Student Login
-    document.getElementById('studentLoginForm')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const student = students.find(s => s.ethiopianId === document.getElementById('studentIdentifier').value || s.email === document.getElementById('studentIdentifier').value);
-        if (!student) { alert('Student not found!'); return; }
-        if (atob(student.password) !== (document.getElementById('studentPassword').value || 'default')) { alert('Wrong password!'); return; }
-        currentUser = { id: student.id, name: student.fullName, role: 'student', grade: student.grade };
-        localStorage.setItem('token', 'student-token');
-        loadStudentDashboard();
-    });
-    
-    // Student Registration
-    document.getElementById('registerForm')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const photoFile = document.getElementById('regPhoto').files[0];
-        if (!photoFile) { alert('Please upload photo!'); return; }
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-            students.push({
-                id: Date.now(),
-                fullName: document.getElementById('regName').value,
-                ethiopianId: document.getElementById('regEthiopianId').value,
-                email: document.getElementById('regEmail').value,
-                password: btoa(document.getElementById('regPassword').value || 'default'),
-                grade: document.getElementById('regFromGrade').value,
-                fromGrade: document.getElementById('regFromGrade').value,
-                toGrade: document.getElementById('regToGrade').value,
-                examPercent: 0,
-                examPhoto: null,
-                examViolations: 0,
-                photoUrl: ev.target.result,
-                payments: { registration: false, term1Bus: false, term2Bus: false, term3Bus: false }
-            });
-            saveStudents();
-            alert('✅ Registration successful! Please login.');
-            document.getElementById('registerForm').reset();
-        };
-        reader.readAsDataURL(photoFile);
-    });
-    
-    function generateIDCard(student) {
-        const studentId = 'HA' + student.id + new Date().getFullYear();
-        return `
-            <div class="id-card" id="student-id-card">
-                <div class="id-card-ethiopia"></div>
-                <div class="id-logo">
-                    <div class="id-logo-left"><img src="logo.png" onerror="this.src='https://via.placeholder.com/60'"><small>Hermana Academy</small></div>
-                    <div class="id-logo-center"><h3>የኸርማና አካዳሚ</h3><p>HERMANA ACADEMY</p><p>STUDENT IDENTIFICATION CARD</p></div>
-                    <div class="id-logo-right"><div class="flag-icon">🇪🇹</div><small>Ethiopia</small></div>
-                </div>
-                <div class="id-photo"><img class="id-photo-img" src="${student.photoUrl}" alt="Photo"></div>
-                <div class="id-details">
-                    <div class="id-row"><span class="id-label">Full Name:</span><span class="id-value">${student.fullName}</span></div>
-                    <div class="id-row"><span class="id-label">Student ID:</span><span class="id-value">${studentId}</span></div>
-                    <div class="id-row"><span class="id-label">Ethiopian ID:</span><span class="id-value">${student.ethiopianId}</span></div>
-                    <div class="id-row"><span class="id-label">Grade:</span><span class="id-value">${student.grade}</span></div>
-                    <div class="id-row"><span class="id-label">From/To Grade:</span><span class="id-value">${student.fromGrade} - ${student.toGrade}</span></div>
-                    <div class="id-row"><span class="id-label">Issued Date:</span><span class="id-value">${new Date().toLocaleDateString()}</span></div>
-                    <div class="id-row"><span class="id-label">Valid Until:</span><span class="id-value">${new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toLocaleDateString()}</span></div>
-                </div>
-                <div class="id-footer"><div class="id-signature">Authorized Signature: _________________</div><div>www.hermanaacademy.edu.et</div></div>
-            </div>`;
-    }
-    
-    window.downloadIDCard = () => {
-        const card = document.getElementById('student-id-card');
-        if (!card) return;
-        html2canvas(card, { scale: 2 }).then(canvas => {
-            const link = document.createElement('a');
-            link.download = `ID_Card_${currentUser.name}.png`;
-            link.href = canvas.toDataURL();
-            link.click();
-        });
-    };
-    
-    window.printIDCard = () => {
-        const card = document.getElementById('student-id-card');
-        if (!card) return;
-        const win = window.open('', '_blank');
-        win.document.write(`<html><head><title>ID Card</title><style>body{display:flex;justify-content:center;align-items:center;min-height:100vh;}</style></head><body>${card.outerHTML}<script>window.print();setTimeout(()=>window.close(),500);<\/script></body></html>`);
-        win.document.close();
-    };
-    
-    window.makePayment = (type, amount) => {
-        if (!confirm(`Pay ${amount} ETB for ${type}?`)) return;
-        const student = students.find(s => s.id === currentUser.id);
-        if (student) {
-            student.payments[type] = true;
-            saveStudents();
-            const newPayment = { transactionId: 'TXN-' + Date.now(), amount, paymentType: type, studentId: currentUser.id, studentName: student.fullName, date: new Date().toISOString() };
-            localPayments.unshift(newPayment);
-            localStorage.setItem(`receipts_${currentUser.id}`, JSON.stringify(localPayments));
-            alert(`✅ Payment Successful!\nAmount: ${amount} ETB`);
-            loadStudentDashboard();
-        }
-    };
-    
-    window.downloadReceipt = (transactionId) => {
-        const payment = localPayments.find(p => p.transactionId === transactionId);
-        if (!payment) return;
-        const receiptText = `HERMANA ACADEMY RECEIPT\nReceipt No: ${payment.transactionId}\nDate: ${new Date(payment.date).toLocaleString()}\nStudent: ${payment.studentName}\nPayment Type: ${payment.paymentType}\nAmount: ${payment.amount} ETB\nStatus: PAID`;
-        const blob = new Blob([receiptText], { type: 'text/plain' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `Receipt_${payment.transactionId}.txt`;
-        a.click();
-    };
-    
-    async function loadStudentDashboard() {
-        document.getElementById('studentAuth').style.display = 'none';
-        const dashboard = document.getElementById('studentDashboard');
-        dashboard.style.display = 'block';
-        const student = students.find(s => s.id === currentUser.id);
-        const saved = localStorage.getItem(`receipts_${currentUser.id}`);
-        if (saved) localPayments = JSON.parse(saved);
+    function displayDirectorDashboard(directorType, photoUrl) {
+        document.getElementById('directorLoginSection').style.display = 'none';
+        document.getElementById('directorProfileSection').style.display = 'block';
         
-        let examHtml = '';
-        if (student.examPercent === 0) {
-            const questions = generateExamQuestions(student.grade);
-            examHtml = `<div class="card"><h3>✍️ Secure Ability Exam (Required - ${student.grade} Level)</h3>
-                        <p>⚠️ <strong>Exam Rules:</strong></p>
-                        <ul style="margin-left: 20px; margin-bottom: 15px;">
-                            <li>Your photo will be taken before the exam starts</li>
-                            <li>Leaving the exam window will be recorded as a violation</li>
-                            <li>3 violations will terminate your exam</li>
-                            <li>Right-click and keyboard shortcuts are disabled</li>
-                            <li>Fullscreen mode is required</li>
-                        </ul>
-                        <button onclick="startSecureExam(${student.id}, ${JSON.stringify(generateExamQuestions(student.grade)).replace(/"/g, '&quot;')})" class="btn-success">🎥 Start Secure Exam →</button>
-                        </div>`;
+        let filteredStudents = [];
+        let filteredTeachers = [];
+        
+        if (directorType === 'kg') {
+            filteredStudents = students.filter(s => s.grade.includes('KG') || s.grade === 'Nursery');
+            filteredTeachers = teachers.filter(t => t.gradeLevel === 'KG');
+        } else if (directorType === 'elementary') {
+            filteredStudents = students.filter(s => s.grade.includes('Grade 1') || s.grade.includes('Grade 2') || s.grade.includes('Grade 3') || s.grade.includes('Grade 4'));
+            filteredTeachers = teachers.filter(t => t.gradeLevel === 'Elementary');
+        } else if (directorType === 'high') {
+            filteredStudents = students.filter(s => s.grade.includes('Grade 9') || s.grade.includes('Grade 10') || s.grade.includes('Grade 11') || s.grade.includes('Grade 12'));
+            filteredTeachers = teachers.filter(t => t.gradeLevel === 'High');
         }
         
-        const examPassed = student.examPercent >= 50;
-        dashboard.innerHTML = `
-            <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px"><div><h2>Welcome, ${student.fullName}!</h2><p>ID: ${student.ethiopianId} | Grade: ${student.grade}</p>${student.examViolations > 0 ? `<p style="color: #ffcccc;">⚠️ Exam Violations: ${student.examViolations}</p>` : ''}<button onclick="logout()" style="background:white;color:#667eea;margin-top:10px;">Logout</button></div></div>
-            <div class="dashboard-section"><div class="section-title">🪪 Student ID Card</div><div class="id-card-container">${generateIDCard(student)}</div><div class="id-card-actions"><button onclick="downloadIDCard()" class="btn-small">📥 Download ID</button><button onclick="printIDCard()" class="btn-small">🖨️ Print ID</button></div></div>
-            ${examHtml}
-            ${student.examPercent > 0 ? `<div class="card"><h3>📊 Exam Result</h3><p>Score: ${student.examPercent}%</p><p>Violations: ${student.examViolations || 0}</p><span class="badge ${examPassed ? 'badge-passed' : 'badge-failed'}">${examPassed ? 'PASSED - You can pay fees' : 'FAILED - Retake exam'}</span></div>` : ''}
-            ${examPassed ? `<div class="card"><h3>💰 Fee Payments (Demo - Real amounts)</h3><div style="overflow-x:auto"><table><thead><tr><th>Package</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody>
-                <tr><td>Registration Fee</td><td>1000 ETB</td><td class="${student.payments.registration ? 'badge-paid' : 'badge-unpaid'}">${student.payments.registration ? 'Paid' : 'Unpaid'}</td><td>${!student.payments.registration ? `<button onclick="makePayment('registration',1000)">Pay Now</button>` : '✅'}</td></tr>
-                <tr><td>Term 1 + Bus</td><td>3500 ETB</td><td class="${student.payments.term1Bus ? 'badge-paid' : 'badge-unpaid'}">${student.payments.term1Bus ? 'Paid' : 'Unpaid'}</td><td>${!student.payments.term1Bus ? `<button onclick="makePayment('term1Bus',3500)">Pay Now</button>` : '✅'}</td></tr>
-                <tr><td>Term 2 + Bus</td><td>3500 ETB</td><td class="${student.payments.term2Bus ? 'badge-paid' : 'badge-unpaid'}">${student.payments.term2Bus ? 'Paid' : 'Unpaid'}</td><td>${!student.payments.term2Bus ? `<button onclick="makePayment('term2Bus',3500)">Pay Now</button>` : '✅'}</td></tr>
-                <tr><td>Term 3 + Bus</td><td>3500 ETB</td><td class="${student.payments.term3Bus ? 'badge-paid' : 'badge-unpaid'}">${student.payments.term3Bus ? 'Paid' : 'Unpaid'}</td><td>${!student.payments.term3Bus ? `<button onclick="makePayment('term3Bus',3500)">Pay Now</button>` : '✅'}</td></tr>
-            </tbody></div></div>
-            <div class="payment-history"><div class="section-title">📋 Payment History</div>${localPayments.length === 0 ? '<p>No payments yet.</p>' : localPayments.map(p => `<div class="payment-item"><div><strong>${p.paymentType}</strong><br>${p.amount} ETB</div><div><button onclick="downloadReceipt('${p.transactionId}')" class="btn-small">📥 Receipt</button></div></div>`).join('')}</div>` : ''}
-            <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 Our Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>`;
-    }
-    
-    function loadTeacherDashboard() {
-        document.getElementById('teacherAuth').style.display = 'none';
-        const dashboard = document.getElementById('teacherDashboard');
-        dashboard.style.display = 'block';
+        const totalRevenue = filteredStudents.reduce((sum, s) => {
+            return sum + (s.payments.registration ? 1000 : 0) + (s.payments.term1 ? 3500 : 0) + (s.payments.term2 ? 3500 : 0) + (s.payments.term3 ? 3500 : 0);
+        }, 0);
         
-        const teacher = teachers.find(t => t.id === currentUser.id);
-        const statusClass = teacher.status === 'approved' ? 'badge-approved' : (teacher.status === 'rejected' ? 'badge-rejected' : 'badge-pending');
-        const statusText = teacher.status === 'approved' ? '✅ Approved' : (teacher.status === 'rejected' ? '❌ Rejected' : '⏳ Pending Review');
-        
-        dashboard.innerHTML = `
-            <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px">
-                <div><h2>👨‍🏫 Welcome, ${teacher.fullName}!</h2><p>Email: ${teacher.email} | Phone: ${teacher.phone}</p><p>Status: <span class="status-badge ${statusClass}">${statusText}</span></p><button onclick="logout()" style="background:white;color:#667eea;margin-top:10px;">Logout</button></div>
+        document.getElementById('directorProfileContent').innerHTML = `
+            <div class="form-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <img src="${photoUrl}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+                        <h2>📊 ${directorType.toUpperCase()} Director Dashboard</h2>
+                    </div>
+                    <button onclick="logout()" class="btn-danger">Logout</button>
+                </div>
             </div>
-            <div class="card"><h3>📚 Your Information</h3><p><strong>Teaching Grades:</strong> ${teacher.teachingGrades.join(', ')}</p><p><strong>Application Date:</strong> ${new Date(teacher.appliedDate).toLocaleDateString()}</p><p><strong>Your Message:</strong> ${teacher.reason}</p></div>
-            <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 Our Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>`;
+            
+            <div class="grid-3">
+                <div class="card"><h3>👨‍🎓 Total Students</h3><p style="font-size: 32px;">${filteredStudents.length}</p></div>
+                <div class="card"><h3>👨‍🏫 Total Teachers</h3><p style="font-size: 32px;">${filteredTeachers.length}</p></div>
+                <div class="card"><h3>💰 Total Revenue</h3><p style="font-size: 32px;">${totalRevenue.toLocaleString()} ETB</p></div>
+            </div>
+            
+            <div class="card">
+                <h3>📚 Students Under Your Command</h3>
+                <div class="student-table">
+                    <table style="width:100%">
+                        <thead><tr><th>Name</th><th>Student ID</th><th>Grade</th><th>Registration</th><th>Term 1</th></tr></thead>
+                        <tbody>
+                            ${filteredStudents.map(s => `<tr><td>${s.fullName}</td><td>${s.id}</td><td>${s.grade}</td><td>${s.payments.registration ? '✅' : '❌'}</td><td>${s.payments.term1 ? '✅' : '❌'}</td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>👨‍🏫 Teachers Under Your Command</h3>
+                <div class="student-table">
+                    <table style="width:100%">
+                        <thead><tr><th>Name</th><th>Teacher ID</th><th>Subject</th><th>Students Assigned</th></tr></thead>
+                        <tbody>
+                            ${filteredTeachers.map(t => `<tr><td>${t.fullName}</td><td>${t.id}</td><td>${t.subject || 'General'}</td><td>${filteredStudents.length}</td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="footer-links">
+                <a onclick="openModal('purposeModal')">🎯 Our Purpose</a>
+                <a onclick="openModal('feedbackModal')">💬 Feedback</a>
+                <a onclick="openModal('privacyModal')">🔒 Privacy</a>
+                <a onclick="openModal('contactModal')">📞 Contact</a>
+            </div>
+        `;
     }
     
-    function loadBoardDashboard() {
-        document.getElementById('boardAuth').style.display = 'none';
-        const dashboard = document.getElementById('boardDashboard');
-        dashboard.style.display = 'block';
+    // ==================== BOARD LOGIN ====================
+    document.getElementById('boardLoginForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('boardEmail').value;
+        const password = document.getElementById('boardPassword').value;
+        const photoFile = document.getElementById('boardPhoto').files[0];
         
-        const pendingTeachers = teachers.filter(t => t.status === 'pending');
-        const allStudents = students;
-        const totalStudents = allStudents.length;
-        const totalTeachers = teachers.length;
-        const approvedTeachers = teachers.filter(t => t.status === 'approved').length;
+        if (!photoFile) { alert('Please upload your photo for verification!'); return; }
         
-        let teachersHtml = '<div class="student-table"><h3>📝 Pending Teacher Applications</h3>';
-        if (pendingTeachers.length === 0) {
-            teachersHtml += '<p>No pending applications.</p>';
+        if (email === 'board@hermana.edu' && password === 'board123') {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                displayBoardDashboard(ev.target.result);
+            };
+            reader.readAsDataURL(photoFile);
         } else {
-            teachersHtml += `<table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Grades</th><th>Message</th><th>Document</th><th>Action</th></tr></thead><tbody>`;
-            pendingTeachers.forEach(t => {
-                teachersHtml += `<tr>
-                    <td>${t.fullName}</span><td>${t.email}</span><td>${t.phone}</span>
-                    <td>${t.teachingGrades.join(', ')}</span><td>${t.reason.substring(0, 50)}...</span>
-                    <td><a href="${t.educationDoc}" download="Teacher_Doc_${t.id}.pdf" class="btn-small">📄 View</a></span>
-                    <td><button onclick="reviewTeacher(${t.id}, 'approved')" class="btn-small btn-success" style="margin-right:5px;">✅ Approve</button>
-                    <button onclick="reviewTeacher(${t.id}, 'rejected')" class="btn-small btn-danger">❌ Reject</button></span>
-                </tr>`;
-            });
-            teachersHtml += `</tbody>}</div>`;
+            alert('Invalid credentials!');
         }
+    });
+    
+    function displayBoardDashboard(photoUrl) {
+        document.getElementById('boardLoginSection').style.display = 'none';
+        document.getElementById('boardProfileSection').style.display = 'block';
         
-        dashboard.innerHTML = `
-            <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
-                    <div><h2>🎯 Board of Directors Dashboard</h2><p>Welcome, Board Member</p></div>
-                    <button onclick="openSkypeCall()" style="background:#0078ff; color:white; padding:12px 25px; border-radius:10px; border:none; cursor:pointer;">🎥 Join Skype Meeting</button>
-                    <button onclick="logout()" style="background:white;color:#667eea;margin-top:10px;">Logout</button>
+        const totalRevenue = students.reduce((sum, s) => {
+            return sum + (s.payments.registration ? 1000 : 0) + (s.payments.term1 ? 3500 : 0) + (s.payments.term2 ? 3500 : 0) + (s.payments.term3 ? 3500 : 0);
+        }, 0);
+        
+        const pendingApplications = pendingTeachers.length;
+        
+        document.getElementById('boardProfileContent').innerHTML = `
+            <div class="form-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <img src="${photoUrl}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+                        <h2>🎯 Board of Directors Dashboard</h2>
+                    </div>
+                    <button onclick="logout()" class="btn-danger">Logout</button>
                 </div>
             </div>
-            <div class="grid-2">
-                <div class="card"><h3>📊 School Statistics</h3><p><strong>Total Students:</strong> ${totalStudents}</p><p><strong>Total Teachers:</strong> ${totalTeachers}</p><p><strong>Approved Teachers:</strong> ${approvedTeachers}</p><p><strong>Pending Applications:</strong> ${pendingTeachers.length}</p></div>
-                <div class="card"><h3>💰 Financial Overview</h3><p><strong>Total Registration Fees Collected:</strong> ${students.filter(s => s.payments.registration).length * 1000} ETB</p><p><strong>Total Term Fees Collected:</strong> ${students.filter(s => s.payments.term1Bus).length * 3500} ETB</p><p><strong>Pending Payments:</strong> ${students.filter(s => !s.payments.registration).length} Students</p></div>
+            
+            <div class="grid-4">
+                <div class="card"><h3>👨‍🎓 Total Students</h3><p style="font-size: 28px;">${students.length}</p></div>
+                <div class="card"><h3>👨‍🏫 Total Teachers</h3><p style="font-size: 28px;">${teachers.length}</p></div>
+                <div class="card"><h3>💰 Total Revenue</h3><p style="font-size: 28px;">${totalRevenue.toLocaleString()} ETB</p></div>
+                <div class="card"><h3>⏳ Pending Approvals</h3><p style="font-size: 28px;">${pendingApplications}</p></div>
             </div>
-            ${teachersHtml}
-            <div class="card"><h3>📋 Recent Student Registrations</h3><div class="student-table"><table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Grade</th><th>Exam %</th><th>Payment Status</th></tr></thead><tbody>
-                ${allStudents.slice(0, 10).map(s => `<tr><td style="padding:10px;">${s.fullName}</span><td style="padding:10px;">${s.ethiopianId}</span><td style="padding:10px;">${s.grade}</span><td style="padding:10px;">${s.examPercent}%</span><td style="padding:10px;">${s.payments.registration ? '✅ Paid' : '❌ Unpaid'}</span></tr>`).join('')}
-            </tbody></div></div>
-            <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 Our Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>`;
+            
+            <!-- Pending Teacher Applications -->
+            <div class="card">
+                <h3>📝 Pending Teacher Applications</h3>
+                <div class="student-table">
+                    <table style="width:100%">
+                        <thead><tr><th>Name</th><th>Email</th><th>Grade Level</th><th>Exam Score</th><th>Action</th></tr></thead>
+                        <tbody>
+                            ${pendingTeachers.map(t => `
+                                <tr>
+                                    <td>${t.fullName}</td>
+                                    <td>${t.email}</td>
+                                    <td>${t.gradeLevel}</td>
+                                    <td>${t.examScore}%</td>
+                                    <td>
+                                        <button onclick="approveTeacher(${t.id})" class="btn-small btn-success">✅ Approve</button>
+                                        <button onclick="rejectTeacher(${t.id})" class="btn-small btn-danger">❌ Reject</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                            ${pendingTeachers.length === 0 ? '<tr><td colspan="5">No pending applications.</td></tr>' : ''}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- All Students with Payments -->
+            <div class="card">
+                <h3>📊 Student Financial Summary</h3>
+                <div class="student-table">
+                    <table style="width:100%">
+                        <thead><tr><th>Name</th><th>Grade</th><th>Registration</th><th>Term 1</th><th>Term 2</th><th>Term 3</th></tr></thead>
+                        <tbody>
+                            ${students.slice(0, 15).map(s => `
+                                <tr>
+                                    <td>${s.fullName}</td>
+                                    <td>${s.grade}</td>
+                                    <td>${s.payments.registration ? '✅' : '❌'}</td>
+                                    <td>${s.payments.term1 ? '✅' : '❌'}</td>
+                                    <td>${s.payments.term2 ? '✅' : '❌'}</td>
+                                    <td>${s.payments.term3 ? '✅' : '❌'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Teacher Performance -->
+            <div class="card">
+                <h3>👨‍🏫 Teacher Performance</h3>
+                <div class="student-table">
+                    <table style="width:100%">
+                        <thead><tr><th>Name</th><th>Grade Level</th><th>Students Assigned</th><th>Status</th></tr></thead>
+                        <tbody>
+                            ${teachers.map(t => `
+                                <tr>
+                                    <td>${t.fullName}</td>
+                                    <td>${t.gradeLevel}</td>
+                                    <td>${students.filter(s => s.grade.includes(t.gradeLevel === 'KG' ? 'KG' : t.gradeLevel === 'Elementary' ? 'Grade 1' : t.gradeLevel === 'High' ? 'Grade 9' : '')).length}</td>
+                                    <td><span class="badge badge-passed">Active</span></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Director Performance -->
+            <div class="card">
+                <h3>📊 Director Performance</h3>
+                <div class="grid-3">
+                    <div class="card"><h4>KG Director</h4><p>Students: ${students.filter(s => s.grade.includes('KG')).length}</p><p>Revenue: ${students.filter(s => s.grade.includes('KG')).reduce((sum,s)=>sum+(s.payments.registration?1000:0)+(s.payments.term1?3500:0),0).toLocaleString()} ETB</p></div>
+                    <div class="card"><h4>Elementary Director</h4><p>Students: ${students.filter(s => s.grade.includes('Grade 1') || s.grade.includes('Grade 2') || s.grade.includes('Grade 3') || s.grade.includes('Grade 4')).length}</p><p>Revenue: ${students.filter(s => s.grade.includes('Grade 1')).reduce((sum,s)=>sum+(s.payments.registration?1000:0)+(s.payments.term1?3500:0),0).toLocaleString()} ETB</p></div>
+                    <div class="card"><h4>High School Director</h4><p>Students: ${students.filter(s => s.grade.includes('Grade 9') || s.grade.includes('Grade 10') || s.grade.includes('Grade 11') || s.grade.includes('Grade 12')).length}</p><p>Revenue: ${students.filter(s => s.grade.includes('Grade 9')).reduce((sum,s)=>sum+(s.payments.registration?1000:0)+(s.payments.term1?3500:0),0).toLocaleString()} ETB</p></div>
+                </div>
+            </div>
+            
+            <!-- Financial Management -->
+            <div class="card">
+                <h3>💰 Financial Management</h3>
+                <div class="grid-2">
+                    <div class="card"><h4>Total Collection</h4><p style="font-size: 24px;">${totalRevenue.toLocaleString()} ETB</p></div>
+                    <div class="card"><h4>Pending Payments</h4><p style="font-size: 24px;">${students.filter(s => !s.payments.registration).length} Students</p></div>
+                    <div class="card"><h4>Registration Fees</h4><p style="font-size: 20px;">${students.filter(s=>s.payments.registration).length * 1000} ETB</p></div>
+                    <div class="card"><h4>Term Fees</h4><p style="font-size: 20px;">${(students.filter(s=>s.payments.term1).length + students.filter(s=>s.payments.term2).length + students.filter(s=>s.payments.term3).length) * 3500} ETB</p></div>
+                </div>
+            </div>
+            
+            <div class="footer-links">
+                <a onclick="openModal('purposeModal')">🎯 Our Purpose</a>
+                <a onclick="openModal('feedbackModal')">💬 Feedback</a>
+                <a onclick="openModal('privacyModal')">🔒 Privacy</a>
+                <a onclick="openModal('contactModal')">📞 Contact</a>
+            </div>
+        `;
     }
     
-    window.reviewTeacher = (teacherId, status) => {
-        const teacher = teachers.find(t => t.id === teacherId);
+    // ==================== BOARD ACTIONS ====================
+    window.approveTeacher = (teacherId) => {
+        const teacher = pendingTeachers.find(t => t.id === teacherId);
         if (teacher) {
-            teacher.status = status;
-            saveTeachers();
-            alert(`Teacher ${teacher.fullName} has been ${status}!`);
-            loadBoardDashboard();
+            teacher.status = 'approved';
+            saveData();
+            
+            // Send approval email with code
+            sendEmail(teacher.email, 'Hermana Academy Teacher Application Approved!', 
+                `Dear ${teacher.fullName},\n\nCongratulations! Your application has been APPROVED.\n\nYour approval code is: ${teacher.approvalCode}\n\nYou can now login using this code and your full name.\n\nWelcome to Hermana Academy!`);
+            
+            alert(`Teacher ${teacher.fullName} has been approved. Email sent with approval code.`);
+            displayBoardDashboard(document.getElementById('boardPhoto').files[0] ? URL.createObjectURL(document.getElementById('boardPhoto').files[0]) : '');
         }
     };
     
-    window.openSkypeCall = () => {
-        openModal('skypeModal');
-    };
-    
-    function loadDirectorDashboard() {
-        document.getElementById('directorAuth').style.display = 'none';
-        const dashboard = document.getElementById('directorDashboard');
-        dashboard.style.display = 'block';
-        
-        let gradesHtml = '<div class="grade-buttons">';
-        allGrades.forEach(grade => {
-            const studentCount = students.filter(s => s.grade === grade).length;
-            const isKg = grade.includes("KG") || grade === "Nursery";
-            gradesHtml += `<button class="grade-btn ${isKg ? 'kg' : ''}" onclick="showGradeStudents('${grade}')">${grade} (${studentCount})</button>`;
-        });
-        gradesHtml += '</div><div id="studentsDisplay" class="student-table"><p>Click on a grade to view students</p></div>';
-        
-        dashboard.innerHTML = `
-            <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px">
-                <div><h2>📊 Director Dashboard</h2><p>Total Students: ${students.length} | Total Teachers: ${teachers.length}</p><button onclick="logout()" style="background:white;color:#667eea;margin-top:10px;">Logout</button></div>
-            </div>
-            ${gradesHtml}
-            <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 Our Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>`;
-    }
-    
-    window.showGradeStudents = (grade) => {
-        const gradeStudents = students.filter(s => s.grade === grade);
-        const sections = getGradeSections(grade);
-        
-        let tableHtml = `<h3>${grade} - ${gradeStudents.length} Students</h3>`;
-        
-        if (sections.sectionB.length > 0) {
-            tableHtml += `<h4>Section A (${sections.sectionA.length} students)</h4></table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Exam %</th><th>Violations</th><th>Registration</th><th>Term1+Bus</th></tr></thead><tbody>
-                ${sections.sectionA.map(s => `<tr><td style="padding:10px;">${s.fullName}</span><td style="padding:10px;">${s.ethiopianId}</span><td style="padding:10px;">${s.examPercent}%</span><td style="padding:10px;">${s.examViolations || 0}</span><td style="padding:10px;">${s.payments.registration ? '✅' : '❌'}</span><td style="padding:10px;">${s.payments.term1Bus ? '✅' : '❌'}</span></tr>`).join('')}
-            </tbody></table>
-            <h4>Section B (${sections.sectionB.length} students)</h4></table><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Exam %</th><th>Violations</th><th>Registration</th><th>Term1+Bus</th></tr></thead><tbody>
-                ${sections.sectionB.map(s => `<tr><td style="padding:10px;">${s.fullName}</span><td style="padding:10px;">${s.ethiopianId}</span><td style="padding:10px;">${s.examPercent}%</span><td style="padding:10px;">${s.examViolations || 0}</span><td style="padding:10px;">${s.payments.registration ? '✅' : '❌'}</span><td style="padding:10px;">${s.payments.term1Bus ? '✅' : '❌'}</span></tr>`).join('')}
-            </tbody></table>`;
-        } else {
-            tableHtml += `<tr><thead><tr><th>Name</th><th>Ethiopian ID</th><th>Exam %</th><th>Violations</th><th>Registration</th><th>Term1+Bus</th></tr></thead><tbody>
-                ${sections.sectionA.map(s => `<tr><td style="padding:10px;">${s.fullName}</span><td style="padding:10px;">${s.ethiopianId}</span><td style="padding:10px;">${s.examPercent}%</span><td style="padding:10px;">${s.examViolations || 0}</span><td style="padding:10px;">${s.payments.registration ? '✅' : '❌'}</span><td style="padding:10px;">${s.payments.term1Bus ? '✅' : '❌'}</span></tr>`).join('')}
-            </tbody></table>`;
+    window.rejectTeacher = (teacherId) => {
+        const teacher = pendingTeachers.find(t => t.id === teacherId);
+        if (teacher) {
+            const index = pendingTeachers.findIndex(t => t.id === teacherId);
+            if (index !== -1) pendingTeachers.splice(index, 1);
+            saveData();
+            
+            sendEmail(teacher.email, 'Hermana Academy Teacher Application Update', 
+                `Dear ${teacher.fullName},\n\nThank you for your interest in Hermana Academy.\n\nAfter careful review, we regret to inform you that your application has not been accepted at this time.\n\nWe encourage you to reapply in the future.\n\nBest regards,\nHermana Academy Board`);
+            
+            alert(`Teacher ${teacher.fullName} has been rejected.`);
+            displayBoardDashboard(document.getElementById('boardPhoto').files[0] ? URL.createObjectURL(document.getElementById('boardPhoto').files[0]) : '');
         }
-        
-        document.getElementById('studentsDisplay').innerHTML = tableHtml;
     };
     
-    async function loadParentDashboard() {
-        document.getElementById('parentAuth').style.display = 'none';
-        const dashboard = document.getElementById('parentDashboard');
-        dashboard.style.display = 'block';
-        const student = students.find(s => s.id === currentUser.id);
-        dashboard.innerHTML = `
-            <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;border-radius:15px;margin-bottom:20px"><div><h2>👪 Parent Hub</h2><p>Viewing: ${student.fullName}</p><button onclick="logout()" style="background:white;color:#667eea;margin-top:10px;">Logout</button></div></div>
-            <div class="card"><h3>📊 Student Information</h3><p><strong>Name:</strong> ${student.fullName}</p><p><strong>Ethiopian ID:</strong> ${student.ethiopianId}</p><p><strong>Current Grade:</strong> ${student.grade}</p><p><strong>Grade Range:</strong> ${student.fromGrade} to ${student.toGrade}</p><p><strong>Exam Score:</strong> ${student.examPercent}%</p><p><strong>Exam Violations:</strong> ${student.examViolations || 0}</p><span class="badge ${student.examPercent >= 50 ? 'badge-passed' : 'badge-failed'}">${student.examPercent >= 50 ? 'Passed' : 'Failed'}</span></div>
-            <div class="card"><h3>💰 Payment Status</h3><p>Registration: ${student.payments.registration ? '✅ Paid' : '❌ Unpaid'}</p><p>Term 1 + Bus: ${student.payments.term1Bus ? '✅ Paid' : '❌ Unpaid'}</p><p>Term 2 + Bus: ${student.payments.term2Bus ? '✅ Paid' : '❌ Unpaid'}</p><p>Term 3 + Bus: ${student.payments.term3Bus ? '✅ Paid' : '❌ Unpaid'}</p></div>
-            <div class="footer-links"><a onclick="openModal('purposeModal')">🎯 Our Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy Policy</a><a onclick="openModal('contactModal')">📞 Contact Us</a></div>`;
+    // ==================== LOGOUT ====================
+    function logout() {
+        localStorage.removeItem('hermana_current_user');
+        location.reload();
     }
     
-    function logout() { localStorage.clear(); location.reload(); }
-    
-    loadData();
-    if (localStorage.getItem('token')) {
-        if (localStorage.getItem('token').includes('director')) loadDirectorDashboard();
-        else if (localStorage.getItem('token').includes('teacher')) { const teacher = teachers.find(t => t.id === currentUser?.id); if (teacher) loadTeacherDashboard(); }
-        else if (localStorage.getItem('token').includes('board')) loadBoardDashboard();
-        else if (localStorage.getItem('token').includes('parent')) { currentUser = { id: 999999, role: 'parent' }; loadParentDashboard(); }
-        else if (localStorage.getItem('token')) { const student = students.find(s => s.id === 999999); if (student) { currentUser = { id: 999999, name: student.fullName, role: 'student' }; loadStudentDashboard(); } }
-    }
-    
-    window.switchTab = switchTab;
+    // ==================== INITIALIZATION ====================
+    window.selectRole = selectRole;
+    window.openModal = openModal;
+    window.closeModal = closeModal;
     window.logout = logout;
-    window.showGradeStudents = showGradeStudents;
-    window.startSecureExam = startSecureExam;
+    
+    // Show role modal on page load
+    document.getElementById('roleModal').style.display = 'flex';
 </script>
 
 <div class="creator-credit">
@@ -1236,3 +1407,4 @@
 
 </body>
 </html>
+};
