@@ -1,15 +1,17 @@
-// server.js - Hermana Academy Backend with MongoDB
-// Run: npm install && node server.js
+// server.js - Hermana Academy Complete Backend
+// Run: npm install express cors mongoose nodemailer bcryptjs jsonwebtoken multer
+// Then: node server.js
 
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const nodemailer = require('nodemailer');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,7 +21,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
-app.use(express.static('.')); // Serve HTML files
 
 // Create uploads directory
 if (!fs.existsSync('./uploads')) {
@@ -37,24 +38,51 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage, limits: { fileSize: 10 * 1024 * 1024 } });
 
-// JWT Secret
-const JWT_SECRET = process.env.JWT_SECRET || 'hermana_academy_secret_2026';
+// ==================== EMAIL CONFIGURATION (REAL EMAIL) ====================
+// For Gmail: Enable "Less secure app access" or use App Password
+// For production: Use SendGrid, Mailgun, or AWS SES
 
-// ==================== MONGODB SCHEMAS ====================
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER || 'your-email@gmail.com',
+        pass: process.env.EMAIL_PASS || 'your-app-password'
+    }
+});
+
+// Test email configuration on startup
+transporter.verify((error, success) => {
+    if (error) {
+        console.log('❌ Email configuration error:', error);
+    } else {
+        console.log('✅ Email server ready to send real emails');
+    }
+});
+
+// ==================== MONGODB CONNECTION ====================
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/hermana_academy', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log('✅ MongoDB Connected');
+    initializeDemoData();
+}).catch(err => console.error('❌ MongoDB Error:', err));
+
+// ==================== SCHEMAS ====================
 
 // Student Schema
 const studentSchema = new mongoose.Schema({
+    studentId: { type: String, unique: true, required: true },
     fullName: { type: String, required: true },
-    ethiopianId: { type: String, unique: true, required: true },
-    email: { type: String, unique: true, sparse: true },
-    password: { type: String, required: true },
-    grade: { type: String, required: true },
-    fromGrade: { type: String, required: true },
-    toGrade: { type: String, required: true },
-    examPercent: { type: Number, default: 0 },
+    email: { type: String, required: true },
+    phone: String,
+    grade: String,
+    parentName: String,
+    parentPhone: String,
+    address: String,
+    photoUrl: String,
+    examScore: Number,
     examViolations: { type: Number, default: 0 },
-    examPhoto: { type: String },
-    photoUrl: { type: String },
     registration_paid: { type: Boolean, default: false },
     term1_paid: { type: Boolean, default: false },
     term2_paid: { type: Boolean, default: false },
@@ -64,308 +92,226 @@ const studentSchema = new mongoose.Schema({
 
 // Teacher Schema
 const teacherSchema = new mongoose.Schema({
-    fullName: { type: String, required: true },
-    email: { type: String, unique: true, required: true },
-    password: { type: String, required: true },
-    phone: { type: String, required: true },
-    educationDoc: { type: String },
-    teachingGrades: { type: String },
-    reason: { type: String },
-    status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
-    appliedDate: { type: Date, default: Date.now }
+    teacherId: { type: String, unique: true },
+    fullName: String,
+    email: String,
+    phone: String,
+    gradeLevel: String,
+    subject: String,
+    experience: Number,
+    photoUrl: String,
+    documentUrl: String,
+    examScore: Number,
+    approvalCode: String,
+    status: { type: String, default: 'pending' },
+    salary: { type: Number, default: 0 },
+    joinedDate: Date
+});
+
+// Director Schema
+const directorSchema = new mongoose.Schema({
+    type: String,
+    name: String,
+    password: String,
+    photoUrl: String
 });
 
 // Payment Schema
 const paymentSchema = new mongoose.Schema({
-    transactionId: { type: String, unique: true, required: true },
-    studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: true },
-    studentName: { type: String, required: true },
-    paymentType: { type: String, enum: ['registration', 'term1Bus', 'term2Bus', 'term3Bus'], required: true },
-    amount: { type: Number, required: true },
-    status: { type: String, default: 'completed' },
-    date: { type: Date, default: Date.now }
-});
-
-// Exam Result Schema
-const examResultSchema = new mongoose.Schema({
-    studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: true },
-    score: { type: Number, required: true },
-    percentage: { type: Number, required: true },
-    violations: { type: Number, default: 0 },
-    passed: { type: Boolean, default: false },
+    studentId: String,
+    studentName: String,
+    amount: Number,
+    type: String,
+    transactionId: String,
     date: { type: Date, default: Date.now }
 });
 
 // Feedback Schema
 const feedbackSchema = new mongoose.Schema({
-    rating: { type: Number, required: true },
-    comment: { type: String, required: true },
+    name: String,
+    rating: Number,
+    message: String,
     date: { type: Date, default: Date.now }
 });
 
-// Create Models
 const Student = mongoose.model('Student', studentSchema);
 const Teacher = mongoose.model('Teacher', teacherSchema);
+const Director = mongoose.model('Director', directorSchema);
 const Payment = mongoose.model('Payment', paymentSchema);
-const ExamResult = mongoose.model('ExamResult', examResultSchema);
 const Feedback = mongoose.model('Feedback', feedbackSchema);
 
-// ==================== CONNECT TO MONGODB ====================
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/hermana_academy', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => {
-    console.log('✅ MongoDB Connected Successfully!');
-    initializeDemoData();
-}).catch(err => {
-    console.error('❌ MongoDB Connection Error:', err);
-    console.log('⚠️ Make sure MongoDB is running: mongod');
-});
-
-// ==================== DEMO DATA INITIALIZATION ====================
+// ==================== INITIALIZE DEMO DATA ====================
 async function initializeDemoData() {
-    // Check if demo student exists
-    const demoStudent = await Student.findOne({ ethiopianId: 'ET999999' });
-    if (!demoStudent) {
-        const hashedPassword = await bcrypt.hash('student123', 10);
-        await Student.create({
-            fullName: 'Demo Student',
-            ethiopianId: 'ET999999',
-            email: 'demo@hermana.edu',
-            password: hashedPassword,
-            grade: 'Grade 10',
-            fromGrade: 'Grade 5',
-            toGrade: 'Grade 12',
-            examPercent: 75,
-            photoUrl: 'https://randomuser.me/api/portraits/men/1.jpg'
-        });
-        console.log('✅ Demo student created');
+    // Create demo directors
+    const directors = await Director.find();
+    if (directors.length === 0) {
+        await Director.create([
+            { type: 'kg', name: 'KG Director', password: 'kg123', photoUrl: null },
+            { type: 'elementary', name: 'Elementary Director', password: 'elem123', photoUrl: null },
+            { type: 'high', name: 'High School Director', password: 'high123', photoUrl: null }
+        ]);
+        console.log('✅ Demo directors created');
     }
+}
 
-    // Check if demo teacher exists
-    const demoTeacher = await Teacher.findOne({ email: 'teacher@hermana.edu' });
-    if (!demoTeacher) {
-        const hashedPassword = await bcrypt.hash('teacher123', 10);
-        await Teacher.create({
-            fullName: 'Demo Teacher',
-            email: 'teacher@hermana.edu',
-            password: hashedPassword,
-            phone: '+251-911-000000',
-            teachingGrades: 'Grade 1,Grade 2,Grade 3',
-            reason: 'Passionate about teaching Ethiopian students',
-            status: 'approved'
+// ==================== EMAIL FUNCTION ====================
+async function sendRealEmail(to, subject, htmlContent) {
+    try {
+        const info = await transporter.sendMail({
+            from: `"Hermana Academy" <${process.env.EMAIL_USER || 'noreply@hermana.edu'}>`,
+            to: to,
+            subject: subject,
+            html: htmlContent
         });
-        console.log('✅ Demo teacher created');
+        console.log('✅ Email sent:', info.messageId);
+        return true;
+    } catch (error) {
+        console.error('❌ Email error:', error);
+        return false;
     }
-    
-    console.log('📊 Database ready with demo data');
 }
 
 // ==================== HELPER FUNCTIONS ====================
-function generateToken(userId, role, email) {
-    return jwt.sign({ id: userId, role: role, email: email }, JWT_SECRET, { expiresIn: '30d' });
+function generateStudentId() {
+    return 'HA' + new Date().getFullYear() + Math.floor(Math.random() * 100000).toString().padStart(5, '0');
 }
 
-function verifyToken(token) {
-    try {
-        return jwt.verify(token, JWT_SECRET);
-    } catch (err) {
-        return null;
-    }
+function generateTeacherId() {
+    return 'TCH' + new Date().getFullYear() + Math.floor(Math.random() * 10000).toString().padStart(4, '0');
 }
 
-function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    
-    if (!token) {
-        return res.status(401).json({ error: 'Access token required' });
-    }
-    
-    const decoded = verifyToken(token);
-    if (!decoded) {
-        return res.status(403).json({ error: 'Invalid or expired token' });
-    }
-    
-    req.user = decoded;
-    next();
+function generateApprovalCode() {
+    return 'AP-' + Math.random().toString(36).substring(2, 10).toUpperCase();
 }
 
 // ==================== API ROUTES ====================
 
 // Health check
 app.get('/api/health', (req, res) => {
-    res.json({ status: 'OK', timestamp: new Date().toISOString(), database: 'MongoDB' });
+    res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
 // ==================== STUDENT ROUTES ====================
 
-// Student Registration
-app.post('/api/auth/student/register', upload.single('photo'), async (req, res) => {
+// Register student (after exam pass)
+app.post('/api/student/register', upload.single('photo'), async (req, res) => {
     try {
-        const { fullName, ethiopianId, email, password, fromGrade, toGrade } = req.body;
+        const { fullName, email, phone, grade, parentName, parentPhone, address, examScore, examViolations } = req.body;
         
-        const existingStudent = await Student.findOne({ $or: [{ ethiopianId }, { email }] });
-        if (existingStudent) {
-            return res.status(400).json({ error: 'Student already exists' });
-        }
-        
-        const hashedPassword = await bcrypt.hash(password || 'default123', 10);
+        const studentId = generateStudentId();
         const photoUrl = req.file ? `/uploads/${req.file.filename}` : null;
         
         const student = await Student.create({
+            studentId,
             fullName,
-            ethiopianId,
-            email: email || `${ethiopianId}@hermana.edu`,
-            password: hashedPassword,
-            grade: fromGrade,
-            fromGrade,
-            toGrade,
-            photoUrl
+            email,
+            phone,
+            grade,
+            parentName,
+            parentPhone,
+            address,
+            photoUrl,
+            examScore: parseInt(examScore),
+            examViolations: parseInt(examViolations)
         });
         
-        const token = generateToken(student._id, 'student', student.email);
-        res.status(201).json({ 
-            success: true, 
-            token, 
-            student: { id: student._id, fullName, ethiopianId, email: student.email, grade: student.grade }
-        });
+        // Send REAL email with student ID
+        const emailHtml = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+                <div style="text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px 10px 0 0;">
+                    <h1 style="color: white;">🏫 Hermana Academy</h1>
+                </div>
+                <div style="padding: 20px;">
+                    <h2>Congratulations ${fullName}! 🎉</h2>
+                    <p>You have successfully passed the entrance exam with a score of <strong>${examScore}%</strong>.</p>
+                    <p>Your Student ID is: <strong style="font-size: 20px; color: #667eea;">${studentId}</strong></p>
+                    <p>You can now login to your dashboard using this ID and your full name.</p>
+                    <hr style="margin: 20px 0;">
+                    <p><strong>Grade:</strong> ${grade}</p>
+                    <p><strong>Parent Name:</strong> ${parentName || 'N/A'}</p>
+                    <p><strong>Parent Phone:</strong> ${parentPhone || 'N/A'}</p>
+                    <hr style="margin: 20px 0;">
+                    <p style="color: #666; font-size: 12px;">If you did not register for Hermana Academy, please ignore this email.</p>
+                </div>
+                <div style="text-align: center; padding: 15px; background: #f5f5f5; border-radius: 0 0 10px 10px;">
+                    <p style="margin: 0;">&copy; 2024 Hermana Academy - Ethiopia</p>
+                </div>
+            </div>
+        `;
+        
+        await sendRealEmail(email, 'Your Hermana Academy Student ID', emailHtml);
+        
+        res.status(201).json({ success: true, studentId, student });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Student Login
-app.post('/api/auth/student/login', async (req, res) => {
+// Student login
+app.post('/api/student/login', async (req, res) => {
     try {
-        const { identifier, password } = req.body;
+        const { studentId, fullName } = req.body;
+        const student = await Student.findOne({ studentId, fullName });
         
-        const student = await Student.findOne({ $or: [{ ethiopianId: identifier }, { email: identifier }] });
         if (!student) {
-            return res.status(401).json({ error: 'Student not found' });
+            return res.status(401).json({ error: 'Invalid Student ID or Name' });
         }
         
-        const validPassword = await bcrypt.compare(password, student.password);
-        if (!validPassword) {
-            return res.status(401).json({ error: 'Invalid password' });
-        }
-        
-        const token = generateToken(student._id, 'student', student.email);
-        res.json({ 
-            success: true, 
-            token, 
-            student: { 
-                id: student._id, 
-                fullName: student.fullName, 
-                ethiopianId: student.ethiopianId, 
-                grade: student.grade,
-                examPercent: student.examPercent,
-                examViolations: student.examViolations,
-                photoUrl: student.photoUrl,
-                fromGrade: student.fromGrade,
-                toGrade: student.toGrade,
-                payments: {
-                    registration: student.registration_paid,
-                    term1Bus: student.term1_paid,
-                    term2Bus: student.term2_paid,
-                    term3Bus: student.term3_paid
-                }
-            }
-        });
+        res.json({ success: true, student });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Get Student Dashboard Data
-app.get('/api/student/:id', authenticateToken, async (req, res) => {
+// Get student by ID
+app.get('/api/student/:studentId', async (req, res) => {
     try {
-        const student = await Student.findById(req.params.id);
-        if (!student) {
-            return res.status(404).json({ error: 'Student not found' });
-        }
-        
-        res.json({
-            id: student._id,
-            fullName: student.fullName,
-            ethiopianId: student.ethiopianId,
-            email: student.email,
-            grade: student.grade,
-            fromGrade: student.fromGrade,
-            toGrade: student.toGrade,
-            examPercent: student.examPercent,
-            examViolations: student.examViolations,
-            photoUrl: student.photoUrl,
-            payments: {
-                registration: student.registration_paid,
-                term1Bus: student.term1_paid,
-                term2Bus: student.term2_paid,
-                term3Bus: student.term3_paid
-            }
-        });
+        const student = await Student.findOne({ studentId: req.params.studentId });
+        if (!student) return res.status(404).json({ error: 'Student not found' });
+        res.json(student);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Submit Exam Result
-app.post('/api/student/:id/exam', authenticateToken, async (req, res) => {
+// Make payment
+app.post('/api/student/:studentId/payment', async (req, res) => {
     try {
-        const { score, percentage, violations, passed } = req.body;
+        const { type, amount } = req.body;
+        const student = await Student.findOne({ studentId: req.params.studentId });
         
-        await ExamResult.create({
-            studentId: req.params.id,
-            score,
-            percentage,
-            violations,
-            passed
-        });
+        if (!student) return res.status(404).json({ error: 'Student not found' });
         
-        await Student.findByIdAndUpdate(req.params.id, {
-            examPercent: percentage,
-            examViolations: violations
-        });
-        
-        res.json({ success: true, percentage, passed });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// Make Payment
-app.post('/api/student/:id/payment', authenticateToken, async (req, res) => {
-    try {
-        const { paymentType, amount } = req.body;
         let updateField = {};
+        if (type === 'registration') updateField = { registration_paid: true };
+        else if (type === 'term1') updateField = { term1_paid: true };
+        else if (type === 'term2') updateField = { term2_paid: true };
+        else if (type === 'term3') updateField = { term3_paid: true };
         
-        if (paymentType === 'registration') updateField = { registration_paid: true };
-        else if (paymentType === 'term1Bus') updateField = { term1_paid: true };
-        else if (paymentType === 'term2Bus') updateField = { term2_paid: true };
-        else if (paymentType === 'term3Bus') updateField = { term3_paid: true };
-        else return res.status(400).json({ error: 'Invalid payment type' });
+        await Student.updateOne({ studentId: req.params.studentId }, updateField);
         
-        const student = await Student.findByIdAndUpdate(req.params.id, updateField, { new: true });
         const transactionId = 'TXN-' + Date.now();
-        
         await Payment.create({
-            transactionId,
-            studentId: req.params.id,
+            studentId: req.params.studentId,
             studentName: student.fullName,
-            paymentType,
-            amount
+            amount,
+            type,
+            transactionId
         });
         
-        res.json({ success: true, transactionId, payment: { transactionId, amount, paymentType, date: new Date() } });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// Get Payment History
-app.get('/api/student/:id/payments', authenticateToken, async (req, res) => {
-    try {
-        const payments = await Payment.find({ studentId: req.params.id }).sort({ date: -1 });
-        res.json(payments);
+        // Send payment receipt email
+        const emailHtml = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2>Payment Receipt</h2>
+                <p>Dear ${student.fullName},</p>
+                <p>Your payment of <strong>${amount} ETB</strong> for <strong>${type}</strong> has been received.</p>
+                <p>Transaction ID: <strong>${transactionId}</strong></p>
+                <p>Thank you for your payment!</p>
+            </div>
+        `;
+        await sendRealEmail(student.email, 'Payment Receipt - Hermana Academy', emailHtml);
+        
+        res.json({ success: true, transactionId });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -373,206 +319,228 @@ app.get('/api/student/:id/payments', authenticateToken, async (req, res) => {
 
 // ==================== TEACHER ROUTES ====================
 
-// Teacher Registration
-app.post('/api/auth/teacher/register', upload.single('document'), async (req, res) => {
+// Submit teacher application
+app.post('/api/teacher/apply', upload.fields([{ name: 'photo' }, { name: 'document' }]), async (req, res) => {
     try {
-        const { fullName, email, password, phone, teachingGrades, reason } = req.body;
+        const { fullName, email, phone, gradeLevel, subject, experience, reason, examScore } = req.body;
         
-        const existingTeacher = await Teacher.findOne({ email });
-        if (existingTeacher) {
-            return res.status(400).json({ error: 'Teacher already registered' });
-        }
-        
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const docUrl = req.file ? `/uploads/${req.file.filename}` : null;
+        const approvalCode = generateApprovalCode();
+        const photoUrl = req.files['photo'] ? `/uploads/${req.files['photo'][0].filename}` : null;
+        const documentUrl = req.files['document'] ? `/uploads/${req.files['document'][0].filename}` : null;
         
         const teacher = await Teacher.create({
             fullName,
             email,
-            password: hashedPassword,
             phone,
-            educationDoc: docUrl,
-            teachingGrades,
-            reason,
-            status: 'pending'
+            gradeLevel,
+            subject,
+            experience,
+            photoUrl,
+            documentUrl,
+            examScore: parseInt(examScore),
+            approvalCode,
+            status: 'pending',
+            joinedDate: new Date()
         });
         
-        res.status(201).json({ success: true, message: 'Application submitted', teacherId: teacher._id });
+        // Send application received email
+        const emailHtml = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2>Application Received</h2>
+                <p>Dear ${fullName},</p>
+                <p>Your application has been received. You passed the exam with <strong>${examScore}%</strong>.</p>
+                <p>Your application is under review by the board. You will receive an approval code within 2 days.</p>
+                <p>Thank you for your interest in Hermana Academy!</p>
+            </div>
+        `;
+        await sendRealEmail(email, 'Teacher Application Received - Hermana Academy', emailHtml);
+        
+        res.json({ success: true, message: 'Application submitted', approvalCode });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Teacher Login
-app.post('/api/auth/teacher/login', async (req, res) => {
+// Teacher login with approval code
+app.post('/api/teacher/login', async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { code, fullName } = req.body;
+        const teacher = await Teacher.findOne({ approvalCode: code, fullName });
         
-        const teacher = await Teacher.findOne({ email });
         if (!teacher) {
-            return res.status(401).json({ error: 'Teacher not found' });
-        }
-        
-        const validPassword = await bcrypt.compare(password, teacher.password);
-        if (!validPassword) {
-            return res.status(401).json({ error: 'Invalid password' });
+            return res.status(401).json({ error: 'Invalid approval code or name' });
         }
         
         if (teacher.status !== 'approved') {
-            return res.status(403).json({ error: `Application status: ${teacher.status}` });
+            return res.status(403).json({ error: `Application status: ${teacher.status}. Please wait for approval.` });
         }
         
-        const token = generateToken(teacher._id, 'teacher', teacher.email);
-        res.json({ success: true, token, teacher: { id: teacher._id, fullName: teacher.fullName, email: teacher.email, status: teacher.status } });
+        res.json({ success: true, teacher });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Get all teachers (Board only)
-app.get('/api/teachers', authenticateToken, async (req, res) => {
-    if (req.user.role !== 'board') {
-        return res.status(403).json({ error: 'Unauthorized' });
-    }
-    
-    const teachers = await Teacher.find({}).sort({ appliedDate: -1 });
+// Get all pending teachers (Board only)
+app.get('/api/teachers/pending', async (req, res) => {
+    const teachers = await Teacher.find({ status: 'pending' });
     res.json(teachers);
 });
 
-// Review teacher application (Board only)
-app.put('/api/teacher/:id/review', authenticateToken, async (req, res) => {
-    if (req.user.role !== 'board') {
-        return res.status(403).json({ error: 'Only board members can review' });
+// Approve teacher
+app.post('/api/teacher/:id/approve', async (req, res) => {
+    try {
+        const teacher = await Teacher.findById(req.params.id);
+        if (!teacher) return res.status(404).json({ error: 'Teacher not found' });
+        
+        teacher.status = 'approved';
+        teacher.teacherId = generateTeacherId();
+        await teacher.save();
+        
+        // Send approval email with code
+        const emailHtml = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2>Congratulations! Your Application is Approved 🎉</h2>
+                <p>Dear ${teacher.fullName},</p>
+                <p>We are pleased to inform you that your application has been <strong>APPROVED</strong>.</p>
+                <p>Your Teacher ID is: <strong>${teacher.teacherId}</strong></p>
+                <p>Your Approval Code is: <strong>${teacher.approvalCode}</strong></p>
+                <p>You can now login using this code and your full name.</p>
+                <p>Welcome to Hermana Academy!</p>
+            </div>
+        `;
+        await sendRealEmail(teacher.email, 'Teacher Application Approved - Hermana Academy', emailHtml);
+        
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-    
-    const { status } = req.body;
-    await Teacher.findByIdAndUpdate(req.params.id, { status });
-    res.json({ success: true, status });
 });
 
-// ==================== BOARD/DIRECTOR ROUTES ====================
-
-// Get all students
-app.get('/api/students', authenticateToken, async (req, res) => {
-    if (req.user.role !== 'board' && req.user.role !== 'director') {
-        return res.status(403).json({ error: 'Unauthorized' });
+// Reject teacher
+app.post('/api/teacher/:id/reject', async (req, res) => {
+    try {
+        const teacher = await Teacher.findByIdAndDelete(req.params.id);
+        if (teacher) {
+            const emailHtml = `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <h2>Application Update</h2>
+                    <p>Dear ${teacher.fullName},</p>
+                    <p>Thank you for your interest in Hermana Academy.</p>
+                    <p>After careful review, we regret to inform you that your application has not been accepted at this time.</p>
+                    <p>We encourage you to reapply in the future.</p>
+                </div>
+            `;
+            await sendRealEmail(teacher.email, 'Teacher Application Update - Hermana Academy', emailHtml);
+        }
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
+});
+
+// Get teacher by ID
+app.get('/api/teacher/:teacherId', async (req, res) => {
+    const teacher = await Teacher.findOne({ teacherId: req.params.teacherId });
+    res.json(teacher);
+});
+
+// Get students by grade level (for teacher)
+app.get('/api/students/grade/:gradeLevel', async (req, res) => {
+    const { gradeLevel } = req.params;
+    let filter = {};
     
-    const students = await Student.find({}).select('-password').sort({ createdAt: -1 });
+    if (gradeLevel === 'KG') filter = { grade: { $in: ['Nursery', 'Lower KG', 'Upper KG'] } };
+    else if (gradeLevel === 'Elementary') filter = { grade: { $regex: 'Grade [1-4]', $options: 'i' } };
+    else if (gradeLevel === 'Middle') filter = { grade: { $regex: 'Grade [5-8]', $options: 'i' } };
+    else if (gradeLevel === 'High') filter = { grade: { $regex: 'Grade [9-12]', $options: 'i' } };
+    
+    const students = await Student.find(filter);
     res.json(students);
 });
 
-// Get statistics
-app.get('/api/statistics', authenticateToken, async (req, res) => {
-    if (req.user.role !== 'board' && req.user.role !== 'director') {
-        return res.status(403).json({ error: 'Unauthorized' });
+// ==================== DIRECTOR ROUTES ====================
+
+app.post('/api/director/login', async (req, res) => {
+    const { type, password } = req.body;
+    const director = await Director.findOne({ type, password });
+    
+    if (!director) {
+        return res.status(401).json({ error: 'Invalid credentials' });
     }
     
-    const totalStudents = await Student.countDocuments();
-    const totalTeachers = await Teacher.countDocuments();
-    const approvedTeachers = await Teacher.countDocuments({ status: 'approved' });
-    const pendingTeachers = await Teacher.countDocuments({ status: 'pending' });
-    const payments = await Payment.aggregate([{ $group: { _id: null, total: { $sum: '$amount' } } }]);
-    const totalRevenue = payments[0]?.total || 0;
-    const paidStudents = await Student.countDocuments({ registration_paid: true });
+    res.json({ success: true, director });
+});
+
+app.get('/api/director/:type/stats', async (req, res) => {
+    const { type } = req.params;
+    let gradeFilter = {};
+    
+    if (type === 'kg') gradeFilter = { grade: { $in: ['Nursery', 'Lower KG', 'Upper KG'] } };
+    else if (type === 'elementary') gradeFilter = { grade: { $regex: 'Grade [1-4]', $options: 'i' } };
+    else if (type === 'high') gradeFilter = { grade: { $regex: 'Grade [9-12]', $options: 'i' } };
+    
+    const students = await Student.find(gradeFilter);
+    const teachers = await Teacher.find({ gradeLevel: type === 'kg' ? 'KG' : type === 'elementary' ? 'Elementary' : 'High', status: 'approved' });
+    const revenue = students.reduce((sum, s) => sum + (s.registration_paid ? 1000 : 0) + (s.term1_paid ? 3500 : 0) + (s.term2_paid ? 3500 : 0) + (s.term3_paid ? 3500 : 0), 0);
+    
+    res.json({ students, teachers, revenue });
+});
+
+// ==================== BOARD ROUTES ====================
+
+app.post('/api/board/login', (req, res) => {
+    const { email, password } = req.body;
+    if (email === 'board@hermana.edu' && password === 'board123') {
+        res.json({ success: true });
+    } else {
+        res.status(401).json({ error: 'Invalid credentials' });
+    }
+});
+
+app.get('/api/board/stats', async (req, res) => {
+    const students = await Student.find();
+    const teachers = await Teacher.find({ status: 'approved' });
+    const pendingTeachers = await Teacher.find({ status: 'pending' });
+    const payments = await Payment.find();
+    const totalRevenue = payments.reduce((sum, p) => sum + p.amount, 0);
     
     res.json({
-        totalStudents,
-        totalTeachers,
-        approvedTeachers,
-        pendingTeachers,
+        totalStudents: students.length,
+        totalTeachers: teachers.length,
+        pendingTeachers: pendingTeachers.length,
         totalRevenue,
-        paidStudents
+        students,
+        teachers: teachers,
+        pendingTeachersList: pendingTeachers,
+        payments
     });
 });
 
 // ==================== PARENT ROUTES ====================
 
-app.post('/api/auth/parent/login', async (req, res) => {
-    try {
-        const { identifier, password } = req.body;
-        
-        const student = await Student.findOne({ $or: [{ ethiopianId: identifier }, { email: identifier }] });
-        if (!student) {
-            return res.status(401).json({ error: 'Student not found' });
-        }
-        
-        const validPassword = await bcrypt.compare(password, student.password);
-        if (!validPassword) {
-            return res.status(401).json({ error: 'Invalid password' });
-        }
-        
-        const token = generateToken(student._id, 'parent', student.email);
-        res.json({ 
-            success: true, 
-            token, 
-            student: { 
-                id: student._id, 
-                fullName: student.fullName, 
-                ethiopianId: student.ethiopianId, 
-                grade: student.grade,
-                examPercent: student.examPercent,
-                fromGrade: student.fromGrade,
-                toGrade: student.toGrade,
-                payments: {
-                    registration: student.registration_paid,
-                    term1Bus: student.term1_paid,
-                    term2Bus: student.term2_paid,
-                    term3Bus: student.term3_paid
-                }
-            }
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// ==================== FEEDBACK ROUTES ====================
-
-app.post('/api/feedback', async (req, res) => {
-    try {
-        const { rating, comment } = req.body;
-        await Feedback.create({ rating, comment });
-        res.json({ success: true, message: 'Thank you for your feedback!' });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-app.get('/api/feedbacks', authenticateToken, async (req, res) => {
-    if (req.user.role !== 'board' && req.user.role !== 'director') {
-        return res.status(403).json({ error: 'Unauthorized' });
+app.post('/api/parent/login', async (req, res) => {
+    const { studentId } = req.body;
+    const student = await Student.findOne({ studentId });
+    
+    if (!student) {
+        return res.status(401).json({ error: 'Student not found' });
     }
     
-    const feedbacks = await Feedback.find({}).sort({ date: -1 });
+    res.json({ success: true, student });
+});
+
+// ==================== FEEDBACK ROUTE ====================
+
+app.post('/api/feedback', async (req, res) => {
+    const { name, rating, message } = req.body;
+    await Feedback.create({ name, rating, message });
+    res.json({ success: true });
+});
+
+app.get('/api/feedbacks', async (req, res) => {
+    const feedbacks = await Feedback.find().sort({ date: -1 });
     res.json(feedbacks);
-});
-
-// ==================== DEMO LOGINS ====================
-
-app.post('/api/auth/board/login', (req, res) => {
-    const { email, password } = req.body;
-    if (email === 'board@hermana.edu' && password === 'board123') {
-        const token = generateToken('board', 'board', email);
-        res.json({ success: true, token, role: 'board' });
-    } else {
-        res.status(401).json({ error: 'Invalid credentials' });
-    }
-});
-
-app.post('/api/auth/director/login', (req, res) => {
-    const { email, password } = req.body;
-    if (email === 'director@hermana.edu' && password === 'director123') {
-        const token = generateToken('director', 'director', email);
-        res.json({ success: true, token, role: 'director' });
-    } else {
-        res.status(401).json({ error: 'Invalid credentials' });
-    }
-});
-
-// ==================== SERVE HTML FILE ====================
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // ==================== START SERVER ====================
@@ -583,13 +551,9 @@ app.listen(PORT, () => {
     ╠══════════════════════════════════════════════════════════╣
     ║  Server: http://localhost:${PORT}                          ║
     ║  API Base: http://localhost:${PORT}/api                   ║
-    ║  Database: MongoDB                                        ║
     ║                                                            ║
-    ║  Demo Credentials:                                        ║
-    ║  Student: ET999999 / student123                           ║
-    ║  Teacher: teacher@hermana.edu / teacher123                ║
-    ║  Director: director@hermana.edu / director123             ║
-    ║  Board: board@hermana.edu / board123                      ║
+    ║  Email: REAL emails will be sent to provided addresses    ║
+    ║  Database: MongoDB                                        ║
     ╚══════════════════════════════════════════════════════════╝
     `);
 });
