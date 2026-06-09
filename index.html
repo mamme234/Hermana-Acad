@@ -552,6 +552,22 @@
         .student-table th, .student-table td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
         .student-table th { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 10px; }
 
+        /* Server Status Banner */
+        .server-status {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            z-index: 9999;
+            font-family: monospace;
+        }
+        .server-status.online { background: rgba(40,167,69,0.9); }
+        .server-status.offline { background: rgba(220,53,69,0.9); }
+
         @media (max-width: 768px) {
             .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
             .id-card { width: 95%; }
@@ -562,6 +578,9 @@
     </style>
 </head>
 <body>
+
+<!-- SERVER STATUS BANNER -->
+<div id="serverStatus" class="server-status offline">🔌 Checking server...</div>
 
 <!-- ROLE SELECTION MODAL -->
 <div id="roleModal" class="role-overlay">
@@ -936,10 +955,37 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
-    // API Configuration
-    const API_BASE_URL = 'http://localhost:3000/api';
+    // ==================== RENDER BACKEND URL ====================
+    // 🔴 IMPORTANT: Replace this URL with your actual Render.com backend URL
+    // Example: https://hermana-academy-api.onrender.com
+    const RENDER_BACKEND_URL = 'https://hermana-academy-api.onrender.com';
+    const API_BASE_URL = `${RENDER_BACKEND_URL}/api`;
     
-    // Data Storage
+    // Check server connection
+    async function checkServerConnection() {
+        const statusDiv = document.getElementById('serverStatus');
+        try {
+            const response = await fetch(`${API_BASE_URL}/health`);
+            if (response.ok) {
+                statusDiv.innerHTML = '✅ Server Connected';
+                statusDiv.className = 'server-status online';
+                console.log('✅ Backend server is running');
+                return true;
+            } else {
+                throw new Error('Server not responding');
+            }
+        } catch (error) {
+            statusDiv.innerHTML = '⚠️ Server Offline - Using Local Storage';
+            statusDiv.className = 'server-status offline';
+            console.log('⚠️ Backend server not reachable, using localStorage fallback');
+            return false;
+        }
+    }
+    
+    // Call this on page load
+    checkServerConnection();
+    
+    // Data Storage (fallback for when server is offline)
     let students = JSON.parse(localStorage.getItem('hermana_students') || '[]');
     let teachers = JSON.parse(localStorage.getItem('hermana_teachers') || '[]');
     let pendingTeachers = JSON.parse(localStorage.getItem('hermana_pending_teachers') || '[]');
@@ -1018,6 +1064,25 @@
             document.getElementById('boardDashboard').classList.add('active');
             document.getElementById('boardLoginSection').style.display = 'block';
             document.getElementById('boardProfileSection').style.display = 'none';
+        }
+    }
+    
+    // ==================== API CALL FUNCTION ====================
+    async function apiCall(endpoint, options = {}) {
+        try {
+            const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                ...options,
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                }
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'API call failed');
+            return data;
+        } catch (error) {
+            console.log('API Error (using localStorage fallback):', error.message);
+            return null;
         }
     }
     
@@ -1193,7 +1258,7 @@
             document.getElementById('studentRegistrationSection').style.display = 'block';
         }
         
-        function submitExam() {
+        async function submitExam() {
             clearInterval(timerInterval);
             let correct = 0;
             answers.forEach((ans, i) => { if (ans === questions[i].correct) correct++; });
@@ -1208,7 +1273,6 @@
             document.getElementById('examContainer').remove();
             
             if (percentage >= 50) {
-                // Student passed - save to localStorage (simulate backend)
                 const studentId = generateStudentId();
                 const newStudent = {
                     studentId: studentId,
@@ -1228,9 +1292,32 @@
                 students.push(newStudent);
                 saveData();
                 
-                alert(`🎉 Congratulations! You passed the exam with ${percentage}%!\nYour Student ID: ${studentId}\nThis ID has been sent to your email.`);
+                // Try to send to backend if available
+                const formData = new FormData();
+                formData.append('fullName', studentData.fullName);
+                formData.append('email', studentData.email);
+                formData.append('phone', studentData.phone);
+                formData.append('grade', studentData.grade);
+                formData.append('parentName', studentData.parentName);
+                formData.append('parentPhone', studentData.parentPhone);
+                formData.append('address', studentData.address);
+                formData.append('examScore', percentage);
+                formData.append('examViolations', examViolations);
+                if (photoFile) formData.append('photo', photoFile);
                 
-                // Show login section
+                try {
+                    const response = await fetch(`${API_BASE_URL}/student/register`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        alert(`🎉 Congratulations! You passed the exam with ${percentage}%!\nYour Student ID: ${studentId}\nThis ID has been sent to your email.`);
+                    }
+                } catch (err) {
+                    alert(`🎉 Congratulations! You passed the exam with ${percentage}%!\nYour Student ID: ${studentId}\n(Backend offline - ID saved locally. Email not sent)`);
+                }
+                
                 document.getElementById('studentRegistrationSection').style.display = 'none';
                 document.getElementById('studentLoginSection').style.display = 'block';
             } else {
@@ -1593,7 +1680,7 @@
             <div class="card">
                 <h3>📚 Your Students (${assignedStudents.length})</h3>
                 <div class="student-table"><table><thead><tr><th>Name</th><th>Student ID</th><th>Grade</th><th>Exam Score</th></tr></thead><tbody>
-                    ${assignedStudents.map(s => `<tr><td>${s.fullName}</td><td>${s.studentId}</td><td>${s.grade}</td><td>${s.examScore}%</td></tr>`).join('')}
+                    ${assignedStudents.map(s => `<tr><td style="padding:12px;">${s.fullName}</td><td style="padding:12px;">${s.studentId}</td><td style="padding:12px;">${s.grade}</td><td style="padding:12px;">${s.examScore}%</td></tr>`).join('')}
                     ${assignedStudents.length === 0 ? '<tr><td colspan="4">No students assigned yet.</td></tr>' : ''}
                 </tbody></div>
             </div>
@@ -1656,7 +1743,7 @@
                 document.getElementById('directorProfileContent').innerHTML = `
                     <div class="form-card"><div style="display: flex; justify-content: space-between;"><div><img src="${ev.target.result}" style="width: 70px; height: 70px; border-radius: 50%;"><h2>📊 ${type.toUpperCase()} Director Dashboard</h2></div><button onclick="logout()" class="btn-danger">Logout</button></div></div>
                     <div class="grid-3"><div class="card"><h3>👨‍🎓 Students</h3><p style="font-size: 32px;">${filteredStudents.length}</p></div><div class="card"><h3>💰 Revenue</h3><p style="font-size: 32px;">${totalRevenue.toLocaleString()} ETB</p></div><div class="card"><h3>✅ Paid Registration</h3><p>${filteredStudents.filter(s => s.payments.registration).length}</p></div></div>
-                    <div class="card"><h3>📚 Students Under Your Command</h3><div class="student-table"><table><thead><tr><th>Name</th><th>Student ID</th><th>Grade</th><th>Paid</th></tr></thead><tbody>${filteredStudents.map(s => `<tr><td>${s.fullName}</td><td>${s.studentId}</td><td>${s.grade}</td><td>${s.payments.registration ? '✅' : '❌'}</td></tr>`).join('')}</tbody></table></div></div>
+                    <div class="card"><h3>📚 Students Under Your Command</h3><div class="student-table"><table><thead><tr><th>Name</th><th>Student ID</th><th>Grade</th><th>Paid</th></tr></thead><tbody>${filteredStudents.map(s => `<tr><td style="padding:12px;">${s.fullName}</td><td style="padding:12px;">${s.studentId}</td><td style="padding:12px;">${s.grade}</td><td style="padding:12px;">${s.payments.registration ? '✅' : '❌'}</td></tr>`).join('')}</tbody></table></div></div>
                     <div class="footer-links"><a onclick="openModal('purposeModal')">💡 My Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy</a><a onclick="openModal('contactModal')">📞 Contact</a></div>
                 `;
             };
@@ -1683,7 +1770,7 @@
                 document.getElementById('boardProfileContent').innerHTML = `
                     <div class="form-card"><div style="display: flex; justify-content: space-between;"><div><img src="${ev.target.result}" style="width: 70px; height: 70px; border-radius: 50%;"><h2>🎯 Board of Directors Dashboard</h2></div><button onclick="logout()" class="btn-danger">Logout</button></div></div>
                     <div class="grid-4"><div class="card"><h3>👨‍🎓 Students</h3><p style="font-size: 28px;">${students.length}</p></div><div class="card"><h3>👨‍🏫 Teachers</h3><p style="font-size: 28px;">${teachers.length}</p></div><div class="card"><h3>💰 Revenue</h3><p style="font-size: 28px;">${totalRevenue.toLocaleString()} ETB</p></div><div class="card"><h3>⏳ Pending</h3><p style="font-size: 28px;">${pendingTeachers.length}</p></div></div>
-                    <div class="card"><h3>📝 Pending Teacher Applications (${pendingTeachers.length})</h3><div class="student-table"><table><thead><tr><th>Name</th><th>Email</th><th>Grade Level</th><th>Exam Score</th><th>Action</th></tr></thead><tbody>${pendingTeachers.map(t => `<tr><td>${t.fullName}</td><td>${t.email}</td><td>${t.gradeLevel}</td><td>${t.examScore}%</td><td><button onclick="approveTeacher(${t.id})" class="btn-small btn-success">✅ Approve</button> <button onclick="rejectTeacher(${t.id})" class="btn-small btn-danger">❌ Reject</button></td></tr>`).join('')}</tbody></table></div></div>
+                    <div class="card"><h3>📝 Pending Teacher Applications (${pendingTeachers.length})</h3><div class="student-table"><table><thead><tr><th>Name</th><th>Email</th><th>Grade Level</th><th>Exam Score</th><th>Action</th></tr></thead><tbody>${pendingTeachers.map(t => `<tr><td style="padding:12px;">${t.fullName}</td><td style="padding:12px;">${t.email}</td><td style="padding:12px;">${t.gradeLevel}</td><td style="padding:12px;">${t.examScore}%</td><td style="padding:12px;"><button onclick="approveTeacher(${t.id})" class="btn-small btn-success">✅ Approve</button> <button onclick="rejectTeacher(${t.id})" class="btn-small btn-danger">❌ Reject</button></td></tr>`).join('')}</tbody></table></div></div>
                     <div class="card"><h3>📊 Financial Summary</h3><div class="grid-2"><div class="card"><h4>Registration Fees</h4><p>${students.filter(s=>s.payments.registration).length * 1000} ETB</p></div><div class="card"><h4>Term Fees</h4><p>${(students.filter(s=>s.payments.term1).length + students.filter(s=>s.payments.term2).length + students.filter(s=>s.payments.term3).length) * 3500} ETB</p></div></div></div>
                     <div class="footer-links"><a onclick="openModal('purposeModal')">💡 My Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy</a><a onclick="openModal('contactModal')">📞 Contact</a></div>
                 `;
