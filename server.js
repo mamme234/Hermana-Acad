@@ -14,6 +14,14 @@ const https = require('https');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ==================== DEBUG ENVIRONMENT VARIABLES ====================
+console.log('========================================');
+console.log('📧 ENVIRONMENT VARIABLES CHECK:');
+console.log('   TELEGRAM_BOT_TOKEN:', process.env.TELEGRAM_BOT_TOKEN ? '✅ SET (length: ' + process.env.TELEGRAM_BOT_TOKEN.length + ')' : '❌ MISSING');
+console.log('   ADMIN_CHAT_ID:', process.env.ADMIN_CHAT_ID ? '✅ SET' : '❌ MISSING');
+console.log('   MONGODB_URI:', process.env.MONGODB_URI ? '✅ SET' : '❌ MISSING');
+console.log('========================================');
+
 // ==================== MIDDLEWARE ====================
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
@@ -40,11 +48,11 @@ const upload = multer({ storage: storage, limits: { fileSize: 10 * 1024 * 1024 }
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID;
 
-// Simple function to send Telegram message using https
+// Function to send Telegram message using https
 function sendTelegramMessage(chatId, message) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         if (!TELEGRAM_BOT_TOKEN || !chatId) {
-            console.log('⚠️ Telegram not configured');
+            console.log('⚠️ Telegram not configured - missing token or chatId');
             resolve(false);
             return;
         }
@@ -78,6 +86,7 @@ function sendTelegramMessage(chatId, message) {
                         resolve(false);
                     }
                 } catch(e) {
+                    console.log('❌ Telegram parse error:', e.message);
                     resolve(false);
                 }
             });
@@ -95,7 +104,7 @@ function sendTelegramMessage(chatId, message) {
 
 // Function to send photo to Telegram
 function sendTelegramPhoto(chatId, photoBase64, caption) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         if (!TELEGRAM_BOT_TOKEN || !chatId || !photoBase64) {
             resolve(false);
             return;
@@ -200,11 +209,11 @@ function sendTelegramPhoto(chatId, photoBase64, caption) {
     });
 }
 
-// Test Telegram on startup
+// Send startup notification
 if (TELEGRAM_BOT_TOKEN && ADMIN_CHAT_ID) {
     setTimeout(() => {
-        sendTelegramMessage(ADMIN_CHAT_ID, '🤖 *Hermana Academy Bot Started!*\n\nServer is online.');
-    }, 2000);
+        sendTelegramMessage(ADMIN_CHAT_ID, '🤖 *Hermana Academy Bot Started!*\n\nServer is online and ready to send notifications.');
+    }, 3000);
 }
 
 // ==================== MONGODB CONNECTION ====================
@@ -331,7 +340,28 @@ app.get('/api/health', (req, res) => {
         status: 'OK',
         timestamp: new Date().toISOString(),
         telegram: TELEGRAM_BOT_TOKEN ? 'configured' : 'not configured',
+        adminChat: ADMIN_CHAT_ID ? 'configured' : 'not configured',
         database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+    });
+});
+
+// ==================== TEST TELEGRAM ENDPOINT ====================
+app.get('/api/test-telegram', async (req, res) => {
+    if (!TELEGRAM_BOT_TOKEN || !ADMIN_CHAT_ID) {
+        return res.json({
+            success: false,
+            error: 'Telegram not configured',
+            tokenConfigured: !!TELEGRAM_BOT_TOKEN,
+            chatIdConfigured: !!ADMIN_CHAT_ID
+        });
+    }
+    
+    const result = await sendTelegramMessage(ADMIN_CHAT_ID, '✅ Test message from Hermana Academy! Your bot is working perfectly.');
+    res.json({
+        success: result,
+        tokenConfigured: true,
+        chatIdConfigured: true,
+        messageSent: result
     });
 });
 
@@ -363,23 +393,6 @@ app.post('/api/telegram/send-photo', async (req, res) => {
         res.json({ success: true });
     } else {
         res.status(500).json({ error: 'Failed to send Telegram photo' });
-    }
-});
-
-// ==================== TEST TELEGRAM ENDPOINT ====================
-app.post('/api/telegram/test', async (req, res) => {
-    const { chatId, message } = req.body;
-    const testChatId = chatId || ADMIN_CHAT_ID;
-    
-    if (!testChatId) {
-        return res.status(400).json({ error: 'No chatId provided and ADMIN_CHAT_ID not set' });
-    }
-    
-    const sent = await sendTelegramMessage(testChatId, message || '✅ Test message from Hermana Academy! Your bot is working.');
-    if (sent) {
-        res.json({ success: true, message: 'Test message sent!' });
-    } else {
-        res.status(500).json({ error: 'Failed to send test message. Check your BOT_TOKEN and CHAT_ID' });
     }
 });
 
@@ -709,11 +722,19 @@ app.listen(PORT, () => {
     ║  🗄️  Database: ${mongoose.connection.readyState === 1 ? 'CONNECTED ✅' : 'DISCONNECTED ❌'}
     ║                                                                    ║
     ║  🧪 TEST TELEGRAM:                                                ║
-    ║     curl -X POST http://localhost:${PORT}/api/telegram/test        ║
+    ║     http://localhost:${PORT}/api/test-telegram                      ║
     ║                                                                    ║
     ║  🔑 Demo Accounts:                                                ║
     ║     Board: board@hermana.edu / board123                           ║
     ║     Director: kg123 / elem123 / high123                           ║
+    ║                                                                    ║
+    ║  📱 Telegram Notifications:                                       ║
+    ║     - New student registrations (with photo)                      ║
+    ║     - Student ID sent to student's Telegram                       ║
+    ║     - Teacher applications (with photo)                           ║
+    ║     - Teacher approvals/rejections                                ║
+    ║     - Payments                                                    ║
+    ║     - Feedback submissions                                        ║
     ╚═══════════════════════════════════════════════════════════════════╝
     `);
 });
