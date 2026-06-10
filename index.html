@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Hermana Academy - Premier Ethiopian Educational Institution</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -12,105 +14,203 @@
         }
 
         body {
-            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(ellipse at 20% 30%, #0a0a2a, #050510);
             min-height: 100vh;
             padding: 20px;
-            animation: fadeIn 0.8s ease;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(102,126,234,0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(118,75,162,0.08) 0%, transparent 50%),
+                repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 2px, transparent 2px, transparent 8px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Floating Orbs Animation */
+        @keyframes floatOrb1 {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+            50% { transform: translate(50px, -30px) scale(1.1); opacity: 0.5; }
+        }
+        @keyframes floatOrb2 {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+            50% { transform: translate(-40px, 40px) scale(0.9); opacity: 0.4; }
+        }
+        @keyframes floatOrb3 {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.25; }
+            50% { transform: translate(30px, 50px) scale(1.15); opacity: 0.45; }
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 10%;
+            left: 10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(102,126,234,0.15), transparent);
+            border-radius: 50%;
+            animation: floatOrb1 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orb2 {
+            position: fixed;
+            bottom: 15%;
+            right: 5%;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(118,75,162,0.12), transparent);
+            border-radius: 50%;
+            animation: floatOrb2 10s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orb3 {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(102,126,234,0.05), transparent);
+            border-radius: 50%;
+            animation: floatOrb3 12s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+            transform: translate(-50%, -50%);
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes slideUp {
-            from { transform: translateY(30px); opacity: 0; }
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
 
         @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(102,126,234,0.4); }
+            50% { transform: scale(1.02); box-shadow: 0 0 0 15px rgba(102,126,234,0); }
         }
 
-        @keyframes gradientShift {
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { border-color: rgba(102,126,234,0.3); box-shadow: 0 0 20px rgba(102,126,234,0.1); }
+            50% { border-color: rgba(102,126,234,0.8); box-shadow: 0 0 40px rgba(102,126,234,0.3); }
+        }
+
+        @keyframes borderFlow {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
-        .container { max-width: 1400px; margin: 0 auto; }
-
-        /* Header Styles */
+        /* Header Styles - Premium Glassmorphism */
         .header {
-            background: rgba(255,255,255,0.98);
-            backdrop-filter: blur(10px);
-            border-radius: 30px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
+            padding: 35px;
+            margin-bottom: 35px;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
             text-align: center;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            animation: fadeIn 0.8s ease;
         }
 
         .header:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 30px 50px rgba(0,0,0,0.2);
+            transform: translateY(-8px);
+            box-shadow: 0 35px 55px rgba(0,0,0,0.3);
+            border-color: rgba(102,126,234,0.3);
         }
 
         .school-logo {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             position: relative;
             display: inline-block;
         }
 
         .school-logo img {
-            max-width: 130px;
+            max-width: 140px;
             height: auto;
             border-radius: 50%;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.3);
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 3px solid rgba(102,126,234,0.5);
         }
 
         .school-logo img:hover {
-            transform: rotate(5deg) scale(1.05);
+            transform: rotate(5deg) scale(1.08);
+            border-color: #667eea;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.4);
         }
 
         .header h1 {
-            font-size: 2.2em;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #fff 0%, #a8b5ff 50%, #c4b5fd 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin: 10px 0 5px;
-            font-weight: 700;
+            margin: 15px 0 10px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
         }
 
         .header .ethiopia {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            margin: 10px 0;
+            gap: 12px;
+            margin: 12px 0;
         }
 
         .flag {
             display: inline-flex;
-            gap: 4px;
+            gap: 5px;
         }
 
         .flag span {
-            width: 25px;
-            height: 18px;
+            width: 30px;
+            height: 22px;
             display: inline-block;
-            border-radius: 3px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .flag span:hover {
+            transform: scale(1.1);
         }
 
         .flag .green { background: #078930; }
@@ -119,66 +219,80 @@
 
         .motto {
             font-style: italic;
-            color: #667eea;
-            font-size: 0.9em;
-            margin-top: 8px;
+            background: linear-gradient(135deg, #a8b5ff, #c4b5fd);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 1em;
+            margin-top: 10px;
             font-weight: 500;
+            letter-spacing: 0.5px;
         }
 
-        /* Role Selection Modal */
+        /* Role Selection Modal - Premium */
         .role-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.96);
+            background: rgba(5,5,20,0.98);
+            backdrop-filter: blur(25px);
             z-index: 20000;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            backdrop-filter: blur(15px);
+            animation: fadeIn 0.5s ease;
         }
 
         .role-container {
-            background: white;
-            border-radius: 40px;
-            padding: 50px 40px;
-            max-width: 550px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(30px);
+            border-radius: 60px;
+            padding: 55px 50px;
+            max-width: 600px;
             width: 90%;
             text-align: center;
-            animation: slideUp 0.6s ease;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.7s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
             border: 1px solid rgba(255,255,255,0.2);
         }
 
         .role-container h2 {
-            font-size: 28px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            font-size: 32px;
+            background: linear-gradient(135deg, #fff, #a8b5ff);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .role-container p {
+            color: rgba(255,255,255,0.7);
+            font-size: 16px;
         }
 
         .role-buttons {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            margin-top: 35px;
+            gap: 25px;
+            margin-top: 45px;
         }
 
         .role-btn {
-            padding: 18px;
+            padding: 20px;
             border: none;
-            border-radius: 20px;
-            font-size: 16px;
-            font-weight: bold;
+            border-radius: 30px;
+            font-size: 17px;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             position: relative;
             overflow: hidden;
+            backdrop-filter: blur(10px);
+            letter-spacing: 0.5px;
         }
 
         .role-btn::before {
@@ -189,105 +303,139 @@
             width: 0;
             height: 0;
             border-radius: 50%;
-            background: rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.25);
             transform: translate(-50%, -50%);
             transition: width 0.6s, height 0.6s;
         }
 
         .role-btn:hover::before {
-            width: 300px;
-            height: 300px;
+            width: 400px;
+            height: 400px;
         }
 
-        .role-btn:hover { transform: translateY(-5px); }
+        .role-btn:hover {
+            transform: translateY(-8px) scale(1.02);
+            filter: brightness(1.05);
+        }
 
-        .role-student { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
-        .role-teacher { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; }
-        .role-parent { background: linear-gradient(135deg, #f093fb, #f5576c); color: white; }
-        .role-board { background: linear-gradient(135deg, #fa709a, #fee140); color: #333; }
-        .role-director { background: linear-gradient(135deg, #8E2DE2, #4A00E0); color: white; }
+        .role-student { background: linear-gradient(135deg, #667eea, #764ba2); color: white; box-shadow: 0 10px 25px -5px rgba(102,126,234,0.4); }
+        .role-teacher { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; box-shadow: 0 10px 25px -5px rgba(17,153,142,0.4); }
+        .role-parent { background: linear-gradient(135deg, #f093fb, #f5576c); color: white; box-shadow: 0 10px 25px -5px rgba(240,147,251,0.4); }
+        .role-board { background: linear-gradient(135deg, #fa709a, #fee140); color: #1a1a2e; box-shadow: 0 10px 25px -5px rgba(250,112,154,0.4); }
+        .role-director { background: linear-gradient(135deg, #8E2DE2, #4A00E0); color: white; box-shadow: 0 10px 25px -5px rgba(142,45,226,0.4); }
 
-        /* Dashboard Containers */
+        /* Dashboard Containers - Premium */
         .dashboard-container {
             display: none;
-            background: rgba(255,255,255,0.95);
-            border-radius: 30px;
-            padding: 35px;
-            margin-top: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            animation: slideUp 0.5s ease;
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(15px);
+            border-radius: 40px;
+            padding: 40px;
+            margin-top: 25px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            animation: slideUp 0.6s ease;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .dashboard-container.active { display: block; }
+        .dashboard-container.active {
+            display: block;
+        }
 
         .form-card {
-            background: #f8f9ff;
-            border-radius: 25px;
-            padding: 30px;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 35px;
+            margin-bottom: 30px;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 1px solid rgba(255,255,255,0.08);
         }
 
         .form-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(102,126,234,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
 
         .form-card h2 {
-            color: #333;
-            margin-bottom: 25px;
-            font-size: 1.8em;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: rgba(255,255,255,0.95);
+            margin-bottom: 30px;
+            font-size: 1.9em;
+            background: linear-gradient(135deg, #fff, #a8b5ff);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             display: inline-block;
+            font-weight: 700;
         }
 
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 25px; }
 
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-weight: 600;
-            color: #444;
+            color: rgba(255,255,255,0.8);
             font-size: 14px;
+            letter-spacing: 0.5px;
         }
 
         input, select, textarea {
             width: 100%;
-            padding: 14px;
-            border: 2px solid #e8e8e8;
-            border-radius: 15px;
-            font-size: 14px;
+            padding: 16px 18px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            font-size: 15px;
             transition: all 0.3s ease;
-            background: white;
+            background: rgba(255,255,255,0.08);
+            color: white;
         }
 
         input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+            background: rgba(255,255,255,0.12);
+            box-shadow: 0 0 0 4px rgba(102,126,234,0.2);
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: rgba(255,255,255,0.4);
         }
 
         button {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
-            padding: 14px 35px;
-            border-radius: 40px;
+            padding: 16px 40px;
+            border-radius: 50px;
             cursor: pointer;
             font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            font-weight: 700;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             position: relative;
             overflow: hidden;
+            letter-spacing: 0.5px;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        button:hover::before {
+            left: 100%;
         }
 
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102,126,234,0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(102,126,234,0.3);
         }
 
         .btn-success {
@@ -300,115 +448,139 @@
 
         .btn-warning {
             background: linear-gradient(135deg, #fa709a, #fee140);
-            color: #333;
+            color: #1a1a2e;
         }
 
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; }
 
         .card {
-            background: white;
-            border-radius: 20px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
             padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-            border: 1px solid #f0f0f0;
+            margin-bottom: 25px;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 1px solid rgba(255,255,255,0.08);
         }
 
         .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(102,126,234,0.3);
+        }
+
+        .card h3 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .card p {
+            color: rgba(255,255,255,0.7);
         }
 
         .badge {
-            padding: 6px 14px;
-            border-radius: 30px;
+            padding: 6px 15px;
+            border-radius: 40px;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             display: inline-block;
         }
 
         .badge-passed { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; }
         .badge-failed { background: linear-gradient(135deg, #f093fb, #f5576c); color: white; }
-        .badge-pending { background: linear-gradient(135deg, #fa709a, #fee140); color: #333; }
+        .badge-pending { background: linear-gradient(135deg, #fa709a, #fee140); color: #1a1a2e; }
         .badge-approved { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; }
 
-        /* ID Card Styles */
+        /* ID Card Styles - Premium 3D */
         .id-card {
-            width: 500px;
-            background: linear-gradient(145deg, #ffffff, #f8f9ff);
-            border-radius: 25px;
-            padding: 25px;
-            box-shadow: 0 25px 45px rgba(0,0,0,0.2);
-            border: 1px solid rgba(102,126,234,0.2);
-            margin: 20px auto;
-            transition: all 0.3s ease;
+            width: 520px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
+            backdrop-filter: blur(20px);
+            border-radius: 35px;
+            padding: 30px;
+            box-shadow: 0 35px 55px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            margin: 25px auto;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
         }
 
         .id-card:hover {
-            transform: scale(1.02);
+            transform: scale(1.02) translateY(-5px);
+            box-shadow: 0 45px 65px rgba(0,0,0,0.4);
+            border-color: rgba(102,126,234,0.5);
         }
 
         .id-card-ethiopia {
             background: linear-gradient(90deg, #078930 0%, #078930 33%, #fcdd09 33%, #fcdd09 66%, #da121a 66%, #da121a 100%);
-            height: 10px;
+            height: 12px;
             width: 100%;
-            margin-bottom: 20px;
-            border-radius: 5px;
+            margin-bottom: 25px;
+            border-radius: 6px;
         }
 
         .id-photo-img {
-            width: 140px;
-            height: 140px;
+            width: 150px;
+            height: 150px;
             object-fit: cover;
             border-radius: 50%;
             border: 4px solid #667eea;
-            margin: 10px auto;
+            margin: 15px auto;
             display: block;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
         }
 
-        /* Exam Styles */
+        .id-photo-img:hover {
+            transform: scale(1.05);
+            border-color: #a8b5ff;
+        }
+
+        /* Exam Styles - Premium */
         .exam-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #0f0c29, #24243e);
+            background: radial-gradient(ellipse at center, #0a0a2a, #050510);
             z-index: 30000;
             overflow-y: auto;
-            padding: 20px;
+            padding: 25px;
         }
 
         .exam-question {
-            background: white;
-            border-radius: 25px;
-            padding: 30px;
-            margin-bottom: 25px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 35px;
+            padding: 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .exam-option {
             display: block;
             width: 100%;
-            padding: 15px 20px;
-            margin: 12px 0;
-            background: #f8f9ff;
-            border: 2px solid #e8e8e8;
-            border-radius: 50px;
+            padding: 18px 25px;
+            margin: 15px 0;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 60px;
             cursor: pointer;
             text-align: left;
             font-size: 16px;
-            transition: all 0.2s ease;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: white;
         }
 
         .exam-option:hover {
-            background: #e8ecff;
+            background: rgba(102,126,234,0.2);
             border-color: #667eea;
-            transform: translateX(5px);
+            transform: translateX(8px);
         }
 
         .exam-option.selected {
@@ -419,46 +591,48 @@
 
         .exam-timer {
             position: sticky;
-            top: 20px;
+            top: 25px;
             background: linear-gradient(135deg, #dc3545, #ff6b6b);
             color: white;
-            padding: 18px;
+            padding: 20px;
             text-align: center;
-            font-size: 28px;
-            font-weight: bold;
-            border-radius: 60px;
-            margin-bottom: 25px;
+            font-size: 32px;
+            font-weight: 800;
+            border-radius: 80px;
+            margin-bottom: 30px;
             z-index: 10;
-            box-shadow: 0 10px 25px rgba(220,53,69,0.3);
-            animation: pulse 1s infinite;
+            box-shadow: 0 15px 35px rgba(220,53,69,0.3);
+            animation: pulse 1.5s infinite;
+            letter-spacing: 2px;
         }
 
         /* Footer Links */
         .footer-links {
-            margin-top: 35px;
-            padding-top: 20px;
-            border-top: 2px solid #e8e8e8;
+            margin-top: 45px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255,255,255,0.1);
             display: flex;
             justify-content: center;
-            gap: 30px;
+            gap: 40px;
             flex-wrap: wrap;
         }
 
         .footer-links a {
-            color: #667eea;
+            color: rgba(255,255,255,0.7);
             text-decoration: none;
             cursor: pointer;
             font-weight: 500;
             transition: all 0.3s ease;
+            font-size: 14px;
         }
 
         .footer-links a:hover {
-            color: #764ba2;
+            color: #a8b5ff;
             transform: translateY(-2px);
             display: inline-block;
         }
 
-        /* Modal Styles */
+        /* Modal Styles - Premium */
         .modal {
             display: none;
             position: fixed;
@@ -466,50 +640,55 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(10px);
+            background: rgba(5,5,20,0.95);
+            backdrop-filter: blur(25px);
             z-index: 15000;
             justify-content: center;
             align-items: center;
         }
 
         .modal-content {
-            background: white;
-            border-radius: 35px;
-            max-width: 750px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(30px);
+            border-radius: 45px;
+            max-width: 800px;
             width: 90%;
             max-height: 85vh;
             overflow-y: auto;
-            padding: 40px;
+            padding: 45px;
             position: relative;
-            animation: slideUp 0.4s ease;
+            animation: slideUp 0.5s ease;
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.4);
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 15px;
-            margin-bottom: 25px;
+            border-bottom: 2px solid rgba(102,126,234,0.5);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .modal-header h2 {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #fff, #a8b5ff);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             font-size: 1.8em;
+            font-weight: 700;
         }
 
         .close-modal {
             background: none;
-            font-size: 32px;
+            font-size: 36px;
             cursor: pointer;
             padding: 0;
-            width: 40px;
-            color: #999;
+            width: 45px;
+            color: rgba(255,255,255,0.6);
             box-shadow: none;
+            transition: all 0.3s ease;
         }
 
         .close-modal:hover {
@@ -520,64 +699,75 @@
 
         .star-rating {
             display: flex;
-            gap: 12px;
-            margin: 20px 0;
+            gap: 15px;
+            margin: 25px 0;
             justify-content: center;
         }
 
         .star {
-            font-size: 45px;
+            font-size: 50px;
             cursor: pointer;
-            color: #ddd;
+            color: rgba(255,255,255,0.3);
             transition: all 0.2s ease;
         }
 
-        .star:hover, .star.active { color: #ffc107; transform: scale(1.1); }
+        .star:hover, .star.active { color: #ffc107; transform: scale(1.15); }
 
         .creator-credit {
             text-align: center;
-            margin-top: 35px;
-            padding: 18px;
-            background: rgba(0,0,0,0.7);
-            border-radius: 50px;
-            color: white;
+            margin-top: 45px;
+            padding: 20px;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 60px;
+            color: rgba(255,255,255,0.7);
             font-size: 14px;
-            backdrop-filter: blur(5px);
         }
 
         .creator-credit span { color: #ffd700; font-weight: bold; }
 
         .student-table { overflow-x: auto; }
         .student-table table { width: 100%; border-collapse: collapse; }
-        .student-table th, .student-table td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-        .student-table th { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 10px; }
+        .student-table th, .student-table td { padding: 15px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); }
+        .student-table th { background: linear-gradient(135deg, rgba(102,126,234,0.3), rgba(118,75,162,0.3)); color: white; border-radius: 15px; font-weight: 600; }
 
         /* Server Status Banner */
         .server-status {
             position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(0,0,0,0.8);
+            bottom: 25px;
+            left: 25px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
             color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
+            padding: 10px 20px;
+            border-radius: 40px;
             font-size: 12px;
             z-index: 9999;
             font-family: monospace;
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        .server-status.online { background: rgba(40,167,69,0.9); }
-        .server-status.offline { background: rgba(220,53,69,0.9); }
+        .server-status.online { background: rgba(40,167,69,0.8); }
+        .server-status.offline { background: rgba(220,53,69,0.8); }
 
         @media (max-width: 768px) {
-            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
-            .id-card { width: 95%; }
-            .role-buttons { grid-template-columns: 1fr; }
-            .exam-timer { font-size: 20px; padding: 12px; }
-            .modal-content { padding: 25px; }
+            body { padding: 15px; }
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; gap: 20px; }
+            .id-card { width: 95%; padding: 20px; }
+            .role-buttons { grid-template-columns: 1fr; gap: 15px; }
+            .exam-timer { font-size: 24px; padding: 15px; }
+            .modal-content { padding: 30px; }
+            .form-card { padding: 25px; }
+            .dashboard-container { padding: 25px; }
+            .header h1 { font-size: 1.8em; }
+            .role-container { padding: 35px 25px; }
+            .role-container h2 { font-size: 24px; }
         }
     </style>
 </head>
 <body>
+
+<div class="orb2"></div>
+<div class="orb3"></div>
 
 <!-- SERVER STATUS BANNER -->
 <div id="serverStatus" class="server-status offline">🔌 Checking server...</div>
@@ -586,11 +776,11 @@
 <div id="roleModal" class="role-overlay">
     <div class="role-container">
         <div class="school-logo">
-            <img src="logo.png" alt="Hermana Academy" onerror="this.src='https://via.placeholder.com/130x130?text=HA'">
+            <img src="logo.png" alt="Hermana Academy" onerror="this.src='https://via.placeholder.com/140x140?text=HA'">
         </div>
         <h2>🏫 እንኳን ደህና መጡ!</h2>
-        <h2>Welcome to Hermana Academy</h2>
-        <p style="margin: 15px 0; color: #666;">Ethiopia's Premier Digital Education Platform</p>
+        <h2 style="font-size: 24px; margin-top: 5px;">Welcome to Hermana Academy</h2>
+        <p style="margin: 20px 0 0; color: rgba(255,255,255,0.6);">Ethiopia's Premier Digital Education Platform</p>
         <div class="role-buttons">
             <button class="role-btn role-student" onclick="selectRole('student')">👨‍🎓 Student</button>
             <button class="role-btn role-teacher" onclick="selectRole('teacher')">👨‍🏫 Teacher</button>
@@ -598,7 +788,7 @@
             <button class="role-btn role-board" onclick="selectRole('board')">🎯 Board</button>
             <button class="role-btn role-director" onclick="selectRole('director')">📊 Director</button>
         </div>
-        <p style="margin-top: 20px; font-size: 12px; color: #999;">Secure | Smart | Simple</p>
+        <p style="margin-top: 30px; font-size: 12px; color: rgba(255,255,255,0.5);">Secure | Smart | Simple</p>
     </div>
 </div>
 
@@ -607,28 +797,26 @@
     <div class="container">
         <div class="header">
             <div class="school-logo">
-                <img src="logo.png" alt="Hermana Academy Logo" onerror="this.src='https://via.placeholder.com/130x130?text=HA'">
+                <img src="logo.png" alt="Hermana Academy Logo" onerror="this.src='https://via.placeholder.com/140x140?text=HA'">
             </div>
             <h1>🏫 Hermana Academy</h1>
             <div class="ethiopia">
                 <div class="flag"><span class="green"></span><span class="yellow"></span><span class="red"></span></div>
-                <span>Ethiopia's Premier Educational Institution</span>
+                <span style="color: rgba(255,255,255,0.8);">Ethiopia's Premier Educational Institution</span>
             </div>
             <div class="motto">"እውቀት ብርሃን ነው | Quality Education for Future Leaders"</div>
-            <p>ሄርማና አካዳሚ | የኢትዮጵያ መሪ ትምህርት ተቋም</p>
-        </div>
-
-        <!-- STUDENT DASHBOARD -->
+            <p style="color: rgba(255,255,255,0.6); margin-top: 10px;">ሄርማና አካዳሚ | የኢትዮጵያ መሪ ትምህርት ተቋም</p>
+    </div>        <!-- STUDENT DASHBOARD -->
         <div id="studentDashboard" class="dashboard-container">
             <div id="studentRegistrationSection">
                 <div class="form-card">
-                    <h2>📝 Student Registration</h2>
+                    <h2><i class="fas fa-user-graduate"></i> Student Registration</h2>
                     <form id="studentRegForm" enctype="multipart/form-data">
                         <div class="grid-2">
-                            <div class="form-group"><label>Full Name *</label><input type="text" id="stuFullName" required></div>
-                            <div class="form-group"><label>Email Address *</label><input type="email" id="stuEmail" required></div>
-                            <div class="form-group"><label>Phone Number</label><input type="tel" id="stuPhone"></div>
-                            <div class="form-group"><label>Grade Level *</label>
+                            <div class="form-group"><label><i class="fas fa-user"></i> Full Name *</label><input type="text" id="stuFullName" placeholder="Enter your full name" required></div>
+                            <div class="form-group"><label><i class="fas fa-envelope"></i> Email Address *</label><input type="email" id="stuEmail" placeholder="your@email.com" required></div>
+                            <div class="form-group"><label><i class="fas fa-phone"></i> Phone Number</label><input type="tel" id="stuPhone" placeholder="+251-XXX-XXXX"></div>
+                            <div class="form-group"><label><i class="fas fa-graduation-cap"></i> Grade Level *</label>
                                 <select id="stuGrade">
                                     <option>Nursery</option><option>Lower KG</option><option>Upper KG</option>
                                     <option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option>
@@ -636,26 +824,26 @@
                                     <option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option>
                                 </select>
                             </div>
-                            <div class="form-group"><label>Parent/Guardian Name</label><input type="text" id="stuParentName"></div>
-                            <div class="form-group"><label>Parent/Guardian Phone</label><input type="tel" id="stuParentPhone"></div>
-                            <div class="form-group"><label>Home Address</label><input type="text" id="stuAddress"></div>
-                            <div class="form-group"><label>Upload Your Photo *</label><input type="file" id="stuPhoto" accept="image/*" required></div>
+                            <div class="form-group"><label><i class="fas fa-users"></i> Parent/Guardian Name</label><input type="text" id="stuParentName" placeholder="Parent's full name"></div>
+                            <div class="form-group"><label><i class="fas fa-phone-alt"></i> Parent/Guardian Phone</label><input type="tel" id="stuParentPhone" placeholder="Parent's phone number"></div>
+                            <div class="form-group"><label><i class="fas fa-map-marker-alt"></i> Home Address</label><input type="text" id="stuAddress" placeholder="Your address"></div>
+                            <div class="form-group"><label><i class="fas fa-camera"></i> Upload Your Photo *</label><input type="file" id="stuPhoto" accept="image/*" required></div>
                         </div>
-                        <button type="submit" class="btn-success">🎓 Register & Take Secure Exam →</button>
+                        <button type="submit" class="btn-success"><i class="fas fa-arrow-right"></i> Register & Take Secure Exam →</button>
                     </form>
                 </div>
             </div>
             
             <div id="studentLoginSection" style="display: none;">
                 <div class="form-card">
-                    <h2>🔐 Student Login</h2>
-                    <div style="background: linear-gradient(135deg, #d4fc79, #96e6a1); padding: 15px; border-radius: 15px; margin-bottom: 20px;">
-                        <p style="color: #2d6a4f;">✅ Your Student ID has been sent to your email! Please check your inbox.</p>
+                    <h2><i class="fas fa-lock"></i> Student Login</h2>
+                    <div style="background: linear-gradient(135deg, rgba(17,153,142,0.2), rgba(56,239,125,0.1)); padding: 20px; border-radius: 20px; margin-bottom: 25px; border: 1px solid rgba(56,239,125,0.3);">
+                        <p style="color: #96e6a1;">✅ Your Student ID has been sent to your email! Please check your inbox.</p>
                     </div>
                     <form id="studentLoginForm">
-                        <div class="form-group"><label>Student ID Number</label><input type="text" id="studentLoginId" placeholder="e.g., HA202500123" required></div>
-                        <div class="form-group"><label>Full Name</label><input type="text" id="studentLoginName" required></div>
-                        <button type="submit">🔐 Access My Dashboard →</button>
+                        <div class="form-group"><label><i class="fas fa-id-card"></i> Student ID Number</label><input type="text" id="studentLoginId" placeholder="e.g., HA202500123" required></div>
+                        <div class="form-group"><label><i class="fas fa-user"></i> Full Name</label><input type="text" id="studentLoginName" placeholder="Your full name" required></div>
+                        <button type="submit"><i class="fas fa-sign-in-alt"></i> Access My Dashboard →</button>
                     </form>
                 </div>
             </div>
@@ -669,49 +857,49 @@
         <div id="teacherDashboard" class="dashboard-container">
             <div id="teacherRegistrationSection">
                 <div class="form-card">
-                    <h2>📝 Teacher Registration</h2>
+                    <h2><i class="fas fa-chalkboard-user"></i> Teacher Registration</h2>
                     <form id="teacherRegForm" enctype="multipart/form-data">
                         <div class="grid-2">
-                            <div class="form-group"><label>Full Name *</label><input type="text" id="teacherFullName" required></div>
-                            <div class="form-group"><label>Email Address *</label><input type="email" id="teacherEmail" required></div>
-                            <div class="form-group"><label>Phone Number *</label><input type="tel" id="teacherPhone" required></div>
-                            <div class="form-group"><label>Grade Level *</label>
+                            <div class="form-group"><label><i class="fas fa-user"></i> Full Name *</label><input type="text" id="teacherFullName" required></div>
+                            <div class="form-group"><label><i class="fas fa-envelope"></i> Email Address *</label><input type="email" id="teacherEmail" required></div>
+                            <div class="form-group"><label><i class="fas fa-phone"></i> Phone Number *</label><input type="tel" id="teacherPhone" required></div>
+                            <div class="form-group"><label><i class="fas fa-layer-group"></i> Grade Level *</label>
                                 <select id="teacherGradeLevel">
                                     <option>KG</option><option>Elementary (1-4)</option><option>Middle (5-8)</option><option>High (9-12)</option>
                                 </select>
                             </div>
-                            <div class="form-group"><label>Subject Specialization</label><input type="text" id="teacherSubject"></div>
-                            <div class="form-group"><label>Years of Experience</label><input type="number" id="teacherExperience"></div>
-                            <div class="form-group"><label>Education Document (Degree) *</label><input type="file" id="teacherDoc" accept=".pdf,.jpg,.png" required></div>
-                            <div class="form-group"><label>Upload Your Photo *</label><input type="file" id="teacherPhoto" accept="image/*" required></div>
+                            <div class="form-group"><label><i class="fas fa-book"></i> Subject Specialization</label><input type="text" id="teacherSubject" placeholder="e.g., Mathematics, English"></div>
+                            <div class="form-group"><label><i class="fas fa-clock"></i> Years of Experience</label><input type="number" id="teacherExperience" placeholder="Years"></div>
+                            <div class="form-group"><label><i class="fas fa-file-alt"></i> Education Document (Degree) *</label><input type="file" id="teacherDoc" accept=".pdf,.jpg,.png" required></div>
+                            <div class="form-group"><label><i class="fas fa-camera"></i> Upload Your Photo *</label><input type="file" id="teacherPhoto" accept="image/*" required></div>
                         </div>
-                        <div class="form-group"><label>Why do you want to join Hermana Academy?</label><textarea rows="3" id="teacherReason" placeholder="Share your teaching philosophy..."></textarea></div>
-                        <button type="submit" class="btn-success">📚 Submit Application →</button>
+                        <div class="form-group"><label><i class="fas fa-quote-left"></i> Why do you want to join Hermana Academy?</label><textarea rows="3" id="teacherReason" placeholder="Share your teaching philosophy..."></textarea></div>
+                        <button type="submit" class="btn-success"><i class="fas fa-paper-plane"></i> Submit Application →</button>
                     </form>
                 </div>
             </div>
             
             <div id="teacherWaitingSection" style="display: none;">
-                <div class="card" style="text-align: center;">
-                    <div style="font-size: 60px;">⏳</div>
-                    <h2>Application Submitted Successfully!</h2>
-                    <p>Your application is under review by the Board of Directors.</p>
-                    <p>You will receive an <strong>approval code via email</strong> within 2-3 business days.</p>
-                    <p>Once approved, you can login using the code and your full name.</p>
-                    <button onclick="location.reload()" class="btn-warning">Back to Home</button>
+                <div class="card" style="text-align: center; padding: 50px;">
+                    <div style="font-size: 70px;">⏳</div>
+                    <h2 style="color: white;">Application Submitted Successfully!</h2>
+                    <p style="color: rgba(255,255,255,0.7); margin-top: 15px;">Your application is under review by the Board of Directors.</p>
+                    <p style="color: rgba(255,255,255,0.7);">You will receive an <strong>approval code via email</strong> within 2-3 business days.</p>
+                    <p style="color: rgba(255,255,255,0.7);">Once approved, you can login using the code and your full name.</p>
+                    <button onclick="location.reload()" class="btn-warning" style="margin-top: 25px;"><i class="fas fa-home"></i> Back to Home</button>
                 </div>
             </div>
             
             <div id="teacherLoginSection" style="display: none;">
                 <div class="form-card">
-                    <h2>🔐 Teacher Login</h2>
-                    <div style="background: linear-gradient(135deg, #d4fc79, #96e6a1); padding: 15px; border-radius: 15px; margin-bottom: 20px;">
-                        <p style="color: #2d6a4f;">✅ Congratulations! Your application has been approved. Use your approval code to login.</p>
+                    <h2><i class="fas fa-lock"></i> Teacher Login</h2>
+                    <div style="background: linear-gradient(135deg, rgba(17,153,142,0.2), rgba(56,239,125,0.1)); padding: 20px; border-radius: 20px; margin-bottom: 25px; border: 1px solid rgba(56,239,125,0.3);">
+                        <p style="color: #96e6a1;">✅ Congratulations! Your application has been approved. Use your approval code to login.</p>
                     </div>
                     <form id="teacherLoginForm">
-                        <div class="form-group"><label>Approval Code</label><input type="text" id="teacherCode" placeholder="e.g., AP-XYZ789" required></div>
-                        <div class="form-group"><label>Full Name</label><input type="text" id="teacherLoginName" required></div>
-                        <button type="submit">🔐 Access My Dashboard →</button>
+                        <div class="form-group"><label><i class="fas fa-key"></i> Approval Code</label><input type="text" id="teacherCode" placeholder="e.g., AP-XYZ789" required></div>
+                        <div class="form-group"><label><i class="fas fa-user"></i> Full Name</label><input type="text" id="teacherLoginName" required></div>
+                        <button type="submit"><i class="fas fa-sign-in-alt"></i> Access My Dashboard →</button>
                     </form>
                 </div>
             </div>
@@ -725,10 +913,10 @@
         <div id="parentDashboard" class="dashboard-container">
             <div id="parentLoginSection">
                 <div class="form-card">
-                    <h2>👪 Parent/Guardian Access</h2>
+                    <h2><i class="fas fa-users"></i> Parent/Guardian Access</h2>
                     <form id="parentLoginForm">
-                        <div class="form-group"><label>Student ID Number</label><input type="text" id="parentStudentId" placeholder="e.g., HA202500123" required></div>
-                        <button type="submit">📖 View Child's Information →</button>
+                        <div class="form-group"><label><i class="fas fa-id-card"></i> Student ID Number</label><input type="text" id="parentStudentId" placeholder="e.g., HA202500123" required></div>
+                        <button type="submit"><i class="fas fa-eye"></i> View Child's Information →</button>
                     </form>
                 </div>
             </div>
@@ -741,18 +929,18 @@
         <div id="directorDashboard" class="dashboard-container">
             <div id="directorLoginSection">
                 <div class="form-card">
-                    <h2>📊 Director Login</h2>
+                    <h2><i class="fas fa-chart-line"></i> Director Login</h2>
                     <form id="directorLoginForm">
-                        <div class="form-group"><label>Director Type</label>
+                        <div class="form-group"><label><i class="fas fa-tag"></i> Director Type</label>
                             <select id="directorType">
                                 <option value="kg">KG Director (Nursery - Upper KG)</option>
                                 <option value="elementary">Elementary Director (Grade 1-4)</option>
                                 <option value="high">High School Director (Grade 9-12)</option>
                             </select>
                         </div>
-                        <div class="form-group"><label>Password</label><input type="password" id="directorPassword" required></div>
-                        <div class="form-group"><label>Upload Your Photo for Verification</label><input type="file" id="directorPhoto" accept="image/*" required></div>
-                        <button type="submit">🔐 Login →</button>
+                        <div class="form-group"><label><i class="fas fa-lock"></i> Password</label><input type="password" id="directorPassword" required></div>
+                        <div class="form-group"><label><i class="fas fa-camera"></i> Upload Your Photo for Verification</label><input type="file" id="directorPhoto" accept="image/*" required></div>
+                        <button type="submit"><i class="fas fa-sign-in-alt"></i> Login →</button>
                     </form>
                 </div>
             </div>
@@ -765,12 +953,12 @@
         <div id="boardDashboard" class="dashboard-container">
             <div id="boardLoginSection">
                 <div class="form-card">
-                    <h2>🎯 Board of Directors Login</h2>
+                    <h2><i class="fas fa-building"></i> Board of Directors Login</h2>
                     <form id="boardLoginForm">
-                        <div class="form-group"><label>Email</label><input type="email" id="boardEmail" required></div>
-                        <div class="form-group"><label>Password</label><input type="password" id="boardPassword" required></div>
-                        <div class="form-group"><label>Upload Your Photo for Verification</label><input type="file" id="boardPhoto" accept="image/*" required></div>
-                        <button type="submit">🔐 Access Board Dashboard →</button>
+                        <div class="form-group"><label><i class="fas fa-envelope"></i> Email</label><input type="email" id="boardEmail" required></div>
+                        <div class="form-group"><label><i class="fas fa-lock"></i> Password</label><input type="password" id="boardPassword" required></div>
+                        <div class="form-group"><label><i class="fas fa-camera"></i> Upload Your Photo for Verification</label><input type="file" id="boardPhoto" accept="image/*" required></div>
+                        <button type="submit"><i class="fas fa-sign-in-alt"></i> Access Board Dashboard →</button>
                     </form>
                 </div>
             </div>
@@ -778,29 +966,28 @@
                 <div id="boardProfileContent"></div>
             </div>
         </div>
-    </div>
-        </div><!-- MODALS -->
+    </div><!-- MODALS -->
 <div id="purposeModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2>💡 The Problems I Solved - My Journey as a Developer</h2>
+            <h2><i class="fas fa-lightbulb"></i> The Problems I Solved - My Journey as a Developer</h2>
             <button class="close-modal" onclick="closeModal('purposeModal')">&times;</button>
         </div>
-        <div style="line-height: 1.9; font-size: 15px;">
-            <p><strong>👋 Hello, I'm Muhammad Ilyas. Let me tell you why I built Hermana Academy.</strong></p>
+        <div style="line-height: 1.9; font-size: 15px; color: rgba(255,255,255,0.8);">
+            <p><strong style="color: white;">👋 Hello, I'm Muhammad Ilyas. Let me tell you why I built Hermana Academy.</strong></p>
             <br>
-            <p>🔴 <strong>The Problem That Started It All:</strong> In 2024, I visited a small school in Addis Ababa. I saw teachers manually writing student records in dusty notebooks. ID cards were handwritten on paper that got lost within weeks. Exam cheating was rampant because there was no proctoring system. Parents had no way to check their child's progress. The director couldn't track payments. Teachers applied with paper forms that got lost in drawers. I knew I had to build something better.</p>
+            <p>🔴 <strong style="color: #ff6b6b;">The Problem That Started It All:</strong> In 2024, I visited a small school in Addis Ababa. I saw teachers manually writing student records in dusty notebooks. ID cards were handwritten on paper that got lost within weeks. Exam cheating was rampant because there was no proctoring system. Parents had no way to check their child's progress. The director couldn't track payments. Teachers applied with paper forms that got lost in drawers. I knew I had to build something better.</p>
             <br>
-            <p>⚙️ <strong>Problem #1 - No Centralized Student Management</strong> → ✅ Digital profiles with Ethiopian ID, photo, grade tracking, exam scores, payments.</p>
-            <p>🔒 <strong>Problem #2 - Exam Cheating & No Security</strong> → ✅ Ultra-secure exam: camera capture, no tab switching, violation tracking, 3 strikes termination.</p>
-            <p>🪪 <strong>Problem #3 - Fake / Lost ID Cards</strong> → ✅ Digital ID cards with Ethiopian flag, downloadable PNG, printable.</p>
-            <p>💰 <strong>Problem #4 - Payment Confusion & Lost Receipts</strong> → ✅ Digital receipts, email confirmations, payment dashboard.</p>
-            <p>👨‍🏫 <strong>Problem #5 - Teacher Application Chaos</strong> → ✅ Digital registration, document upload, board approval workflow.</p>
-            <p>👪 <strong>Problem #6 - Parents Had No Visibility</strong> → ✅ Parent portal with child's grades, payments, teacher assignments.</p>
-            <p>📊 <strong>Problem #7 - Directors Had No Overview</strong> → ✅ Separate dashboards for KG, Elementary, High School directors.</p>
-            <p>📧 <strong>Problem #8 - No Digital Communication</strong> → ✅ Real email notifications for registration, exam results, Student IDs, approval codes, payment receipts.</p>
+            <p>⚙️ <strong style="color: #ffd93d;">Problem #1 - No Centralized Student Management</strong> → ✅ Digital profiles with Ethiopian ID, photo, grade tracking, exam scores, payments.</p>
+            <p>🔒 <strong style="color: #ffd93d;">Problem #2 - Exam Cheating & No Security</strong> → ✅ Ultra-secure exam: camera capture, no tab switching, violation tracking, 3 strikes termination.</p>
+            <p>🪪 <strong style="color: #ffd93d;">Problem #3 - Fake / Lost ID Cards</strong> → ✅ Digital ID cards with Ethiopian flag, downloadable PNG, printable.</p>
+            <p>💰 <strong style="color: #ffd93d;">Problem #4 - Payment Confusion & Lost Receipts</strong> → ✅ Digital receipts, email confirmations, payment dashboard.</p>
+            <p>👨‍🏫 <strong style="color: #ffd93d;">Problem #5 - Teacher Application Chaos</strong> → ✅ Digital registration, document upload, board approval workflow.</p>
+            <p>👪 <strong style="color: #ffd93d;">Problem #6 - Parents Had No Visibility</strong> → ✅ Parent portal with child's grades, payments, teacher assignments.</p>
+            <p>📊 <strong style="color: #ffd93d;">Problem #7 - Directors Had No Overview</strong> → ✅ Separate dashboards for KG, Elementary, High School directors.</p>
+            <p>📧 <strong style="color: #ffd93d;">Problem #8 - No Digital Communication</strong> → ✅ Real email notifications for registration, exam results, Student IDs, approval codes, payment receipts.</p>
             <br>
-            <p><strong>My Mission Continues:</strong> I will keep improving Hermana Academy. It's free, secure, built for Ethiopia.</p>
+            <p><strong style="color: white;">🌟 My Mission Continues:</strong> I will keep improving Hermana Academy. It's free, secure, built for Ethiopia.</p>
             <br>
             <p><em>- Muhammad Ilyas | Full Stack Developer | Problem Solver</em></p>
             <p><em>📧 Contact: ilyas@hermanaacademy.edu.et</em></p>
@@ -811,11 +998,11 @@
 <div id="feedbackModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2>💬 Share Your Feedback - I Read Every Single One!</h2>
+            <h2><i class="fas fa-comment-dots"></i> Share Your Feedback - I Read Every Single One!</h2>
             <button class="close-modal" onclick="closeModal('feedbackModal')">&times;</button>
         </div>
         <div>
-            <p style="font-size: 16px; margin-bottom: 10px;">Your feedback helps me improve Hermana Academy. Please be honest!</p>
+            <p style="font-size: 16px; margin-bottom: 10px; color: rgba(255,255,255,0.8);">Your feedback helps me improve Hermana Academy. Please be honest!</p>
             <div class="star-rating" id="starRating">
                 <span class="star" data-value="1">★</span>
                 <span class="star" data-value="2">★</span>
@@ -825,12 +1012,12 @@
             </div>
             <input type="hidden" id="feedbackRating" value="0">
             <form id="feedbackForm">
-                <textarea rows="5" id="feedbackText" placeholder="What do you love? What can be better? Suggestions for new features? I want to hear everything!" style="width:100%; margin:15px 0; border-radius:20px; padding:15px; border:2px solid #e0e0e0; font-size:14px;"></textarea>
-                <button type="submit" style="width:100%; padding:15px; font-size:16px; border-radius:50px;">💝 Submit Feedback (Anonymous)</button>
+                <textarea rows="5" id="feedbackText" placeholder="What do you love? What can be better? Suggestions for new features? I want to hear everything!" style="width:100%; margin:15px 0; border-radius:25px; padding:18px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); color: white;"></textarea>
+                <button type="submit" style="width:100%; padding:16px; font-size:16px; border-radius:50px;"><i class="fas fa-heart"></i> Submit Feedback (Anonymous)</button>
             </form>
-            <p id="feedbackThanks" style="display:none; color:#28a745; margin-top:15px; text-align:center; font-weight:bold;">✅ Thank you! Your feedback has been saved and will help make Hermana Academy better!</p>
-            <hr style="margin:20px 0;">
-            <p style="font-size:12px; color:#666; text-align:center;">⭐ 5-star ratings make my day! ⭐</p>
+            <p id="feedbackThanks" style="display:none; color:#38ef7d; margin-top:15px; text-align:center; font-weight:bold;">✅ Thank you! Your feedback has been saved and will help make Hermana Academy better!</p>
+            <hr style="margin:25px 0; border-color: rgba(255,255,255,0.1);">
+            <p style="font-size:12px; color: rgba(255,255,255,0.5); text-align:center;">⭐ 5-star ratings make my day! ⭐</p>
         </div>
     </div>
 </div>
@@ -838,19 +1025,19 @@
 <div id="privacyModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2>🔒 Privacy Policy - Your Data is Safe With Me</h2>
+            <h2><i class="fas fa-shield-alt"></i> Privacy Policy - Your Data is Safe With Me</h2>
             <button class="close-modal" onclick="closeModal('privacyModal')">&times;</button>
         </div>
-        <div style="line-height: 1.8;">
-            <p><strong>Last Updated: June 2026</strong></p>
+        <div style="line-height: 1.8; color: rgba(255,255,255,0.8);">
+            <p><strong style="color: white;">Last Updated: June 2026</strong></p>
             <br>
-            <p>📌 <strong>What Data Does Hermana Academy Collect?</strong></p>
+            <p>📌 <strong style="color: white;">What Data Does Hermana Academy Collect?</strong></p>
             <ul style="margin-left: 20px; margin-bottom: 15px;">
                 <li><strong>Students:</strong> Full Name, Ethiopian ID, email address, phone number, grade level, parent/guardian information, home address, photograph, exam scores, violation records, payment history.</li>
                 <li><strong>Teachers:</strong> Full Name, email address, phone number, education documents, teaching grades, subject specialization, years of experience, photograph, exam scores, application status.</li>
                 <li><strong>Parents:</strong> Only viewing access to their child's data - no separate data collection.</li>
             </ul>
-            <p>🔐 <strong>How Is Your Data Protected?</strong></p>
+            <p>🔐 <strong style="color: white;">How Is Your Data Protected?</strong></p>
             <ul style="margin-left: 20px; margin-bottom: 15px;">
                 <li>✅ All passwords are encrypted using bcrypt hashing - never stored in plain text.</li>
                 <li>✅ Exam photos are captured live and only used for identity verification during the exam.</li>
@@ -858,9 +1045,9 @@
                 <li>✅ No third-party access - ever. Your data never leaves our secure servers.</li>
                 <li>✅ HTTPS encryption protects all data transmission.</li>
             </ul>
-            <p>📸 <strong>Exam Proctoring Privacy:</strong> Your photo is captured and used ONLY to verify your identity during the exam. Not shared, sold, or used for any other purpose.</p>
-            <p>👨‍👩‍👧 <strong>Parental Rights:</strong> Parents have full viewing access to their child's records. Cannot modify data.</p>
-            <p>🗑️ <strong>Data Deletion:</strong> Request deletion by emailing privacy@hermanaacademy.edu.et. Removed within 7 business days.</p>
+            <p>📸 <strong style="color: white;">Exam Proctoring Privacy:</strong> Your photo is captured and used ONLY to verify your identity during the exam. Not shared, sold, or used for any other purpose.</p>
+            <p>👨‍👩‍👧 <strong style="color: white;">Parental Rights:</strong> Parents have full viewing access to their child's records. Cannot modify data.</p>
+            <p>🗑️ <strong style="color: white;">Data Deletion:</strong> Request deletion by emailing privacy@hermanaacademy.edu.et. Removed within 7 business days.</p>
             <p><em>I built this system with integrity. Your trust matters more than anything.</em></p>
         </div>
     </div>
@@ -869,24 +1056,24 @@
 <div id="contactModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2>📞 Contact Me - Let's Connect!</h2>
+            <h2><i class="fas fa-address-card"></i> Contact Me - Let's Connect!</h2>
             <button class="close-modal" onclick="closeModal('contactModal')">&times;</button>
         </div>
-        <div style="line-height: 1.9;">
-            <p><strong>👨‍💻 Created by Muhammad Ilyas</strong></p>
+        <div style="line-height: 1.9; color: rgba(255,255,255,0.8);">
+            <p><strong style="color: white;">👨‍💻 Created by Muhammad Ilyas</strong></p>
             <br>
-            <p>📧 <strong>Email (Preferred):</strong></p>
+            <p>📧 <strong style="color: white;">Email (Preferred):</strong></p>
             <ul style="margin-left: 20px; margin-bottom: 15px;">
                 <li>Support: <strong>ilyas@hermanaacademy.edu.et</strong></li>
                 <li>Business: <strong>business@hermanaacademy.edu.et</strong></li>
                 <li>Bugs: <strong>bugs@hermanaacademy.edu.et</strong></li>
                 <li>Privacy: <strong>privacy@hermanaacademy.edu.et</strong></li>
             </ul>
-            <p>📞 <strong>Phone / WhatsApp:</strong> +251-900-123456 (Ethiopia) | +1-555-987-6543 (International)</p>
-            <p>🌍 <strong>Social Media:</strong> Telegram: @MuhammadIlyas | LinkedIn: /in/muhammad-ilyas | GitHub: /muhammad-ilyas</p>
-            <p>📍 <strong>Location:</strong> Addis Ababa, Ethiopia (Remote support worldwide)</p>
-            <p>⏰ <strong>Response Time:</strong> I personally respond to all emails within 24-48 hours.</p>
-            <hr>
+            <p>📞 <strong style="color: white;">Phone / WhatsApp:</strong> +251-900-123456 (Ethiopia) | +1-555-987-6543 (International)</p>
+            <p>🌍 <strong style="color: white;">Social Media:</strong> Telegram: @MuhammadIlyas | LinkedIn: /in/muhammad-ilyas | GitHub: /muhammad-ilyas</p>
+            <p>📍 <strong style="color: white;">Location:</strong> Addis Ababa, Ethiopia (Remote support worldwide)</p>
+            <p>⏰ <strong style="color: white;">Response Time:</strong> I personally respond to all emails within 24-48 hours.</p>
+            <hr style="margin:20px 0; border-color: rgba(255,255,255,0.1);">
             <p style="text-align:center;"><strong>💬 Want to collaborate or hire me? Let's talk!</strong></p>
         </div>
     </div>
@@ -952,11 +1139,8 @@
         document.getElementById('roleModal').style.display = 'none';
         document.getElementById('mainContainer').style.display = 'block';
         
-        document.getElementById('studentDashboard').classList.remove('active');
-        document.getElementById('teacherDashboard').classList.remove('active');
-        document.getElementById('parentDashboard').classList.remove('active');
-        document.getElementById('directorDashboard').classList.remove('active');
-        document.getElementById('boardDashboard').classList.remove('active');
+        const dashboards = ['studentDashboard', 'teacherDashboard', 'parentDashboard', 'directorDashboard', 'boardDashboard'];
+        dashboards.forEach(d => document.getElementById(d).classList.remove('active'));
         
         if (role === 'student') {
             document.getElementById('studentDashboard').classList.add('active');
@@ -1168,7 +1352,6 @@
         document.getElementById('studentLoginSection').style.display = 'none';
         document.getElementById('studentProfileSection').style.display = 'block';
         
-        // Function to send ID to Telegram
         async function sendIdToTelegram() {
             const message = `🆔 STUDENT ID REQUEST\n\nName: ${student.fullName}\nStudent ID: ${student.studentId}\nGrade: ${student.grade}\nEmail: ${student.email}\nExam Score: ${student.examScore}%`;
             
@@ -1191,10 +1374,10 @@
         document.getElementById('studentProfileContent').innerHTML = `
             <div class="form-card">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-                    <h2>🎓 Welcome, ${student.fullName}!</h2>
+                    <h2><i class="fas fa-graduation-cap"></i> Welcome, ${student.fullName}!</h2>
                     <div>
-                        <button onclick="sendIdToTelegram()" class="btn-warning" style="margin-right: 10px; background: linear-gradient(135deg, #fa709a, #fee140); color: #333;">📱 Take My ID</button>
-                        <button onclick="logout()" class="btn-danger">Logout</button>
+                        <button onclick="sendIdToTelegram()" class="btn-warning" style="margin-right: 12px; background: linear-gradient(135deg, #fa709a, #fee140); color: #1a1a2e;"><i class="fas fa-paper-plane"></i> Take My ID</button>
+                        <button onclick="logout()" class="btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</button>
                     </div>
                 </div>
             </div>
@@ -1203,31 +1386,31 @@
                 <div class="id-card-ethiopia"></div>
                 <div style="text-align: center;">
                     <img class="id-photo-img" src="${student.photo}" alt="Photo">
-                    <h3 style="margin: 15px 0;">${student.fullName}</h3>
-                    <p><strong>Student ID:</strong> ${student.studentId}</p>
-                    <p><strong>Grade:</strong> ${student.grade}</p>
-                    <p><strong>Exam Score:</strong> ${student.examScore}%</p>
-                    <p><strong>Parent:</strong> ${student.parentName || 'N/A'}</p>
-                    <p><strong>Parent Phone:</strong> ${student.parentPhone || 'N/A'}</p>
-                    <hr style="margin: 15px 0;">
-                    <p><small>Hermana Academy - Ethiopia</small></p>
+                    <h3 style="margin: 15px 0; color: white;">${student.fullName}</h3>
+                    <p><strong style="color: rgba(255,255,255,0.8);">Student ID:</strong> <span style="color: #a8b5ff;">${student.studentId}</span></p>
+                    <p><strong style="color: rgba(255,255,255,0.8);">Grade:</strong> ${student.grade}</p>
+                    <p><strong style="color: rgba(255,255,255,0.8);">Exam Score:</strong> ${student.examScore}%</p>
+                    <p><strong style="color: rgba(255,255,255,0.8);">Parent:</strong> ${student.parentName || 'N/A'}</p>
+                    <p><strong style="color: rgba(255,255,255,0.8);">Parent Phone:</strong> ${student.parentPhone || 'N/A'}</p>
+                    <hr style="margin: 15px 0; border-color: rgba(255,255,255,0.1);">
+                    <p style="color: rgba(255,255,255,0.5);">Hermana Academy - Ethiopia</p>
                 </div>
             </div>
             <div style="text-align: center; margin-bottom: 20px;">
-                <button onclick="downloadStudentIDCard()" class="btn-success">📥 Download ID Card</button>
+                <button onclick="downloadStudentIDCard()" class="btn-success"><i class="fas fa-download"></i> Download ID Card</button>
             </div>
             
             <div class="grid-3">
-                <div class="card"><h3>💰 Registration Fee</h3><p>1000 ETB</p><span class="badge ${student.payments.registration ? 'badge-passed' : 'badge-pending'}">${student.payments.registration ? 'Paid' : 'Unpaid'}</span>${!student.payments.registration ? '<br><button onclick="makeStudentPayment(\'registration\', 1000)" class="btn-small" style="margin-top:10px;">Pay Now</button>' : ''}</div>
-                <div class="card"><h3>🚌 Term 1 + Bus</h3><p>3500 ETB</p><span class="badge ${student.payments.term1 ? 'badge-passed' : 'badge-pending'}">${student.payments.term1 ? 'Paid' : 'Unpaid'}</span>${!student.payments.term1 ? '<br><button onclick="makeStudentPayment(\'term1\', 3500)" class="btn-small" style="margin-top:10px;">Pay Now</button>' : ''}</div>
-                <div class="card"><h3>🚌 Term 2 + Bus</h3><p>3500 ETB</p><span class="badge ${student.payments.term2 ? 'badge-passed' : 'badge-pending'}">${student.payments.term2 ? 'Paid' : 'Unpaid'}</span>${!student.payments.term2 ? '<br><button onclick="makeStudentPayment(\'term2\', 3500)" class="btn-small" style="margin-top:10px;">Pay Now</button>' : ''}</div>
+                <div class="card"><h3><i class="fas fa-id-card"></i> Registration Fee</h3><p>1,000 ETB</p><span class="badge ${student.payments.registration ? 'badge-passed' : 'badge-pending'}">${student.payments.registration ? 'Paid ✓' : 'Unpaid'}</span>${!student.payments.registration ? '<br><button onclick="makeStudentPayment(\'registration\', 1000)" class="btn-small" style="margin-top:15px;"><i class="fas fa-credit-card"></i> Pay Now</button>' : ''}</div>
+                <div class="card"><h3><i class="fas fa-bus"></i> Term 1 + Bus</h3><p>3,500 ETB</p><span class="badge ${student.payments.term1 ? 'badge-passed' : 'badge-pending'}">${student.payments.term1 ? 'Paid ✓' : 'Unpaid'}</span>${!student.payments.term1 ? '<br><button onclick="makeStudentPayment(\'term1\', 3500)" class="btn-small" style="margin-top:15px;"><i class="fas fa-credit-card"></i> Pay Now</button>' : ''}</div>
+                <div class="card"><h3><i class="fas fa-bus"></i> Term 2 + Bus</h3><p>3,500 ETB</p><span class="badge ${student.payments.term2 ? 'badge-passed' : 'badge-pending'}">${student.payments.term2 ? 'Paid ✓' : 'Unpaid'}</span>${!student.payments.term2 ? '<br><button onclick="makeStudentPayment(\'term2\', 3500)" class="btn-small" style="margin-top:15px;"><i class="fas fa-credit-card"></i> Pay Now</button>' : ''}</div>
             </div>
             
             <div class="footer-links">
-                <a onclick="openModal('purposeModal')">💡 My Purpose</a>
-                <a onclick="openModal('feedbackModal')">💬 Feedback</a>
-                <a onclick="openModal('privacyModal')">🔒 Privacy Policy</a>
-                <a onclick="openModal('contactModal')">📞 Contact Me</a>
+                <a onclick="openModal('purposeModal')"><i class="fas fa-lightbulb"></i> My Purpose</a>
+                <a onclick="openModal('feedbackModal')"><i class="fas fa-comment-dots"></i> Feedback</a>
+                <a onclick="openModal('privacyModal')"><i class="fas fa-shield-alt"></i> Privacy Policy</a>
+                <a onclick="openModal('contactModal')"><i class="fas fa-address-card"></i> Contact Me</a>
             </div>
         `;
         
@@ -1242,17 +1425,17 @@
     
     window.downloadStudentIDCard = () => {
         const card = document.getElementById('student-id-card');
-        if(card) html2canvas(card, { scale: 2 }).then(canvas => { const link = document.createElement('a'); link.download = 'Student_ID.png'; link.href = canvas.toDataURL(); link.click(); });
+        if(card) html2canvas(card, { scale: 2 }).then(canvas => { const link = document.createElement('a'); link.download = 'Hermana_Student_ID.png'; link.href = canvas.toDataURL(); link.click(); });
     };
     
     // ==================== TEACHER FUNCTIONS ====================
     function generateTeacherExamQuestions() {
         return [
-            { text: "Teaching philosophy?", options: ["Student-centered", "Teacher-centered", "Both", "None"], correct: 0 },
-            { text: "Classroom discipline?", options: ["Strict rules", "Positive reinforcement", "Ignore", "Send to principal"], correct: 1 },
-            { text: "Best assessment method?", options: ["Final exam", "Continuous assessment", "Homework", "Participation"], correct: 1 },
-            { text: "Engage struggling students?", options: ["Extra homework", "One-on-one support", "Ignore", "Move to back"], correct: 1 },
-            { text: "Parent communication?", options: ["Only issues", "Regular updates", "Never", "Only conferences"], correct: 1 }
+            { text: "What is your teaching philosophy?", options: ["Student-centered", "Teacher-centered", "Both", "None"], correct: 0 },
+            { text: "How do you handle classroom discipline?", options: ["Strict rules", "Positive reinforcement", "Ignore minor issues", "Send to principal"], correct: 1 },
+            { text: "What is the best way to assess student learning?", options: ["Final exam only", "Continuous assessment", "Homework only", "Class participation only"], correct: 1 },
+            { text: "How do you engage struggling students?", options: ["Extra homework", "One-on-one support", "Ignore them", "Move them to back"], correct: 1 },
+            { text: "What is your approach to parent communication?", options: ["Only when issues arise", "Regular updates", "Never", "Only at parent-teacher conferences"], correct: 1 }
         ];
     }
     
@@ -1364,11 +1547,11 @@
             return false;
         });
         document.getElementById('teacherProfileContent').innerHTML = `
-            <div class="form-card"><div style="display:flex; justify-content:space-between;"><h2>👨‍🏫 Welcome, ${teacher.fullName}!</h2><button onclick="logout()" class="btn-danger">Logout</button></div></div>
-            <div class="id-card" id="teacher-id-card"><div class="id-card-ethiopia"></div><div style="text-align:center;"><img class="id-photo-img" src="${teacher.photo}"><h3>${teacher.fullName}</h3><p><strong>ID:</strong> ${teacher.teacherId}</p><p><strong>Grade Level:</strong> ${teacher.gradeLevel}</p><p><strong>Subject:</strong> ${teacher.subject || 'General'}</p><p><strong>Experience:</strong> ${teacher.experience || 0} years</p></div></div>
-            <div style="text-align:center;"><button onclick="downloadTeacherIDCard()" class="btn-success">📥 Download Teacher ID</button></div>
-            <div class="card"><h3>📚 Your Students (${assignedStudents.length})</h3><div class="student-table"><tr><thead><tr><th>Name</th><th>Student ID</th><th>Grade</th><th>Score</th></tr></thead><tbody>${assignedStudents.map(s => `<tr><td style="padding:12px;">${s.fullName}</td><td style="padding:12px;">${s.studentId}</td><td style="padding:12px;">${s.grade}</td><td style="padding:12px;">${s.examScore}%</td></tr>`).join('')}${assignedStudents.length===0?'<tr><td colspan="4">No students assigned yet.络`, '')}</tbody></table></div></div>
-            <div class="footer-links"><a onclick="openModal('purposeModal')">💡 Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy</a><a onclick="openModal('contactModal')">📞 Contact</a></div>
+            <div class="form-card"><div style="display:flex; justify-content:space-between;"><h2><i class="fas fa-chalkboard-user"></i> Welcome, Teacher ${teacher.fullName}!</h2><button onclick="logout()" class="btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</button></div></div>
+            <div class="id-card" id="teacher-id-card"><div class="id-card-ethiopia"></div><div style="text-align:center;"><img class="id-photo-img" src="${teacher.photo}"><h3 style="color:white;">${teacher.fullName}</h3><p><strong>Teacher ID:</strong> ${teacher.teacherId}</p><p><strong>Grade Level:</strong> ${teacher.gradeLevel}</p><p><strong>Subject:</strong> ${teacher.subject || 'General'}</p><p><strong>Experience:</strong> ${teacher.experience || 0} years</p></div></div>
+            <div style="text-align:center;"><button onclick="downloadTeacherIDCard()" class="btn-success"><i class="fas fa-download"></i> Download Teacher ID</button></div>
+            <div class="card"><h3><i class="fas fa-users"></i> Your Students (${assignedStudents.length})</h3><div class="student-table"><table><thead><tr><th>Name</th><th>Student ID</th><th>Grade</th><th>Score</th></tr></thead><tbody>${assignedStudents.map(s => `<tr><td>${s.fullName}</td><td>${s.studentId}</td><td>${s.grade}</td><td>${s.examScore}%络</tr>`).join('')}${assignedStudents.length===0?'<tr><td colspan="4">No students assigned yet.络</tr>':''}</tbody></table></div></div>
+            <div class="footer-links"><a onclick="openModal('purposeModal')"><i class="fas fa-lightbulb"></i> Purpose</a><a onclick="openModal('feedbackModal')"><i class="fas fa-comment-dots"></i> Feedback</a><a onclick="openModal('privacyModal')"><i class="fas fa-shield-alt"></i> Privacy</a><a onclick="openModal('contactModal')"><i class="fas fa-address-card"></i> Contact</a></div>
         `;
     }
     
@@ -1385,10 +1568,10 @@
             document.getElementById('parentLoginSection').style.display = 'none';
             document.getElementById('parentProfileSection').style.display = 'block';
             document.getElementById('parentProfileContent').innerHTML = `
-                <div class="form-card"><div style="display:flex; justify-content:space-between;"><h2>👪 Parent Dashboard - ${student.fullName}</h2><button onclick="logout()" class="btn-danger">Logout</button></div></div>
-                <div class="card"><h3>📊 Student Info</h3><p><strong>Name:</strong> ${student.fullName}</p><p><strong>ID:</strong> ${student.studentId}</p><p><strong>Grade:</strong> ${student.grade}</p><p><strong>Exam Score:</strong> ${student.examScore}%</p><p><strong>Parent:</strong> ${student.parentName || 'N/A'}</p><p><strong>Parent Phone:</strong> ${student.parentPhone || 'N/A'}</p></div>
-                <div class="card"><h3>💰 Payments</h3><p>Registration: ${student.payments.registration?'✅':'❌'}</p><p>Term 1: ${student.payments.term1?'✅':'❌'}</p><p>Term 2: ${student.payments.term2?'✅':'❌'}</p><p>Term 3: ${student.payments.term3?'✅':'❌'}</p></div>
-                <div class="footer-links"><a onclick="openModal('purposeModal')">💡 Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy</a><a onclick="openModal('contactModal')">📞 Contact</a></div>
+                <div class="form-card"><div style="display:flex; justify-content:space-between;"><h2><i class="fas fa-users"></i> Parent Dashboard - ${student.fullName}</h2><button onclick="logout()" class="btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</button></div></div>
+                <div class="card"><h3><i class="fas fa-info-circle"></i> Student Information</h3><p><strong>Name:</strong> ${student.fullName}</p><p><strong>ID:</strong> ${student.studentId}</p><p><strong>Grade:</strong> ${student.grade}</p><p><strong>Exam Score:</strong> ${student.examScore}%</p><p><strong>Parent:</strong> ${student.parentName || 'N/A'}</p><p><strong>Parent Phone:</strong> ${student.parentPhone || 'N/A'}</p></div>
+                <div class="card"><h3><i class="fas fa-credit-card"></i> Payment Status</h3><p>Registration: ${student.payments.registration?'✅ Paid':'❌ Unpaid'}</p><p>Term 1 + Bus: ${student.payments.term1?'✅ Paid':'❌ Unpaid'}</p><p>Term 2 + Bus: ${student.payments.term2?'✅ Paid':'❌ Unpaid'}</p><p>Term 3 + Bus: ${student.payments.term3?'✅ Paid':'❌ Unpaid'}</p></div>
+                <div class="footer-links"><a onclick="openModal('purposeModal')"><i class="fas fa-lightbulb"></i> Purpose</a><a onclick="openModal('feedbackModal')"><i class="fas fa-comment-dots"></i> Feedback</a><a onclick="openModal('privacyModal')"><i class="fas fa-shield-alt"></i> Privacy</a><a onclick="openModal('contactModal')"><i class="fas fa-address-card"></i> Contact</a></div>
             `;
         } else alert('Student not found');
     });
@@ -1412,10 +1595,10 @@
                 const filtered = students.filter(s => gradeFilter.includes(s.grade));
                 const revenue = filtered.reduce((sum,s) => sum + (s.payments.registration?1000:0) + (s.payments.term1?3500:0),0);
                 document.getElementById('directorProfileContent').innerHTML = `
-                    <div class="form-card"><div style="display:flex; justify-content:space-between;"><div><img src="${ev.target.result}" style="width:60px;height:60px;border-radius:50%;"><h2>📊 ${type.toUpperCase()} Director</h2></div><button onclick="logout()" class="btn-danger">Logout</button></div></div>
-                    <div class="grid-3"><div class="card"><h3>Students</h3><p style="font-size:32px;">${filtered.length}</p></div><div class="card"><h3>Revenue</h3><p style="font-size:32px;">${revenue.toLocaleString()} ETB</p></div><div class="card"><h3>Paid Reg</h3><p>${filtered.filter(s=>s.payments.registration).length}</p></div></div>
-                    <div class="card"><h3>Students Under Your Command</h3><div class="student-table"><table><thead><tr><th>Name</th><th>ID</th><th>Grade</th><th>Paid</th></tr></thead><tbody>${filtered.map(s => `<tr><td style="padding:12px;">${s.fullName}</td><td style="padding:12px;">${s.studentId}</td><td style="padding:12px;">${s.grade}</td><td style="padding:12px;">${s.payments.registration?'✅':'❌'}</td></tr>`).join('')}</tbody></table></div></div>
-                    <div class="footer-links"><a onclick="openModal('purposeModal')">💡 Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy</a><a onclick="openModal('contactModal')">📞 Contact</a></div>
+                    <div class="form-card"><div style="display:flex; justify-content:space-between;"><div><img src="${ev.target.result}" style="width:70px;height:70px;border-radius:50%;"><h2><i class="fas fa-chart-line"></i> ${type.toUpperCase()} Director Dashboard</h2></div><button onclick="logout()" class="btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</button></div></div>
+                    <div class="grid-3"><div class="card"><h3><i class="fas fa-user-graduate"></i> Students</h3><p style="font-size:36px; font-weight:bold;">${filtered.length}</p></div><div class="card"><h3><i class="fas fa-money-bill-wave"></i> Revenue</h3><p style="font-size:36px; font-weight:bold;">${revenue.toLocaleString()} ETB</p></div><div class="card"><h3><i class="fas fa-check-circle"></i> Paid Registration</h3><p>${filtered.filter(s=>s.payments.registration).length}</p></div></div>
+                    <div class="card"><h3><i class="fas fa-users"></i> Students Under Your Command</h3><div class="student-table"><table><thead><tr><th>Name</th><th>ID</th><th>Grade</th><th>Paid</th></tr></thead><tbody>${filtered.map(s => `<tr><td>${s.fullName}络<td>${s.studentId}络<td>${s.grade}络<td>${s.payments.registration?'✅':'❌'}络</tr>`).join('')}</tbody></table></div></div>
+                    <div class="footer-links"><a onclick="openModal('purposeModal')"><i class="fas fa-lightbulb"></i> Purpose</a><a onclick="openModal('feedbackModal')"><i class="fas fa-comment-dots"></i> Feedback</a><a onclick="openModal('privacyModal')"><i class="fas fa-shield-alt"></i> Privacy</a><a onclick="openModal('contactModal')"><i class="fas fa-address-card"></i> Contact</a></div>
                 `;
             };
             reader.readAsDataURL(photoFile);
@@ -1435,10 +1618,10 @@
                 document.getElementById('boardProfileSection').style.display = 'block';
                 const totalRevenue = students.reduce((sum,s) => sum + (s.payments.registration?1000:0) + (s.payments.term1?3500:0),0);
                 document.getElementById('boardProfileContent').innerHTML = `
-                    <div class="form-card"><div style="display:flex; justify-content:space-between;"><div><img src="${ev.target.result}" style="width:60px;height:60px;border-radius:50%;"><h2>🎯 Board Dashboard</h2></div><button onclick="logout()" class="btn-danger">Logout</button></div></div>
-                    <div class="grid-4"><div class="card"><h3>Students</h3><p style="font-size:28px;">${students.length}</p></div><div class="card"><h3>Teachers</h3><p style="font-size:28px;">${teachers.length}</p></div><div class="card"><h3>Revenue</h3><p style="font-size:28px;">${totalRevenue.toLocaleString()} ETB</p></div><div class="card"><h3>Pending</h3><p style="font-size:28px;">${pendingTeachers.length}</p></div></div>
-                    <div class="card"><h3>📝 Pending Teachers (${pendingTeachers.length})</h3><div class="student-table"><table><thead><tr><th>Name</th><th>Email</th><th>Grade Level</th><th>Score</th><th>Action</th></tr></thead><tbody>${pendingTeachers.map(t => `<td><td style="padding:12px;">${t.fullName}</td><td style="padding:12px;">${t.email}</td><td style="padding:12px;">${t.gradeLevel}</td><td style="padding:12px;">${t.examScore}%</td><td style="padding:12px;"><button onclick="approveTeacher(${t.id})" class="btn-small btn-success">✅</button> <button onclick="rejectTeacher(${t.id})" class="btn-small btn-danger">❌</button>络</tr>`).join('')}</tbody></table></div></div>
-                    <div class="footer-links"><a onclick="openModal('purposeModal')">💡 Purpose</a><a onclick="openModal('feedbackModal')">💬 Feedback</a><a onclick="openModal('privacyModal')">🔒 Privacy</a><a onclick="openModal('contactModal')">📞 Contact</a></div>
+                    <div class="form-card"><div style="display:flex; justify-content:space-between;"><div><img src="${ev.target.result}" style="width:70px;height:70px;border-radius:50%;"><h2><i class="fas fa-building"></i> Board of Directors Dashboard</h2></div><button onclick="logout()" class="btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</button></div></div>
+                    <div class="grid-4"><div class="card"><h3><i class="fas fa-user-graduate"></i> Students</h3><p style="font-size:32px;">${students.length}</p></div><div class="card"><h3><i class="fas fa-chalkboard-user"></i> Teachers</h3><p style="font-size:32px;">${teachers.length}</p></div><div class="card"><h3><i class="fas fa-money-bill-wave"></i> Revenue</h3><p style="font-size:32px;">${totalRevenue.toLocaleString()} ETB</p></div><div class="card"><h3><i class="fas fa-clock"></i> Pending</h3><p style="font-size:32px;">${pendingTeachers.length}</p></div></div>
+                    <div class="card"><h3><i class="fas fa-file-alt"></i> Pending Teacher Applications (${pendingTeachers.length})</h3><div class="student-table"><table><thead><tr><th>Name</th><th>Email</th><th>Grade Level</th><th>Score</th><th>Action</th></tr></thead><tbody>${pendingTeachers.map(t => `<tr><td>${t.fullName}络<td>${t.email}络<td>${t.gradeLevel}络<td>${t.examScore}%络<td><button onclick="approveTeacher(${t.id})" class="btn-small btn-success"><i class="fas fa-check"></i> Approve</button> <button onclick="rejectTeacher(${t.id})" class="btn-small btn-danger"><i class="fas fa-times"></i> Reject</button>络</tr>`).join('')}</tbody></table></div></div>
+                    <div class="footer-links"><a onclick="openModal('purposeModal')"><i class="fas fa-lightbulb"></i> Purpose</a><a onclick="openModal('feedbackModal')"><i class="fas fa-comment-dots"></i> Feedback</a><a onclick="openModal('privacyModal')"><i class="fas fa-shield-alt"></i> Privacy</a><a onclick="openModal('contactModal')"><i class="fas fa-address-card"></i> Contact</a></div>
                 `;
             };
             reader.readAsDataURL(photoFile);
@@ -1498,4 +1681,5 @@
 </div>
 
 </body>
-    </html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   </html>
+                                                                                       </div>
