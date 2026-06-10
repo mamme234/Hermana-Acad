@@ -1,4 +1,4 @@
-// server.js - Hermana Academy Complete Backend with Telegram Bot
+// server.js - Hermana Academy Complete Backend with Telegram Integration
 // Run: npm install express cors mongoose multer dotenv node-fetch
 // Then: node server.js
 
@@ -38,11 +38,11 @@ const upload = multer({ storage: storage, limits: { fileSize: 10 * 1024 * 1024 }
 
 // ==================== TELEGRAM BOT SETUP ====================
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID;
 
-async function sendTelegramMessage(message) {
-    if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
-        console.log('⚠️ Telegram not configured. Set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in .env');
+async function sendTelegramMessage(chatId, message) {
+    if (!TELEGRAM_BOT_TOKEN || !chatId) {
+        console.log('⚠️ Telegram not configured. Missing BOT_TOKEN or CHAT_ID');
         return false;
     }
     
@@ -52,14 +52,14 @@ async function sendTelegramMessage(message) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                chat_id: TELEGRAM_CHAT_ID,
+                chat_id: chatId,
                 text: message,
                 parse_mode: 'HTML'
             })
         });
         const data = await response.json();
         if (data.ok) {
-            console.log('✅ Telegram message sent');
+            console.log('✅ Telegram message sent to:', chatId);
             return true;
         } else {
             console.log('❌ Telegram error:', data.description);
@@ -71,9 +71,44 @@ async function sendTelegramMessage(message) {
     }
 }
 
+async function sendTelegramPhoto(chatId, photoBase64, caption) {
+    if (!TELEGRAM_BOT_TOKEN || !chatId) {
+        console.log('⚠️ Telegram not configured');
+        return false;
+    }
+    
+    try {
+        // Convert base64 to buffer
+        const photoBuffer = Buffer.from(photoBase64.split(',')[1], 'base64');
+        
+        // Create form data
+        const formData = new FormData();
+        formData.append('chat_id', chatId);
+        formData.append('photo', photoBuffer, 'student_photo.jpg');
+        if (caption) formData.append('caption', caption);
+        
+        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        if (data.ok) {
+            console.log('✅ Telegram photo sent to:', chatId);
+            return true;
+        } else {
+            console.log('❌ Telegram photo error:', data.description);
+            return false;
+        }
+    } catch (error) {
+        console.error('❌ Telegram photo error:', error.message);
+        return false;
+    }
+}
+
 // Test Telegram on startup
-if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
-    sendTelegramMessage('🤖 *Hermana Academy Bot Started!*\n\nServer is online and ready to receive notifications.');
+if (TELEGRAM_BOT_TOKEN && ADMIN_CHAT_ID) {
+    sendTelegramMessage(ADMIN_CHAT_ID, '🤖 *Hermana Academy Bot Started!*\n\nServer is online and ready to receive notifications.');
 }
 
 // ==================== MONGODB CONNECTION ====================
@@ -92,6 +127,7 @@ const studentSchema = new mongoose.Schema({
     studentId: { type: String, unique: true, required: true },
     fullName: { type: String, required: true },
     email: { type: String, required: true },
+    telegram: { type: String },
     phone: String,
     grade: String,
     parentName: String,
@@ -111,6 +147,7 @@ const teacherSchema = new mongoose.Schema({
     teacherId: { type: String, unique: true },
     fullName: String,
     email: String,
+    telegram: String,
     phone: String,
     gradeLevel: String,
     subject: String,
@@ -197,7 +234,8 @@ app.get('/', (req, res) => {
             boardLogin: 'POST /api/board/login',
             directorLogin: 'POST /api/director/login',
             parentLogin: 'POST /api/parent/login',
-            sendId: 'POST /api/send-id'
+            telegramSend: 'POST /api/telegram/send',
+            telegramSendPhoto: 'POST /api/telegram/send-photo'
         }
     });
 });
@@ -212,62 +250,81 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// ==================== SEND ID TO TELEGRAM ====================
-app.post('/api/send-id', async (req, res) => {
-    const { message, studentId, studentName } = req.body;
+// ==================== TELEGRAM ENDPOINTS ====================
+app.post('/api/telegram/send', async (req, res) => {
+    const { chatId, message } = req.body;
     
-    const fullMessage = `
-🆔 <b>STUDENT ID REQUEST</b>
-━━━━━━━━━━━━━━━━━━━━━
-${message}
-━━━━━━━━━━━━━━━━━━━━━
-📱 Requested at: ${new Date().toLocaleString()}
-    `;
+    if (!chatId || !message) {
+        return res.status(400).json({ error: 'chatId and message are required' });
+    }
     
-    const sent = await sendTelegramMessage(fullMessage);
+    const sent = await sendTelegramMessage(chatId, message);
     if (sent) {
-        console.log(`✅ Student ID for ${studentName} sent to Telegram`);
-        res.json({ success: true, message: 'ID sent to administrator' });
+        res.json({ success: true });
     } else {
         res.status(500).json({ error: 'Failed to send Telegram message' });
+    }
+});
+
+app.post('/api/telegram/send-photo', async (req, res) => {
+    const { chatId, photo, caption } = req.body;
+    
+    if (!chatId || !photo) {
+        return res.status(400).json({ error: 'chatId and photo are required' });
+    }
+    
+    const sent = await sendTelegramPhoto(chatId, photo, caption);
+    if (sent) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ error: 'Failed to send Telegram photo' });
     }
 });
 
 // ==================== STUDENT REGISTRATION ====================
 app.post('/api/student/register', upload.single('photo'), async (req, res) => {
     try {
-        const { fullName, email, phone, grade, parentName, parentPhone, address, examScore, examViolations } = req.body;
+        const { fullName, email, telegram, phone, grade, parentName, parentPhone, address, examScore, examViolations } = req.body;
         
-        console.log('📝 Registering student:', fullName, email);
+        console.log('📝 Registering student:', fullName, email, 'Telegram:', telegram);
         
         const studentId = generateStudentId();
         const photoUrl = req.file ? `/uploads/${req.file.filename}` : null;
+        let photoBase64 = null;
+        
+        // Read photo as base64 for Telegram
+        if (req.file) {
+            const photoPath = path.join(__dirname, req.file.path);
+            const photoBuffer = fs.readFileSync(photoPath);
+            photoBase64 = `data:image/jpeg;base64,${photoBuffer.toString('base64')}`;
+        }
         
         const student = await Student.create({
-            studentId, fullName, email, phone, grade, parentName, parentPhone, address,
+            studentId, fullName, email, telegram, phone, grade, parentName, parentPhone, address,
             photoUrl, examScore: parseInt(examScore), examViolations: parseInt(examViolations)
         });
         
         console.log('✅ Student saved:', studentId);
         
-        // Send Telegram notification
-        const message = `
-🎓 <b>NEW STUDENT REGISTERED!</b>
-
-👤 <b>Name:</b> ${fullName}
-🆔 <b>Student ID:</b> ${studentId}
-📚 <b>Grade:</b> ${grade}
-📧 <b>Email:</b> ${email}
-📊 <b>Exam Score:</b> ${examScore}%
-⚠️ <b>Violations:</b> ${examViolations}
-
-🔐 <b>Login Credentials:</b>
-   Student ID: ${studentId}
-   Full Name: ${fullName}
-
-📱 <b>Parent Access:</b> Same Student ID
-        `;
-        await sendTelegramMessage(message);
+        // Send to ADMIN Telegram with photo
+        if (ADMIN_CHAT_ID && TELEGRAM_BOT_TOKEN) {
+            const adminMessage = `🎓 <b>NEW STUDENT REGISTERED!</b>\n\n👤 <b>Name:</b> ${fullName}\n🆔 <b>Student ID:</b> ${studentId}\n📚 <b>Grade:</b> ${grade}\n📧 <b>Email:</b> ${email}\n🤖 <b>Telegram:</b> ${telegram || 'Not provided'}\n📊 <b>Exam Score:</b> ${examScore}%\n⚠️ <b>Violations:</b> ${examViolations}\n\n🔐 <b>Login:</b> Student ID + Full Name`;
+            
+            await sendTelegramMessage(ADMIN_CHAT_ID, adminMessage);
+            
+            if (photoBase64) {
+                await sendTelegramPhoto(ADMIN_CHAT_ID, photoBase64, `📸 Student Photo: ${fullName} (${studentId})`);
+            }
+        }
+        
+        // Send ID to STUDENT via Telegram
+        if (telegram && TELEGRAM_BOT_TOKEN) {
+            // Remove @ if present
+            const cleanTelegram = telegram.startsWith('@') ? telegram.substring(1) : telegram;
+            const studentMessage = `🎉 <b>Welcome to Hermana Academy, ${fullName}!</b>\n\n🆔 <b>Your Student ID:</b> ${studentId}\n📚 <b>Grade:</b> ${grade}\n📊 <b>Exam Score:</b> ${examScore}%\n\n🔐 <b>Login with:</b>\n   Student ID: ${studentId}\n   Full Name: ${fullName}\n\n📱 <b>Parent Access:</b> Same Student ID\n\nThank you for choosing Hermana Academy! 🇪🇹`;
+            
+            await sendTelegramMessage(cleanTelegram, studentMessage);
+        }
         
         res.status(201).json({ success: true, studentId, student });
     } catch (error) {
@@ -318,18 +375,11 @@ app.post('/api/student/:studentId/payment', async (req, res) => {
         const transactionId = 'TXN-' + Date.now();
         await Payment.create({ studentId: req.params.studentId, studentName: student.fullName, amount, type, transactionId });
         
-        // Send Telegram notification for payment
-        const message = `
-💰 <b>PAYMENT RECEIVED!</b>
-
-👤 <b>Student:</b> ${student.fullName}
-🆔 <b>ID:</b> ${student.studentId}
-📚 <b>Grade:</b> ${student.grade}
-💵 <b>Amount:</b> ${amount} ETB
-📋 <b>Type:</b> ${type}
-🆔 <b>Transaction:</b> ${transactionId}
-        `;
-        await sendTelegramMessage(message);
+        // Send Telegram notification for payment to admin
+        if (ADMIN_CHAT_ID && TELEGRAM_BOT_TOKEN) {
+            const message = `💰 <b>PAYMENT RECEIVED!</b>\n\n👤 <b>Student:</b> ${student.fullName}\n🆔 <b>ID:</b> ${student.studentId}\n📚 <b>Grade:</b> ${student.grade}\n💵 <b>Amount:</b> ${amount} ETB\n📋 <b>Type:</b> ${type}\n🆔 <b>Transaction:</b> ${transactionId}`;
+            await sendTelegramMessage(ADMIN_CHAT_ID, message);
+        }
         
         res.json({ success: true, transactionId });
     } catch (error) {
@@ -340,31 +390,34 @@ app.post('/api/student/:studentId/payment', async (req, res) => {
 // ==================== TEACHER APPLICATION ====================
 app.post('/api/teacher/apply', upload.fields([{ name: 'photo' }, { name: 'document' }]), async (req, res) => {
     try {
-        const { fullName, email, phone, gradeLevel, subject, experience, reason, examScore } = req.body;
+        const { fullName, email, telegram, phone, gradeLevel, subject, experience, reason, examScore } = req.body;
         const approvalCode = generateApprovalCode();
         const photoUrl = req.files['photo'] ? `/uploads/${req.files['photo'][0].filename}` : null;
         const documentUrl = req.files['document'] ? `/uploads/${req.files['document'][0].filename}` : null;
         
+        let photoBase64 = null;
+        if (req.files['photo']) {
+            const photoPath = path.join(__dirname, req.files['photo'][0].path);
+            const photoBuffer = fs.readFileSync(photoPath);
+            photoBase64 = `data:image/jpeg;base64,${photoBuffer.toString('base64')}`;
+        }
+        
         await Teacher.create({
-            fullName, email, phone, gradeLevel, subject, experience, photoUrl, documentUrl,
+            fullName, email, telegram, phone, gradeLevel, subject, experience, photoUrl, documentUrl,
             examScore: parseInt(examScore), approvalCode, status: 'pending', joinedDate: new Date()
         });
         
-        // Send Telegram notification
-        const message = `
-👨‍🏫 <b>NEW TEACHER APPLICATION!</b>
-
-👤 <b>Name:</b> ${fullName}
-📧 <b>Email:</b> ${email}
-📚 <b>Grade Level:</b> ${gradeLevel}
-📖 <b>Subject:</b> ${subject || 'Not specified'}
-⭐ <b>Experience:</b> ${experience || 0} years
-📊 <b>Exam Score:</b> ${examScore}%
-🔑 <b>Approval Code:</b> ${approvalCode}
-
-📝 <b>Message:</b> ${reason || 'No message'}
-        `;
-        await sendTelegramMessage(message);
+        console.log('📝 Teacher application submitted:', fullName);
+        
+        // Send Telegram notification to admin
+        if (ADMIN_CHAT_ID && TELEGRAM_BOT_TOKEN) {
+            const adminMessage = `👨‍🏫 <b>NEW TEACHER APPLICATION!</b>\n\n👤 <b>Name:</b> ${fullName}\n📧 <b>Email:</b> ${email}\n🤖 <b>Telegram:</b> ${telegram || 'Not provided'}\n📚 <b>Grade Level:</b> ${gradeLevel}\n📖 <b>Subject:</b> ${subject || 'Not specified'}\n⭐ <b>Experience:</b> ${experience || 0} years\n📊 <b>Exam Score:</b> ${examScore}%\n🔑 <b>Approval Code:</b> ${approvalCode}`;
+            await sendTelegramMessage(ADMIN_CHAT_ID, adminMessage);
+            
+            if (photoBase64) {
+                await sendTelegramPhoto(ADMIN_CHAT_ID, photoBase64, `📸 Teacher Photo: ${fullName}`);
+            }
+        }
         
         res.json({ success: true, approvalCode });
     } catch (error) {
@@ -407,19 +460,20 @@ app.post('/api/teacher/:id/approve', async (req, res) => {
         teacher.teacherId = generateTeacherId();
         await teacher.save();
         
-        // Send Telegram notification
-        const message = `
-✅ <b>TEACHER APPROVED!</b>
-
-👤 <b>Name:</b> ${teacher.fullName}
-🆔 <b>Teacher ID:</b> ${teacher.teacherId}
-🔑 <b>Approval Code:</b> ${teacher.approvalCode}
-📚 <b>Grade Level:</b> ${teacher.gradeLevel}
-📖 <b>Subject:</b> ${teacher.subject || 'General'}
-
-🎉 Welcome to Hermana Academy!
-        `;
-        await sendTelegramMessage(message);
+        console.log('✅ Teacher approved:', teacher.fullName);
+        
+        // Send Telegram notification to admin
+        if (ADMIN_CHAT_ID && TELEGRAM_BOT_TOKEN) {
+            const adminMessage = `✅ <b>TEACHER APPROVED!</b>\n\n👤 <b>Name:</b> ${teacher.fullName}\n🆔 <b>Teacher ID:</b> ${teacher.teacherId}\n🔑 <b>Approval Code:</b> ${teacher.approvalCode}\n📚 <b>Grade Level:</b> ${teacher.gradeLevel}\n📖 <b>Subject:</b> ${teacher.subject || 'General'}`;
+            await sendTelegramMessage(ADMIN_CHAT_ID, adminMessage);
+        }
+        
+        // Send approval notification to teacher's Telegram
+        if (teacher.telegram && TELEGRAM_BOT_TOKEN) {
+            const cleanTelegram = teacher.telegram.startsWith('@') ? teacher.telegram.substring(1) : teacher.telegram;
+            const teacherMessage = `✅ <b>Congratulations ${teacher.fullName}!</b>\n\nYour teacher application has been <b>APPROVED</b>!\n\n🆔 <b>Teacher ID:</b> ${teacher.teacherId}\n🔑 <b>Approval Code:</b> ${teacher.approvalCode}\n\n🔐 <b>Login with:</b>\n   Approval Code: ${teacher.approvalCode}\n   Full Name: ${teacher.fullName}\n\nWelcome to Hermana Academy! 🎉`;
+            await sendTelegramMessage(cleanTelegram, teacherMessage);
+        }
         
         res.json({ success: true });
     } catch (error) {
@@ -430,19 +484,23 @@ app.post('/api/teacher/:id/approve', async (req, res) => {
 // ==================== REJECT TEACHER ====================
 app.post('/api/teacher/:id/reject', async (req, res) => {
     try {
-        const teacher = await Teacher.findByIdAndDelete(req.params.id);
-        if (teacher) {
-            const message = `
-❌ <b>TEACHER REJECTED!</b>
-
-👤 <b>Name:</b> ${teacher.fullName}
-📧 <b>Email:</b> ${teacher.email}
-📚 <b>Grade Level:</b> ${teacher.gradeLevel}
-
-Application was not accepted at this time.
-            `;
-            await sendTelegramMessage(message);
+        const teacher = await Teacher.findById(req.params.id);
+        if (!teacher) return res.status(404).json({ error: 'Teacher not found' });
+        
+        // Send rejection notification to teacher's Telegram
+        if (teacher.telegram && TELEGRAM_BOT_TOKEN) {
+            const cleanTelegram = teacher.telegram.startsWith('@') ? teacher.telegram.substring(1) : teacher.telegram;
+            const teacherMessage = `❌ <b>Dear ${teacher.fullName},</b>\n\nThank you for your interest in Hermana Academy.\n\nAfter careful review, we regret to inform you that your teacher application has not been accepted at this time.\n\nWe encourage you to reapply in the future.\n\nBest regards,\nHermana Academy Board`;
+            await sendTelegramMessage(cleanTelegram, teacherMessage);
         }
+        
+        // Send Telegram notification to admin
+        if (ADMIN_CHAT_ID && TELEGRAM_BOT_TOKEN) {
+            const adminMessage = `❌ <b>TEACHER REJECTED!</b>\n\n👤 <b>Name:</b> ${teacher.fullName}\n📧 <b>Email:</b> ${teacher.email}\n📚 <b>Grade Level:</b> ${teacher.gradeLevel}`;
+            await sendTelegramMessage(ADMIN_CHAT_ID, adminMessage);
+        }
+        
+        await Teacher.findByIdAndDelete(req.params.id);
         res.json({ success: true });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -532,14 +590,10 @@ app.post('/api/feedback', async (req, res) => {
     const { name, rating, message } = req.body;
     await Feedback.create({ name, rating, message });
     
-    const feedbackMessage = `
-💬 <b>NEW FEEDBACK RECEIVED!</b>
-
-⭐ <b>Rating:</b> ${rating}/5
-👤 <b>Name:</b> ${name || 'Anonymous'}
-💭 <b>Message:</b> ${message}
-    `;
-    await sendTelegramMessage(feedbackMessage);
+    if (ADMIN_CHAT_ID && TELEGRAM_BOT_TOKEN) {
+        const feedbackMessage = `💬 <b>NEW FEEDBACK RECEIVED!</b>\n\n⭐ <b>Rating:</b> ${rating}/5\n👤 <b>Name:</b> ${name || 'Anonymous'}\n💭 <b>Message:</b> ${message}`;
+        await sendTelegramMessage(ADMIN_CHAT_ID, feedbackMessage);
+    }
     
     res.json({ success: true });
 });
@@ -556,17 +610,18 @@ app.listen(PORT, () => {
     ║              HERMANA ACADEMY BACKEND WITH TELEGRAM                ║
     ╠═══════════════════════════════════════════════════════════════════╣
     ║  🚀 Server: http://localhost:${PORT}                               ║
-    ║  🤖 Telegram: ${TELEGRAM_BOT_TOKEN ? 'CONFIGURED ✅' : 'NOT CONFIGURED ❌'}
+    ║  🤖 Telegram Bot: ${TELEGRAM_BOT_TOKEN ? 'CONFIGURED ✅' : 'NOT CONFIGURED ❌'}
+    ║  👑 Admin Chat ID: ${ADMIN_CHAT_ID ? 'CONFIGURED ✅' : 'NOT CONFIGURED ❌'}
     ║  🗄️  Database: ${mongoose.connection.readyState === 1 ? 'CONNECTED ✅' : 'DISCONNECTED ❌'}
     ║                                                                    ║
     ║  🔑 Demo Accounts:                                                ║
     ║     Board: board@hermana.edu / board123                           ║
     ║     Director: kg123 / elem123 / high123                           ║
     ║                                                                    ║
-    ║  📱 Telegram will send notifications for:                         ║
-    ║     - New student registrations                                   ║
-    ║     - Student ID requests (Take My ID button)                     ║
-    ║     - Teacher applications                                        ║
+    ║  📱 Telegram Notifications:                                       ║
+    ║     - New student registrations (with photo)                      ║
+    ║     - Student ID sent to student's Telegram                       ║
+    ║     - Teacher applications (with photo)                           ║
     ║     - Teacher approvals/rejections                                ║
     ║     - Payments                                                    ║
     ║     - Feedback submissions                                        ║
