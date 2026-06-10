@@ -1,5 +1,5 @@
 // server.js - Hermana Academy Complete Backend with Working Email
-// Run: npm install express cors mongoose nodemailer bcryptjs jsonwebtoken multer dotenv
+// Run: npm install
 // Then: node server.js
 
 require('dotenv').config();
@@ -16,7 +16,7 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
+// ==================== MIDDLEWARE ====================
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -27,7 +27,7 @@ if (!fs.existsSync('./uploads')) {
     fs.mkdirSync('./uploads');
 }
 
-// File upload configuration
+// ==================== FILE UPLOAD ====================
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, './uploads');
@@ -38,15 +38,12 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage, limits: { fileSize: 10 * 1024 * 1024 } });
 
-// ==================== EMAIL CONFIGURATION (WORKING) ====================
-// For Gmail: You MUST use an App Password (NOT your regular password)
-// Get App Password: https://myaccount.google.com/apppasswords
-
-const emailUser = process.env.EMAIL_USER || 'your-email@gmail.com';
-const emailPass = process.env.EMAIL_PASS || 'your-16-character-app-password';
+// ==================== EMAIL CONFIGURATION ====================
+const emailUser = process.env.EMAIL_USER;
+const emailPass = process.env.EMAIL_PASS;
 
 console.log('📧 Email User:', emailUser);
-console.log('📧 Email Password length:', emailPass ? emailPass.length : 0);
+console.log('📧 Email Pass Length:', emailPass ? emailPass.length : 0);
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -59,27 +56,26 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// Verify email configuration on startup
+// Verify email configuration
 transporter.verify((error, success) => {
     if (error) {
         console.log('❌ EMAIL ERROR:', error.message);
-        console.log('⚠️ Please check:');
-        console.log('   1. EMAIL_USER in .env file');
-        console.log('   2. EMAIL_PASS (16-character App Password)');
-        console.log('   3. 2-Step Verification enabled on Gmail');
+        console.log('⚠️ Please check your EMAIL_PASS in .env file');
     } else {
-        console.log('✅ EMAIL READY! Real emails will be sent to students');
+        console.log('✅ EMAIL READY! Real emails will be sent');
     }
 });
 
 // ==================== MONGODB CONNECTION ====================
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/hermana_academy', {
+mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
     console.log('✅ MongoDB Connected');
     initializeDemoData();
-}).catch(err => console.error('❌ MongoDB Error:', err.message));
+}).catch(err => {
+    console.error('❌ MongoDB Error:', err.message);
+});
 
 // ==================== SCHEMAS ====================
 const studentSchema = new mongoose.Schema({
@@ -159,23 +155,21 @@ async function initializeDemoData() {
     }
 }
 
-// ==================== EMAIL FUNCTION (WORKING) ====================
+// ==================== EMAIL FUNCTION ====================
 async function sendRealEmail(to, subject, htmlContent) {
     if (!to || to === 'your-email@gmail.com') {
-        console.log('⚠️ Email not sent: Invalid recipient email');
+        console.log('⚠️ Email not sent: Invalid recipient');
         return false;
     }
     
     try {
-        const mailOptions = {
+        const info = await transporter.sendMail({
             from: `"Hermana Academy" <${emailUser}>`,
             to: to,
             subject: subject,
             html: htmlContent
-        };
-        
-        const info = await transporter.sendMail(mailOptions);
-        console.log('✅ EMAIL SENT! To:', to, 'Message ID:', info.messageId);
+        });
+        console.log('✅ EMAIL SENT! To:', to);
         return true;
     } catch (error) {
         console.error('❌ EMAIL FAILED:', error.message);
@@ -204,7 +198,7 @@ function generateApprovalCode() {
 app.get('/', (req, res) => {
     res.json({
         success: true,
-        message: '🎓 Hermana Academy API Server is Running!',
+        message: '🎓 Hermana Academy API Server Running!',
         status: 'online',
         endpoints: {
             health: 'GET /api/health',
@@ -245,9 +239,9 @@ app.post('/api/student/register', upload.single('photo'), async (req, res) => {
             photoUrl, examScore: parseInt(examScore), examViolations: parseInt(examViolations)
         });
         
-        console.log('✅ Student saved to database:', studentId);
+        console.log('✅ Student saved:', studentId);
         
-        // ========== SEND REAL EMAIL ==========
+        // Send email with Student ID
         const emailHtml = `
             <!DOCTYPE html>
             <html>
@@ -264,7 +258,6 @@ app.post('/api/student/register', upload.single('photo'), async (req, res) => {
                     .green { background: #078930; }
                     .yellow { background: #fcdd09; }
                     .red { background: #da121a; }
-                    .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
                 </style>
             </head>
             <body>
@@ -280,23 +273,15 @@ app.post('/api/student/register', upload.single('photo'), async (req, res) => {
                             <span class="red"></span>
                         </div>
                         <h2>Congratulations ${fullName}! 🎉</h2>
-                        <p>You have successfully passed the Hermana Academy entrance examination.</p>
+                        <p>You passed the entrance exam with <strong>${examScore}%</strong>.</p>
                         
                         <div class="student-id">
                             🆔 Your Student ID: <strong>${studentId}</strong>
                         </div>
                         
                         <div style="background: #e8f0fe; padding: 20px; border-radius: 15px; margin: 20px 0;">
-                            <h3>📊 Exam Results</h3>
-                            <p><strong>Score:</strong> ${examScore}%</p>
-                            <p><strong>Grade Level:</strong> ${grade}</p>
-                            <p><strong>Violations:</strong> ${examViolations}</p>
-                        </div>
-                        
-                        <div style="background: #e8f0fe; padding: 20px; border-radius: 15px; margin: 20px 0;">
                             <h3>🔐 How to Login</h3>
                             <ol>
-                                <li>Go to Hermana Academy website</li>
                                 <li>Select <strong>"Student"</strong> role</li>
                                 <li>Enter Student ID: <strong>${studentId}</strong></li>
                                 <li>Enter Full Name: <strong>${fullName}</strong></li>
@@ -312,25 +297,16 @@ app.post('/api/student/register', upload.single('photo'), async (req, res) => {
                         </div>
                         
                         <p>📱 Parents can login using the same Student ID</p>
-                        <p>📧 For support: support@hermanaacademy.edu.et</p>
-                    </div>
-                    <div class="footer">
-                        <p>&copy; 2024 Hermana Academy - Ethiopia | እውቀት ብርሃን ነው</p>
+                        <p>📧 Support: support@hermanaacademy.edu.et</p>
                     </div>
                 </div>
             </body>
             </html>
         `;
         
-        const emailSent = await sendRealEmail(email, '🎓 Your Hermana Academy Student ID', emailHtml);
+        await sendRealEmail(email, '🎓 Your Hermana Academy Student ID', emailHtml);
         
-        if (emailSent) {
-            console.log('📧 Welcome email sent to:', email);
-        } else {
-            console.log('⚠️ Email not sent, but student was registered successfully');
-        }
-        
-        res.status(201).json({ success: true, studentId, student, emailSent });
+        res.status(201).json({ success: true, studentId, student });
     } catch (error) {
         console.error('Registration error:', error);
         res.status(500).json({ error: error.message });
@@ -349,7 +325,7 @@ app.post('/api/student/login', async (req, res) => {
     }
 });
 
-// ==================== STUDENT PAYMENT (WITH EMAIL) ====================
+// ==================== STUDENT PAYMENT ====================
 app.post('/api/student/:studentId/payment', async (req, res) => {
     try {
         const { type, amount } = req.body;
@@ -366,21 +342,7 @@ app.post('/api/student/:studentId/payment', async (req, res) => {
         const transactionId = 'TXN-' + Date.now();
         await Payment.create({ studentId: req.params.studentId, studentName: student.fullName, amount, type, transactionId });
         
-        // Send receipt email
-        const receiptHtml = `
-            <div style="font-family: Arial; max-width: 600px; margin: 0 auto;">
-                <h2 style="color: #667eea;">🧾 Payment Receipt</h2>
-                <p>Dear ${student.fullName},</p>
-                <p>Your payment has been successfully processed.</p>
-                <div style="background: #f0f0f0; padding: 15px; border-radius: 10px;">
-                    <p><strong>Amount:</strong> ${amount} ETB</p>
-                    <p><strong>Payment Type:</strong> ${type}</p>
-                    <p><strong>Transaction ID:</strong> ${transactionId}</p>
-                    <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
-                </div>
-                <p>Thank you for choosing Hermana Academy!</p>
-            </div>
-        `;
+        const receiptHtml = `<h2>🧾 Payment Receipt</h2><p>Dear ${student.fullName},</p><p>Payment of ${amount} ETB for ${type} successful.</p><p>Transaction ID: ${transactionId}</p>`;
         await sendRealEmail(student.email, 'Payment Receipt - Hermana Academy', receiptHtml);
         
         res.json({ success: true, transactionId });
@@ -389,7 +351,7 @@ app.post('/api/student/:studentId/payment', async (req, res) => {
     }
 });
 
-// ==================== TEACHER APPLICATION (WITH EMAIL) ====================
+// ==================== TEACHER APPLICATION ====================
 app.post('/api/teacher/apply', upload.fields([{ name: 'photo' }, { name: 'document' }]), async (req, res) => {
     try {
         const { fullName, email, phone, gradeLevel, subject, experience, reason, examScore } = req.body;
@@ -402,18 +364,8 @@ app.post('/api/teacher/apply', upload.fields([{ name: 'photo' }, { name: 'docume
             examScore: parseInt(examScore), approvalCode, status: 'pending', joinedDate: new Date()
         });
         
-        // Send confirmation email
-        const emailHtml = `
-            <div style="font-family: Arial; max-width: 600px; margin: 0 auto;">
-                <h2 style="color: #667eea;">📝 Teacher Application Received</h2>
-                <p>Dear ${fullName},</p>
-                <p>Your application has been received. You passed the exam with <strong>${examScore}%</strong>.</p>
-                <p>Your application is under review. You will receive an approval code within 2-3 business days.</p>
-                <p>Your Approval Code: <strong>${approvalCode}</strong></p>
-                <p>Thank you for your interest in Hermana Academy!</p>
-            </div>
-        `;
-        await sendRealEmail(email, 'Teacher Application Received - Hermana Academy', emailHtml);
+        const emailHtml = `<h2>📝 Application Received</h2><p>Dear ${fullName},</p><p>Your application is under review. Approval code: ${approvalCode}</p>`;
+        await sendRealEmail(email, 'Teacher Application Received', emailHtml);
         
         res.json({ success: true, approvalCode });
     } catch (error) {
@@ -434,7 +386,7 @@ app.post('/api/teacher/login', async (req, res) => {
     }
 });
 
-// ==================== TEACHER APPROVAL (WITH EMAIL) ====================
+// ==================== TEACHER APPROVAL ====================
 app.post('/api/teacher/:id/approve', async (req, res) => {
     try {
         const teacher = await Teacher.findById(req.params.id);
@@ -444,18 +396,8 @@ app.post('/api/teacher/:id/approve', async (req, res) => {
         teacher.teacherId = generateTeacherId();
         await teacher.save();
         
-        const emailHtml = `
-            <div style="font-family: Arial; max-width: 600px; margin: 0 auto;">
-                <h2 style="color: #28a745;">✅ Application Approved!</h2>
-                <p>Dear ${teacher.fullName},</p>
-                <p>Congratulations! Your application has been <strong>APPROVED</strong>.</p>
-                <p><strong>Teacher ID:</strong> ${teacher.teacherId}</p>
-                <p><strong>Approval Code:</strong> ${teacher.approvalCode}</p>
-                <p>You can now login using your approval code and full name.</p>
-                <p>Welcome to Hermana Academy!</p>
-            </div>
-        `;
-        await sendRealEmail(teacher.email, 'Teacher Application Approved! - Hermana Academy', emailHtml);
+        const emailHtml = `<h2>✅ Application Approved!</h2><p>Dear ${teacher.fullName},</p><p>Teacher ID: ${teacher.teacherId}</p><p>Approval Code: ${teacher.approvalCode}</p>`;
+        await sendRealEmail(teacher.email, 'Teacher Application Approved!', emailHtml);
         
         res.json({ success: true });
     } catch (error) {
@@ -463,17 +405,33 @@ app.post('/api/teacher/:id/approve', async (req, res) => {
     }
 });
 
-// ==================== OTHER ROUTES ====================
+// ==================== TEACHER REJECT ====================
+app.post('/api/teacher/:id/reject', async (req, res) => {
+    try {
+        const teacher = await Teacher.findByIdAndDelete(req.params.id);
+        if (teacher) {
+            const emailHtml = `<h2>Application Update</h2><p>Dear ${teacher.fullName},</p><p>Your application was not accepted at this time.</p>`;
+            await sendRealEmail(teacher.email, 'Teacher Application Update', emailHtml);
+        }
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ==================== GET PENDING TEACHERS ====================
 app.get('/api/teachers/pending', async (req, res) => {
     const teachers = await Teacher.find({ status: 'pending' });
     res.json(teachers);
 });
 
+// ==================== GET APPROVED TEACHERS ====================
 app.get('/api/teachers/approved', async (req, res) => {
     const teachers = await Teacher.find({ status: 'approved' });
     res.json(teachers);
 });
 
+// ==================== DIRECTOR LOGIN ====================
 app.post('/api/director/login', async (req, res) => {
     const { type, password } = req.body;
     const director = await Director.findOne({ type, password });
@@ -481,6 +439,7 @@ app.post('/api/director/login', async (req, res) => {
     res.json({ success: true, director });
 });
 
+// ==================== BOARD LOGIN ====================
 app.post('/api/board/login', (req, res) => {
     const { email, password } = req.body;
     if (email === 'board@hermana.edu' && password === 'board123') {
@@ -490,6 +449,24 @@ app.post('/api/board/login', (req, res) => {
     }
 });
 
+// ==================== BOARD STATS ====================
+app.get('/api/board/stats', async (req, res) => {
+    const students = await Student.find();
+    const teachers = await Teacher.find({ status: 'approved' });
+    const pendingTeachers = await Teacher.find({ status: 'pending' });
+    const totalRevenue = students.reduce((sum, s) => sum + (s.registration_paid ? 1000 : 0) + (s.term1_paid ? 3500 : 0), 0);
+    res.json({ 
+        totalStudents: students.length, 
+        totalTeachers: teachers.length, 
+        pendingTeachers: pendingTeachers.length, 
+        totalRevenue, 
+        students, 
+        teachers, 
+        pendingTeachersList: pendingTeachers 
+    });
+});
+
+// ==================== PARENT LOGIN ====================
 app.post('/api/parent/login', async (req, res) => {
     const { studentId } = req.body;
     const student = await Student.findOne({ studentId });
@@ -497,17 +474,48 @@ app.post('/api/parent/login', async (req, res) => {
     res.json({ success: true, student });
 });
 
+// ==================== FEEDBACK ====================
 app.post('/api/feedback', async (req, res) => {
     const { name, rating, message } = req.body;
     await Feedback.create({ name, rating, message });
     res.json({ success: true });
 });
 
-app.get('/api/board/stats', async (req, res) => {
+app.get('/api/feedbacks', async (req, res) => {
+    const feedbacks = await Feedback.find().sort({ date: -1 });
+    res.json(feedbacks);
+});
+
+// ==================== DIRECTOR STATS ====================
+app.get('/api/director/:type/stats', async (req, res) => {
+    const { type } = req.params;
+    let gradeFilter = {};
+    if (type === 'kg') gradeFilter = { grade: { $in: ['Nursery', 'Lower KG', 'Upper KG'] } };
+    else if (type === 'elementary') gradeFilter = { grade: { $regex: 'Grade [1-4]', $options: 'i' } };
+    else if (type === 'high') gradeFilter = { grade: { $regex: 'Grade [9-12]', $options: 'i' } };
+    
+    const students = await Student.find(gradeFilter);
+    const teachers = await Teacher.find({ gradeLevel: type === 'kg' ? 'KG' : type === 'elementary' ? 'Elementary' : 'High', status: 'approved' });
+    const revenue = students.reduce((sum, s) => sum + (s.registration_paid ? 1000 : 0) + (s.term1_paid ? 3500 : 0), 0);
+    res.json({ students, teachers, revenue });
+});
+
+// ==================== GET STUDENTS BY GRADE ====================
+app.get('/api/students/grade/:gradeLevel', async (req, res) => {
+    const { gradeLevel } = req.params;
+    let filter = {};
+    if (gradeLevel === 'KG') filter = { grade: { $in: ['Nursery', 'Lower KG', 'Upper KG'] } };
+    else if (gradeLevel === 'Elementary') filter = { grade: { $regex: 'Grade [1-4]', $options: 'i' } };
+    else if (gradeLevel === 'Middle') filter = { grade: { $regex: 'Grade [5-8]', $options: 'i' } };
+    else if (gradeLevel === 'High') filter = { grade: { $regex: 'Grade [9-12]', $options: 'i' } };
+    const students = await Student.find(filter);
+    res.json(students);
+});
+
+// ==================== GET ALL STUDENTS ====================
+app.get('/api/students', async (req, res) => {
     const students = await Student.find();
-    const teachers = await Teacher.find({ status: 'approved' });
-    const pendingTeachers = await Teacher.find({ status: 'pending' });
-    res.json({ totalStudents: students.length, totalTeachers: teachers.length, pendingTeachers: pendingTeachers.length, students, teachers, pendingTeachersList: pendingTeachers });
+    res.json(students);
 });
 
 // ==================== START SERVER ====================
@@ -521,7 +529,7 @@ app.listen(PORT, () => {
     ║  ✅ Status: Running                                               ║
     ║                                                                    ║
     ║  📧 Email: ${emailUser !== 'your-email@gmail.com' ? 'CONFIGURED ✅' : 'NOT CONFIGURED ❌'}
-    ║  🗄️  Database: MongoDB ${mongoose.connection.readyState === 1 ? 'CONNECTED ✅' : 'DISCONNECTED ❌'}
+    ║  🗄️  Database: ${mongoose.connection.readyState === 1 ? 'CONNECTED ✅' : 'DISCONNECTED ❌'}
     ║                                                                    ║
     ║  🔑 Demo Accounts:                                                ║
     ║     Board: board@hermana.edu / board123                           ║
