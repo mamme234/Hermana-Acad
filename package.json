@@ -1,7 +1,7 @@
 {
   "name": "hermana-academy-backend",
   "version": "1.0.0",
-  "description": "Hermana Academy Complete Backend",
+  "description": "Hermana Academy Complete Backend with Email",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
