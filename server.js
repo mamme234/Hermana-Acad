@@ -1,4 +1,4 @@
-// server.js - Hermana Academy with Telegram Bot
+// server.js - Hermana Academy Complete Backend with Telegram Bot
 // Run: npm install express cors mongoose multer dotenv node-fetch
 // Then: node server.js
 
@@ -196,7 +196,8 @@ app.get('/', (req, res) => {
             teacherLogin: 'POST /api/teacher/login',
             boardLogin: 'POST /api/board/login',
             directorLogin: 'POST /api/director/login',
-            parentLogin: 'POST /api/parent/login'
+            parentLogin: 'POST /api/parent/login',
+            sendId: 'POST /api/send-id'
         }
     });
 });
@@ -209,6 +210,27 @@ app.get('/api/health', (req, res) => {
         telegram: TELEGRAM_BOT_TOKEN ? 'configured' : 'not configured',
         database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
     });
+});
+
+// ==================== SEND ID TO TELEGRAM ====================
+app.post('/api/send-id', async (req, res) => {
+    const { message, studentId, studentName } = req.body;
+    
+    const fullMessage = `
+🆔 <b>STUDENT ID REQUEST</b>
+━━━━━━━━━━━━━━━━━━━━━
+${message}
+━━━━━━━━━━━━━━━━━━━━━
+📱 Requested at: ${new Date().toLocaleString()}
+    `;
+    
+    const sent = await sendTelegramMessage(fullMessage);
+    if (sent) {
+        console.log(`✅ Student ID for ${studentName} sent to Telegram`);
+        res.json({ success: true, message: 'ID sent to administrator' });
+    } else {
+        res.status(500).json({ error: 'Failed to send Telegram message' });
+    }
 });
 
 // ==================== STUDENT REGISTRATION ====================
@@ -510,7 +532,6 @@ app.post('/api/feedback', async (req, res) => {
     const { name, rating, message } = req.body;
     await Feedback.create({ name, rating, message });
     
-    // Send Telegram notification for feedback
     const feedbackMessage = `
 💬 <b>NEW FEEDBACK RECEIVED!</b>
 
@@ -544,6 +565,7 @@ app.listen(PORT, () => {
     ║                                                                    ║
     ║  📱 Telegram will send notifications for:                         ║
     ║     - New student registrations                                   ║
+    ║     - Student ID requests (Take My ID button)                     ║
     ║     - Teacher applications                                        ║
     ║     - Teacher approvals/rejections                                ║
     ║     - Payments                                                    ║
