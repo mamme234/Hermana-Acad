@@ -1,17 +1,15 @@
-// server.js - Hermana Academy Complete Backend with Working Email
-// Run: npm install
+// server.js - Hermana Academy with Telegram Bot
+// Run: npm install express cors mongoose multer dotenv node-fetch
 // Then: node server.js
 
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const nodemailer = require('nodemailer');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const fetch = require('node-fetch');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -38,33 +36,45 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage, limits: { fileSize: 10 * 1024 * 1024 } });
 
-// ==================== EMAIL CONFIGURATION ====================
-const emailUser = process.env.EMAIL_USER;
-const emailPass = process.env.EMAIL_PASS;
+// ==================== TELEGRAM BOT SETUP ====================
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
-console.log('📧 Email User:', emailUser);
-console.log('📧 Email Pass Length:', emailPass ? emailPass.length : 0);
-
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: emailUser,
-        pass: emailPass
-    },
-    tls: {
-        rejectUnauthorized: false
+async function sendTelegramMessage(message) {
+    if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+        console.log('⚠️ Telegram not configured. Set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in .env');
+        return false;
     }
-});
-
-// Verify email configuration
-transporter.verify((error, success) => {
-    if (error) {
-        console.log('❌ EMAIL ERROR:', error.message);
-        console.log('⚠️ Please check your EMAIL_PASS in .env file');
-    } else {
-        console.log('✅ EMAIL READY! Real emails will be sent');
+    
+    try {
+        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: TELEGRAM_CHAT_ID,
+                text: message,
+                parse_mode: 'HTML'
+            })
+        });
+        const data = await response.json();
+        if (data.ok) {
+            console.log('✅ Telegram message sent');
+            return true;
+        } else {
+            console.log('❌ Telegram error:', data.description);
+            return false;
+        }
+    } catch (error) {
+        console.error('❌ Telegram error:', error.message);
+        return false;
     }
-});
+}
+
+// Test Telegram on startup
+if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
+    sendTelegramMessage('🤖 *Hermana Academy Bot Started!*\n\nServer is online and ready to receive notifications.');
+}
 
 // ==================== MONGODB CONNECTION ====================
 mongoose.connect(process.env.MONGODB_URI, {
@@ -155,28 +165,6 @@ async function initializeDemoData() {
     }
 }
 
-// ==================== EMAIL FUNCTION ====================
-async function sendRealEmail(to, subject, htmlContent) {
-    if (!to || to === 'your-email@gmail.com') {
-        console.log('⚠️ Email not sent: Invalid recipient');
-        return false;
-    }
-    
-    try {
-        const info = await transporter.sendMail({
-            from: `"Hermana Academy" <${emailUser}>`,
-            to: to,
-            subject: subject,
-            html: htmlContent
-        });
-        console.log('✅ EMAIL SENT! To:', to);
-        return true;
-    } catch (error) {
-        console.error('❌ EMAIL FAILED:', error.message);
-        return false;
-    }
-}
-
 // ==================== HELPER FUNCTIONS ====================
 function generateStudentId() {
     const year = new Date().getFullYear();
@@ -199,7 +187,7 @@ app.get('/', (req, res) => {
     res.json({
         success: true,
         message: '🎓 Hermana Academy API Server Running!',
-        status: 'online',
+        telegram: TELEGRAM_BOT_TOKEN ? '✅ Configured' : '❌ Not Configured',
         endpoints: {
             health: 'GET /api/health',
             studentRegister: 'POST /api/student/register',
@@ -208,8 +196,7 @@ app.get('/', (req, res) => {
             teacherLogin: 'POST /api/teacher/login',
             boardLogin: 'POST /api/board/login',
             directorLogin: 'POST /api/director/login',
-            parentLogin: 'POST /api/parent/login',
-            feedback: 'POST /api/feedback'
+            parentLogin: 'POST /api/parent/login'
         }
     });
 });
@@ -219,12 +206,12 @@ app.get('/api/health', (req, res) => {
     res.json({
         status: 'OK',
         timestamp: new Date().toISOString(),
-        emailConfigured: emailUser !== 'your-email@gmail.com',
+        telegram: TELEGRAM_BOT_TOKEN ? 'configured' : 'not configured',
         database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
     });
 });
 
-// ==================== STUDENT REGISTRATION (WITH EMAIL) ====================
+// ==================== STUDENT REGISTRATION ====================
 app.post('/api/student/register', upload.single('photo'), async (req, res) => {
     try {
         const { fullName, email, phone, grade, parentName, parentPhone, address, examScore, examViolations } = req.body;
@@ -241,70 +228,24 @@ app.post('/api/student/register', upload.single('photo'), async (req, res) => {
         
         console.log('✅ Student saved:', studentId);
         
-        // Send email with Student ID
-        const emailHtml = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="UTF-8">
-                <style>
-                    body { font-family: Arial, sans-serif; }
-                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                    .header { background: linear-gradient(135deg, #667eea, #764ba2); padding: 30px; text-align: center; color: white; border-radius: 20px 20px 0 0; }
-                    .content { background: #f8f9fa; padding: 30px; border-radius: 0 0 20px 20px; }
-                    .student-id { font-size: 28px; font-weight: bold; color: #667eea; background: white; padding: 15px; border-radius: 15px; text-align: center; margin: 20px 0; }
-                    .flag { display: flex; justify-content: center; gap: 5px; margin: 20px 0; }
-                    .flag span { width: 50px; height: 30px; }
-                    .green { background: #078930; }
-                    .yellow { background: #fcdd09; }
-                    .red { background: #da121a; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="header">
-                        <h1>🏫 Hermana Academy</h1>
-                        <p>Ethiopia's Premier Educational Institution</p>
-                    </div>
-                    <div class="content">
-                        <div class="flag">
-                            <span class="green"></span>
-                            <span class="yellow"></span>
-                            <span class="red"></span>
-                        </div>
-                        <h2>Congratulations ${fullName}! 🎉</h2>
-                        <p>You passed the entrance exam with <strong>${examScore}%</strong>.</p>
-                        
-                        <div class="student-id">
-                            🆔 Your Student ID: <strong>${studentId}</strong>
-                        </div>
-                        
-                        <div style="background: #e8f0fe; padding: 20px; border-radius: 15px; margin: 20px 0;">
-                            <h3>🔐 How to Login</h3>
-                            <ol>
-                                <li>Select <strong>"Student"</strong> role</li>
-                                <li>Enter Student ID: <strong>${studentId}</strong></li>
-                                <li>Enter Full Name: <strong>${fullName}</strong></li>
-                            </ol>
-                        </div>
-                        
-                        <div style="background: #e8f0fe; padding: 20px; border-radius: 15px; margin: 20px 0;">
-                            <h3>💰 Fee Structure</h3>
-                            <p><strong>Registration Fee:</strong> 1,000 ETB</p>
-                            <p><strong>Term 1 + Bus:</strong> 3,500 ETB</p>
-                            <p><strong>Term 2 + Bus:</strong> 3,500 ETB</p>
-                            <p><strong>Term 3 + Bus:</strong> 3,500 ETB</p>
-                        </div>
-                        
-                        <p>📱 Parents can login using the same Student ID</p>
-                        <p>📧 Support: support@hermanaacademy.edu.et</p>
-                    </div>
-                </div>
-            </body>
-            </html>
+        // Send Telegram notification
+        const message = `
+🎓 <b>NEW STUDENT REGISTERED!</b>
+
+👤 <b>Name:</b> ${fullName}
+🆔 <b>Student ID:</b> ${studentId}
+📚 <b>Grade:</b> ${grade}
+📧 <b>Email:</b> ${email}
+📊 <b>Exam Score:</b> ${examScore}%
+⚠️ <b>Violations:</b> ${examViolations}
+
+🔐 <b>Login Credentials:</b>
+   Student ID: ${studentId}
+   Full Name: ${fullName}
+
+📱 <b>Parent Access:</b> Same Student ID
         `;
-        
-        await sendRealEmail(email, '🎓 Your Hermana Academy Student ID', emailHtml);
+        await sendTelegramMessage(message);
         
         res.status(201).json({ success: true, studentId, student });
     } catch (error) {
@@ -318,8 +259,21 @@ app.post('/api/student/login', async (req, res) => {
     try {
         const { studentId, fullName } = req.body;
         const student = await Student.findOne({ studentId, fullName });
-        if (!student) return res.status(401).json({ error: 'Invalid Student ID or Name' });
+        if (!student) {
+            return res.status(401).json({ error: 'Invalid Student ID or Name' });
+        }
         res.json({ success: true, student });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ==================== GET STUDENT BY ID ====================
+app.get('/api/student/:studentId', async (req, res) => {
+    try {
+        const student = await Student.findOne({ studentId: req.params.studentId });
+        if (!student) return res.status(404).json({ error: 'Student not found' });
+        res.json(student);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -342,8 +296,18 @@ app.post('/api/student/:studentId/payment', async (req, res) => {
         const transactionId = 'TXN-' + Date.now();
         await Payment.create({ studentId: req.params.studentId, studentName: student.fullName, amount, type, transactionId });
         
-        const receiptHtml = `<h2>🧾 Payment Receipt</h2><p>Dear ${student.fullName},</p><p>Payment of ${amount} ETB for ${type} successful.</p><p>Transaction ID: ${transactionId}</p>`;
-        await sendRealEmail(student.email, 'Payment Receipt - Hermana Academy', receiptHtml);
+        // Send Telegram notification for payment
+        const message = `
+💰 <b>PAYMENT RECEIVED!</b>
+
+👤 <b>Student:</b> ${student.fullName}
+🆔 <b>ID:</b> ${student.studentId}
+📚 <b>Grade:</b> ${student.grade}
+💵 <b>Amount:</b> ${amount} ETB
+📋 <b>Type:</b> ${type}
+🆔 <b>Transaction:</b> ${transactionId}
+        `;
+        await sendTelegramMessage(message);
         
         res.json({ success: true, transactionId });
     } catch (error) {
@@ -364,8 +328,21 @@ app.post('/api/teacher/apply', upload.fields([{ name: 'photo' }, { name: 'docume
             examScore: parseInt(examScore), approvalCode, status: 'pending', joinedDate: new Date()
         });
         
-        const emailHtml = `<h2>📝 Application Received</h2><p>Dear ${fullName},</p><p>Your application is under review. Approval code: ${approvalCode}</p>`;
-        await sendRealEmail(email, 'Teacher Application Received', emailHtml);
+        // Send Telegram notification
+        const message = `
+👨‍🏫 <b>NEW TEACHER APPLICATION!</b>
+
+👤 <b>Name:</b> ${fullName}
+📧 <b>Email:</b> ${email}
+📚 <b>Grade Level:</b> ${gradeLevel}
+📖 <b>Subject:</b> ${subject || 'Not specified'}
+⭐ <b>Experience:</b> ${experience || 0} years
+📊 <b>Exam Score:</b> ${examScore}%
+🔑 <b>Approval Code:</b> ${approvalCode}
+
+📝 <b>Message:</b> ${reason || 'No message'}
+        `;
+        await sendTelegramMessage(message);
         
         res.json({ success: true, approvalCode });
     } catch (error) {
@@ -386,39 +363,6 @@ app.post('/api/teacher/login', async (req, res) => {
     }
 });
 
-// ==================== TEACHER APPROVAL ====================
-app.post('/api/teacher/:id/approve', async (req, res) => {
-    try {
-        const teacher = await Teacher.findById(req.params.id);
-        if (!teacher) return res.status(404).json({ error: 'Teacher not found' });
-        
-        teacher.status = 'approved';
-        teacher.teacherId = generateTeacherId();
-        await teacher.save();
-        
-        const emailHtml = `<h2>✅ Application Approved!</h2><p>Dear ${teacher.fullName},</p><p>Teacher ID: ${teacher.teacherId}</p><p>Approval Code: ${teacher.approvalCode}</p>`;
-        await sendRealEmail(teacher.email, 'Teacher Application Approved!', emailHtml);
-        
-        res.json({ success: true });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// ==================== TEACHER REJECT ====================
-app.post('/api/teacher/:id/reject', async (req, res) => {
-    try {
-        const teacher = await Teacher.findByIdAndDelete(req.params.id);
-        if (teacher) {
-            const emailHtml = `<h2>Application Update</h2><p>Dear ${teacher.fullName},</p><p>Your application was not accepted at this time.</p>`;
-            await sendRealEmail(teacher.email, 'Teacher Application Update', emailHtml);
-        }
-        res.json({ success: true });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
 // ==================== GET PENDING TEACHERS ====================
 app.get('/api/teachers/pending', async (req, res) => {
     const teachers = await Teacher.find({ status: 'pending' });
@@ -431,12 +375,56 @@ app.get('/api/teachers/approved', async (req, res) => {
     res.json(teachers);
 });
 
-// ==================== DIRECTOR LOGIN ====================
-app.post('/api/director/login', async (req, res) => {
-    const { type, password } = req.body;
-    const director = await Director.findOne({ type, password });
-    if (!director) return res.status(401).json({ error: 'Invalid credentials' });
-    res.json({ success: true, director });
+// ==================== APPROVE TEACHER ====================
+app.post('/api/teacher/:id/approve', async (req, res) => {
+    try {
+        const teacher = await Teacher.findById(req.params.id);
+        if (!teacher) return res.status(404).json({ error: 'Teacher not found' });
+        
+        teacher.status = 'approved';
+        teacher.teacherId = generateTeacherId();
+        await teacher.save();
+        
+        // Send Telegram notification
+        const message = `
+✅ <b>TEACHER APPROVED!</b>
+
+👤 <b>Name:</b> ${teacher.fullName}
+🆔 <b>Teacher ID:</b> ${teacher.teacherId}
+🔑 <b>Approval Code:</b> ${teacher.approvalCode}
+📚 <b>Grade Level:</b> ${teacher.gradeLevel}
+📖 <b>Subject:</b> ${teacher.subject || 'General'}
+
+🎉 Welcome to Hermana Academy!
+        `;
+        await sendTelegramMessage(message);
+        
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ==================== REJECT TEACHER ====================
+app.post('/api/teacher/:id/reject', async (req, res) => {
+    try {
+        const teacher = await Teacher.findByIdAndDelete(req.params.id);
+        if (teacher) {
+            const message = `
+❌ <b>TEACHER REJECTED!</b>
+
+👤 <b>Name:</b> ${teacher.fullName}
+📧 <b>Email:</b> ${teacher.email}
+📚 <b>Grade Level:</b> ${teacher.gradeLevel}
+
+Application was not accepted at this time.
+            `;
+            await sendTelegramMessage(message);
+        }
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 // ==================== BOARD LOGIN ====================
@@ -454,36 +442,27 @@ app.get('/api/board/stats', async (req, res) => {
     const students = await Student.find();
     const teachers = await Teacher.find({ status: 'approved' });
     const pendingTeachers = await Teacher.find({ status: 'pending' });
-    const totalRevenue = students.reduce((sum, s) => sum + (s.registration_paid ? 1000 : 0) + (s.term1_paid ? 3500 : 0), 0);
-    res.json({ 
-        totalStudents: students.length, 
-        totalTeachers: teachers.length, 
-        pendingTeachers: pendingTeachers.length, 
-        totalRevenue, 
-        students, 
-        teachers, 
-        pendingTeachersList: pendingTeachers 
+    const payments = await Payment.find();
+    const totalRevenue = payments.reduce((sum, p) => sum + p.amount, 0);
+    
+    res.json({
+        totalStudents: students.length,
+        totalTeachers: teachers.length,
+        pendingTeachers: pendingTeachers.length,
+        totalRevenue,
+        students,
+        teachers,
+        pendingTeachersList: pendingTeachers,
+        payments
     });
 });
 
-// ==================== PARENT LOGIN ====================
-app.post('/api/parent/login', async (req, res) => {
-    const { studentId } = req.body;
-    const student = await Student.findOne({ studentId });
-    if (!student) return res.status(401).json({ error: 'Student not found' });
-    res.json({ success: true, student });
-});
-
-// ==================== FEEDBACK ====================
-app.post('/api/feedback', async (req, res) => {
-    const { name, rating, message } = req.body;
-    await Feedback.create({ name, rating, message });
-    res.json({ success: true });
-});
-
-app.get('/api/feedbacks', async (req, res) => {
-    const feedbacks = await Feedback.find().sort({ date: -1 });
-    res.json(feedbacks);
+// ==================== DIRECTOR LOGIN ====================
+app.post('/api/director/login', async (req, res) => {
+    const { type, password } = req.body;
+    const director = await Director.findOne({ type, password });
+    if (!director) return res.status(401).json({ error: 'Invalid credentials' });
+    res.json({ success: true, director });
 });
 
 // ==================== DIRECTOR STATS ====================
@@ -500,6 +479,20 @@ app.get('/api/director/:type/stats', async (req, res) => {
     res.json({ students, teachers, revenue });
 });
 
+// ==================== PARENT LOGIN ====================
+app.post('/api/parent/login', async (req, res) => {
+    const { studentId } = req.body;
+    const student = await Student.findOne({ studentId });
+    if (!student) return res.status(401).json({ error: 'Student not found' });
+    res.json({ success: true, student });
+});
+
+// ==================== GET ALL STUDENTS ====================
+app.get('/api/students', async (req, res) => {
+    const students = await Student.find();
+    res.json(students);
+});
+
 // ==================== GET STUDENTS BY GRADE ====================
 app.get('/api/students/grade/:gradeLevel', async (req, res) => {
     const { gradeLevel } = req.params;
@@ -512,29 +505,49 @@ app.get('/api/students/grade/:gradeLevel', async (req, res) => {
     res.json(students);
 });
 
-// ==================== GET ALL STUDENTS ====================
-app.get('/api/students', async (req, res) => {
-    const students = await Student.find();
-    res.json(students);
+// ==================== FEEDBACK ====================
+app.post('/api/feedback', async (req, res) => {
+    const { name, rating, message } = req.body;
+    await Feedback.create({ name, rating, message });
+    
+    // Send Telegram notification for feedback
+    const feedbackMessage = `
+💬 <b>NEW FEEDBACK RECEIVED!</b>
+
+⭐ <b>Rating:</b> ${rating}/5
+👤 <b>Name:</b> ${name || 'Anonymous'}
+💭 <b>Message:</b> ${message}
+    `;
+    await sendTelegramMessage(feedbackMessage);
+    
+    res.json({ success: true });
+});
+
+app.get('/api/feedbacks', async (req, res) => {
+    const feedbacks = await Feedback.find().sort({ date: -1 });
+    res.json(feedbacks);
 });
 
 // ==================== START SERVER ====================
 app.listen(PORT, () => {
     console.log(`
     ╔═══════════════════════════════════════════════════════════════════╗
-    ║                    HERMANA ACADEMY BACKEND SERVER                 ║
+    ║              HERMANA ACADEMY BACKEND WITH TELEGRAM                ║
     ╠═══════════════════════════════════════════════════════════════════╣
     ║  🚀 Server: http://localhost:${PORT}                               ║
-    ║  📡 API Base: http://localhost:${PORT}/api                        ║
-    ║  ✅ Status: Running                                               ║
-    ║                                                                    ║
-    ║  📧 Email: ${emailUser !== 'your-email@gmail.com' ? 'CONFIGURED ✅' : 'NOT CONFIGURED ❌'}
+    ║  🤖 Telegram: ${TELEGRAM_BOT_TOKEN ? 'CONFIGURED ✅' : 'NOT CONFIGURED ❌'}
     ║  🗄️  Database: ${mongoose.connection.readyState === 1 ? 'CONNECTED ✅' : 'DISCONNECTED ❌'}
     ║                                                                    ║
     ║  🔑 Demo Accounts:                                                ║
     ║     Board: board@hermana.edu / board123                           ║
     ║     Director: kg123 / elem123 / high123                           ║
     ║                                                                    ║
+    ║  📱 Telegram will send notifications for:                         ║
+    ║     - New student registrations                                   ║
+    ║     - Teacher applications                                        ║
+    ║     - Teacher approvals/rejections                                ║
+    ║     - Payments                                                    ║
+    ║     - Feedback submissions                                        ║
     ╚═══════════════════════════════════════════════════════════════════╝
     `);
 });
