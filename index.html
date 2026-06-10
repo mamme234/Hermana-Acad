@@ -955,11 +955,9 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
-    
-  // ==================== RENDER BACKEND URL ====================
-// ✅ CHANGE THIS LINE:
-const API_BASE_URL = 'https://hermana-acad.onrender.com/api';
-    const API_BASE_URL = `${RENDER_BACKEND_URL}/api`;
+    // ==================== RENDER BACKEND URL ====================
+    // ✅ This is your LIVE Render backend URL
+    const API_BASE_URL = 'https://hermana-acad.onrender.com/api';
     
     // Check server connection
     async function checkServerConnection() {
