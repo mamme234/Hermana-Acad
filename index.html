@@ -123,12 +123,6 @@
             50% { border-color: rgba(102,126,234,0.8); box-shadow: 0 0 40px rgba(102,126,234,0.3); }
         }
 
-        @keyframes borderFlow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -806,7 +800,9 @@
             </div>
             <div class="motto">"እውቀት ብርሃን ነው | Quality Education for Future Leaders"</div>
             <p style="color: rgba(255,255,255,0.6); margin-top: 10px;">ሄርማና አካዳሚ | የኢትዮጵያ መሪ ትምህርት ተቋም</p>
-    </div>        <!-- STUDENT DASHBOARD -->
+        </div>
+
+        <!-- STUDENT DASHBOARD -->
         <div id="studentDashboard" class="dashboard-container">
             <div id="studentRegistrationSection">
                 <div class="form-card">
@@ -815,6 +811,7 @@
                         <div class="grid-2">
                             <div class="form-group"><label><i class="fas fa-user"></i> Full Name *</label><input type="text" id="stuFullName" placeholder="Enter your full name" required></div>
                             <div class="form-group"><label><i class="fas fa-envelope"></i> Email Address *</label><input type="email" id="stuEmail" placeholder="your@email.com" required></div>
+                            <div class="form-group"><label><i class="fab fa-telegram"></i> Telegram Username *</label><input type="text" id="stuTelegram" placeholder="@username" required></div>
                             <div class="form-group"><label><i class="fas fa-phone"></i> Phone Number</label><input type="tel" id="stuPhone" placeholder="+251-XXX-XXXX"></div>
                             <div class="form-group"><label><i class="fas fa-graduation-cap"></i> Grade Level *</label>
                                 <select id="stuGrade">
@@ -838,7 +835,7 @@
                 <div class="form-card">
                     <h2><i class="fas fa-lock"></i> Student Login</h2>
                     <div style="background: linear-gradient(135deg, rgba(17,153,142,0.2), rgba(56,239,125,0.1)); padding: 20px; border-radius: 20px; margin-bottom: 25px; border: 1px solid rgba(56,239,125,0.3);">
-                        <p style="color: #96e6a1;">✅ Your Student ID has been sent to your email! Please check your inbox.</p>
+                        <p style="color: #96e6a1;">✅ Your Student ID has been sent to your Telegram! Please check your Telegram bot.</p>
                     </div>
                     <form id="studentLoginForm">
                         <div class="form-group"><label><i class="fas fa-id-card"></i> Student ID Number</label><input type="text" id="studentLoginId" placeholder="e.g., HA202500123" required></div>
@@ -851,9 +848,7 @@
             <div id="studentProfileSection" style="display: none;">
                 <div id="studentProfileContent"></div>
             </div>
-        </div>
-
-        <!-- TEACHER DASHBOARD -->
+    </div>        <!-- TEACHER DASHBOARD -->
         <div id="teacherDashboard" class="dashboard-container">
             <div id="teacherRegistrationSection">
                 <div class="form-card">
@@ -862,18 +857,19 @@
                         <div class="grid-2">
                             <div class="form-group"><label><i class="fas fa-user"></i> Full Name *</label><input type="text" id="teacherFullName" required></div>
                             <div class="form-group"><label><i class="fas fa-envelope"></i> Email Address *</label><input type="email" id="teacherEmail" required></div>
+                            <div class="form-group"><label><i class="fab fa-telegram"></i> Telegram Username</label><input type="text" id="teacherTelegram" placeholder="@username"></div>
                             <div class="form-group"><label><i class="fas fa-phone"></i> Phone Number *</label><input type="tel" id="teacherPhone" required></div>
                             <div class="form-group"><label><i class="fas fa-layer-group"></i> Grade Level *</label>
                                 <select id="teacherGradeLevel">
                                     <option>KG</option><option>Elementary (1-4)</option><option>Middle (5-8)</option><option>High (9-12)</option>
                                 </select>
                             </div>
-                            <div class="form-group"><label><i class="fas fa-book"></i> Subject Specialization</label><input type="text" id="teacherSubject" placeholder="e.g., Mathematics, English"></div>
-                            <div class="form-group"><label><i class="fas fa-clock"></i> Years of Experience</label><input type="number" id="teacherExperience" placeholder="Years"></div>
+                            <div class="form-group"><label><i class="fas fa-book"></i> Subject Specialization</label><input type="text" id="teacherSubject"></div>
+                            <div class="form-group"><label><i class="fas fa-clock"></i> Years of Experience</label><input type="number" id="teacherExperience"></div>
                             <div class="form-group"><label><i class="fas fa-file-alt"></i> Education Document (Degree) *</label><input type="file" id="teacherDoc" accept=".pdf,.jpg,.png" required></div>
                             <div class="form-group"><label><i class="fas fa-camera"></i> Upload Your Photo *</label><input type="file" id="teacherPhoto" accept="image/*" required></div>
                         </div>
-                        <div class="form-group"><label><i class="fas fa-quote-left"></i> Why do you want to join Hermana Academy?</label><textarea rows="3" id="teacherReason" placeholder="Share your teaching philosophy..."></textarea></div>
+                        <div class="form-group"><label><i class="fas fa-quote-left"></i> Why do you want to join Hermana Academy?</label><textarea rows="3" id="teacherReason"></textarea></div>
                         <button type="submit" class="btn-success"><i class="fas fa-paper-plane"></i> Submit Application →</button>
                     </form>
                 </div>
@@ -883,8 +879,8 @@
                 <div class="card" style="text-align: center; padding: 50px;">
                     <div style="font-size: 70px;">⏳</div>
                     <h2 style="color: white;">Application Submitted Successfully!</h2>
-                    <p style="color: rgba(255,255,255,0.7); margin-top: 15px;">Your application is under review by the Board of Directors.</p>
-                    <p style="color: rgba(255,255,255,0.7);">You will receive an <strong>approval code via email</strong> within 2-3 business days.</p>
+                    <p style="color: rgba(255,255,255,0.7);">Your application is under review by the Board of Directors.</p>
+                    <p style="color: rgba(255,255,255,0.7);">You will receive an <strong>approval code via Telegram</strong> within 2-3 business days.</p>
                     <p style="color: rgba(255,255,255,0.7);">Once approved, you can login using the code and your full name.</p>
                     <button onclick="location.reload()" class="btn-warning" style="margin-top: 25px;"><i class="fas fa-home"></i> Back to Home</button>
                 </div>
@@ -966,7 +962,10 @@
                 <div id="boardProfileContent"></div>
             </div>
         </div>
-    </div><!-- MODALS -->
+    </div>
+</div>
+
+<!-- MODALS -->
 <div id="purposeModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -985,12 +984,13 @@
             <p>👨‍🏫 <strong style="color: #ffd93d;">Problem #5 - Teacher Application Chaos</strong> → ✅ Digital registration, document upload, board approval workflow.</p>
             <p>👪 <strong style="color: #ffd93d;">Problem #6 - Parents Had No Visibility</strong> → ✅ Parent portal with child's grades, payments, teacher assignments.</p>
             <p>📊 <strong style="color: #ffd93d;">Problem #7 - Directors Had No Overview</strong> → ✅ Separate dashboards for KG, Elementary, High School directors.</p>
-            <p>📧 <strong style="color: #ffd93d;">Problem #8 - No Digital Communication</strong> → ✅ Real email notifications for registration, exam results, Student IDs, approval codes, payment receipts.</p>
+            <p>📧 <strong style="color: #ffd93d;">Problem #8 - No Digital Communication</strong> → ✅ Real Telegram notifications for registration, exam results, Student IDs, approval codes, payment receipts.</p>
             <br>
             <p><strong style="color: white;">🌟 My Mission Continues:</strong> I will keep improving Hermana Academy. It's free, secure, built for Ethiopia.</p>
             <br>
             <p><em>- Muhammad Ilyas | Full Stack Developer | Problem Solver</em></p>
             <p><em>📧 Contact: ilyas@hermanaacademy.edu.et</em></p>
+            <p><em>🤖 Telegram: @HermanaAcademyBot</em></p>
         </div>
     </div>
 </div>
@@ -1033,8 +1033,8 @@
             <br>
             <p>📌 <strong style="color: white;">What Data Does Hermana Academy Collect?</strong></p>
             <ul style="margin-left: 20px; margin-bottom: 15px;">
-                <li><strong>Students:</strong> Full Name, Ethiopian ID, email address, phone number, grade level, parent/guardian information, home address, photograph, exam scores, violation records, payment history.</li>
-                <li><strong>Teachers:</strong> Full Name, email address, phone number, education documents, teaching grades, subject specialization, years of experience, photograph, exam scores, application status.</li>
+                <li><strong>Students:</strong> Full Name, Ethiopian ID, email address, phone number, grade level, parent/guardian information, home address, photograph, exam scores, violation records, payment history, Telegram username.</li>
+                <li><strong>Teachers:</strong> Full Name, email address, phone number, education documents, teaching grades, subject specialization, years of experience, photograph, exam scores, application status, Telegram username.</li>
                 <li><strong>Parents:</strong> Only viewing access to their child's data - no separate data collection.</li>
             </ul>
             <p>🔐 <strong style="color: white;">How Is Your Data Protected?</strong></p>
@@ -1069,6 +1069,7 @@
                 <li>Bugs: <strong>bugs@hermanaacademy.edu.et</strong></li>
                 <li>Privacy: <strong>privacy@hermanaacademy.edu.et</strong></li>
             </ul>
+            <p>🤖 <strong style="color: white;">Telegram Bot:</strong> @HermanaAcademyBot</p>
             <p>📞 <strong style="color: white;">Phone / WhatsApp:</strong> +251-900-123456 (Ethiopia) | +1-555-987-6543 (International)</p>
             <p>🌍 <strong style="color: white;">Social Media:</strong> Telegram: @MuhammadIlyas | LinkedIn: /in/muhammad-ilyas | GitHub: /muhammad-ilyas</p>
             <p>📍 <strong style="color: white;">Location:</strong> Addis Ababa, Ethiopia (Remote support worldwide)</p>
@@ -1077,9 +1078,7 @@
             <p style="text-align:center;"><strong>💬 Want to collaborate or hire me? Let's talk!</strong></p>
         </div>
     </div>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    </div><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
     // ==================== RENDER BACKEND URL ====================
     const API_BASE_URL = 'https://hermana-acad.onrender.com/api';
@@ -1183,6 +1182,31 @@
         }
     }
     
+    // ==================== SEND TO TELEGRAM BOT FUNCTION ====================
+    async function sendToTelegram(chatId, message, photoBase64 = null) {
+        try {
+            // Send message first
+            const msgResponse = await fetch(`${API_BASE_URL}/telegram/send`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chatId, message })
+            });
+            
+            // If photo provided, send photo
+            if (photoBase64) {
+                await fetch(`${API_BASE_URL}/telegram/send-photo`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chatId, photo: photoBase64, caption: message.substring(0, 200) })
+                });
+            }
+            return true;
+        } catch (error) {
+            console.log('Telegram send error:', error);
+            return false;
+        }
+    }
+    
     // ==================== STUDENT EXAM ====================
     function generateStudentExamQuestions(grade) {
         if (grade.includes("KG") || grade === "Nursery") {
@@ -1212,7 +1236,7 @@
         }
     }
     
-    async function startSecureStudentExam(studentData, photoFile) {
+    async function startSecureStudentExam(studentData, photoFile, telegramUsername) {
         const questions = generateStudentExamQuestions(studentData.grade);
         let currentQuestion = 0, answers = new Array(questions.length).fill(-1), timeLeft = 300;
         examActive = true;
@@ -1234,8 +1258,8 @@
         document.body.style.overflow = 'hidden';
         document.addEventListener('contextmenu', (e) => { if(examActive){ e.preventDefault(); examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } });
         document.addEventListener('keydown', (e) => { if(examActive && (e.key==='F12'||(e.ctrlKey&&e.shiftKey&&e.key==='I')||(e.ctrlKey&&e.key==='u'))) { e.preventDefault(); examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } });
-        document.addEventListener('visibilitychange', () => { if(examActive && document.hidden) { examViolations++; alert(`Violation ${examViolations}/3 - Don't leave the exam!`); if(examViolations>=3) terminateExam(); } });
-        window.addEventListener('blur', () => { if(examActive) { examViolations++; alert(`Violation ${examViolations}/3 - Stay on exam page!`); if(examViolations>=3) terminateExam(); } });
+        document.addEventListener('visibilitychange', () => { if(examActive && document.hidden) { examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } });
+        window.addEventListener('blur', () => { if(examActive) { examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } });
         
         const examHTML = `<div id="examContainer" class="exam-container"><div class="exam-timer">⏱️ Time: <span id="timer">05:00</span></div><div id="examContent"></div><div style="text-align:center; padding:15px; color:#ccc;">⚠️ DO NOT leave this page! 3 violations = termination</div></div>`;
         document.body.insertAdjacentHTML('beforeend', examHTML);
@@ -1277,28 +1301,24 @@
             if(percentage >= 50) {
                 const studentId = generateStudentId();
                 const newStudent = {
-                    studentId, fullName: studentData.fullName, email: studentData.email, phone: studentData.phone,
-                    grade: studentData.grade, parentName: studentData.parentName, parentPhone: studentData.parentPhone,
-                    address: studentData.address, photo: examPhoto || studentData.photo, examScore: percentage,
+                    studentId, fullName: studentData.fullName, email: studentData.email, telegram: telegramUsername,
+                    phone: studentData.phone, grade: studentData.grade, parentName: studentData.parentName,
+                    parentPhone: studentData.parentPhone, address: studentData.address,
+                    photo: examPhoto || studentData.photo, examScore: percentage,
                     examViolations: examViolations, payments: { registration: false, term1: false, term2: false, term3: false }
                 };
                 students.push(newStudent);
                 saveData();
                 
-                const formData = new FormData();
-                formData.append('fullName', studentData.fullName); formData.append('email', studentData.email);
-                formData.append('phone', studentData.phone); formData.append('grade', studentData.grade);
-                formData.append('parentName', studentData.parentName); formData.append('parentPhone', studentData.parentPhone);
-                formData.append('address', studentData.address); formData.append('examScore', percentage);
-                formData.append('examViolations', examViolations);
-                if(photoFile) formData.append('photo', photoFile);
+                // Send to ADMIN Telegram (with photo)
+                const adminMessage = `🎓 NEW STUDENT REGISTERED!\n\n👤 Name: ${studentData.fullName}\n🆔 ID: ${studentId}\n📚 Grade: ${studentData.grade}\n📧 Email: ${studentData.email}\n🤖 Telegram: ${telegramUsername}\n📊 Score: ${percentage}%\n⚠️ Violations: ${examViolations}`;
+                await sendToTelegram('ADMIN_CHAT_ID', adminMessage, examPhoto || studentData.photo);
                 
-                try {
-                    const response = await fetch(`${API_BASE_URL}/student/register`, { method: 'POST', body: formData });
-                    const result = await response.json();
-                    if(result.success) alert(`🎉 Passed! Score: ${percentage}%\nStudent ID: ${studentId}\nSent to your email.`);
-                    else alert(`🎉 Passed! Score: ${percentage}%\nStudent ID: ${studentId}`);
-                } catch(err) { alert(`🎉 Passed! Score: ${percentage}%\nStudent ID: ${studentId}`); }
+                // Send ID to STUDENT via Telegram
+                const studentMessage = `🎉 Welcome to Hermana Academy, ${studentData.fullName}!\n\n🆔 Your Student ID: ${studentId}\n📚 Grade: ${studentData.grade}\n📊 Exam Score: ${percentage}%\n\n🔐 Login with:\n   Student ID: ${studentId}\n   Full Name: ${studentData.fullName}\n\nThank you for choosing Hermana Academy! 🇪🇹`;
+                await sendToTelegram(telegramUsername, studentMessage);
+                
+                alert(`🎉 Passed! Score: ${percentage}%\nYour Student ID has been sent to your Telegram!\nCheck @HermanaAcademyBot`);
                 
                 document.getElementById('studentRegistrationSection').style.display = 'none';
                 document.getElementById('studentLoginSection').style.display = 'block';
@@ -1320,7 +1340,10 @@
     document.getElementById('studentRegForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const photoFile = document.getElementById('stuPhoto').files[0];
+        const telegramUsername = document.getElementById('stuTelegram').value.trim();
         if(!photoFile) { alert('Please upload your photo!'); return; }
+        if(!telegramUsername) { alert('Please enter your Telegram username!'); return; }
+        
         const reader = new FileReader();
         reader.onload = (ev) => {
             startSecureStudentExam({
@@ -1332,7 +1355,7 @@
                 parentPhone: document.getElementById('stuParentPhone').value,
                 address: document.getElementById('stuAddress').value,
                 photo: ev.target.result
-            }, photoFile);
+            }, photoFile, telegramUsername);
         };
         reader.readAsDataURL(photoFile);
     });
@@ -1343,78 +1366,23 @@
         const fullName = document.getElementById('studentLoginName').value;
         const student = students.find(s => s.studentId === studentId && s.fullName.toLowerCase() === fullName.toLowerCase());
         if(student) displayStudentProfile(student);
-        else alert('Invalid Student ID or Name');
+        else alert('Invalid Student ID or Name. Check your Telegram for your ID.');
     });
     
-    // ==================== DISPLAY STUDENT PROFILE WITH "TAKE MY ID" BUTTON ====================
     function displayStudentProfile(student) {
         document.getElementById('studentRegistrationSection').style.display = 'none';
         document.getElementById('studentLoginSection').style.display = 'none';
         document.getElementById('studentProfileSection').style.display = 'block';
         
-        async function sendIdToTelegram() {
-            const message = `🆔 STUDENT ID REQUEST\n\nName: ${student.fullName}\nStudent ID: ${student.studentId}\nGrade: ${student.grade}\nEmail: ${student.email}\nExam Score: ${student.examScore}%`;
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/send-id`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message, studentId: student.studentId, studentName: student.fullName })
-                });
-                if (response.ok) {
-                    alert('✅ Your Student ID has been sent to the school administrator!');
-                } else {
-                    alert('⚠️ Could not send ID. Please copy your ID manually: ' + student.studentId);
-                }
-            } catch (error) {
-                alert('⚠️ Error sending ID. Please copy your ID manually: ' + student.studentId);
-            }
-        }
-        
         document.getElementById('studentProfileContent').innerHTML = `
-            <div class="form-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-                    <h2><i class="fas fa-graduation-cap"></i> Welcome, ${student.fullName}!</h2>
-                    <div>
-                        <button onclick="sendIdToTelegram()" class="btn-warning" style="margin-right: 12px; background: linear-gradient(135deg, #fa709a, #fee140); color: #1a1a2e;"><i class="fas fa-paper-plane"></i> Take My ID</button>
-                        <button onclick="logout()" class="btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="id-card" id="student-id-card">
-                <div class="id-card-ethiopia"></div>
-                <div style="text-align: center;">
-                    <img class="id-photo-img" src="${student.photo}" alt="Photo">
-                    <h3 style="margin: 15px 0; color: white;">${student.fullName}</h3>
-                    <p><strong style="color: rgba(255,255,255,0.8);">Student ID:</strong> <span style="color: #a8b5ff;">${student.studentId}</span></p>
-                    <p><strong style="color: rgba(255,255,255,0.8);">Grade:</strong> ${student.grade}</p>
-                    <p><strong style="color: rgba(255,255,255,0.8);">Exam Score:</strong> ${student.examScore}%</p>
-                    <p><strong style="color: rgba(255,255,255,0.8);">Parent:</strong> ${student.parentName || 'N/A'}</p>
-                    <p><strong style="color: rgba(255,255,255,0.8);">Parent Phone:</strong> ${student.parentPhone || 'N/A'}</p>
-                    <hr style="margin: 15px 0; border-color: rgba(255,255,255,0.1);">
-                    <p style="color: rgba(255,255,255,0.5);">Hermana Academy - Ethiopia</p>
-                </div>
-            </div>
-            <div style="text-align: center; margin-bottom: 20px;">
-                <button onclick="downloadStudentIDCard()" class="btn-success"><i class="fas fa-download"></i> Download ID Card</button>
-            </div>
-            
-            <div class="grid-3">
-                <div class="card"><h3><i class="fas fa-id-card"></i> Registration Fee</h3><p>1,000 ETB</p><span class="badge ${student.payments.registration ? 'badge-passed' : 'badge-pending'}">${student.payments.registration ? 'Paid ✓' : 'Unpaid'}</span>${!student.payments.registration ? '<br><button onclick="makeStudentPayment(\'registration\', 1000)" class="btn-small" style="margin-top:15px;"><i class="fas fa-credit-card"></i> Pay Now</button>' : ''}</div>
-                <div class="card"><h3><i class="fas fa-bus"></i> Term 1 + Bus</h3><p>3,500 ETB</p><span class="badge ${student.payments.term1 ? 'badge-passed' : 'badge-pending'}">${student.payments.term1 ? 'Paid ✓' : 'Unpaid'}</span>${!student.payments.term1 ? '<br><button onclick="makeStudentPayment(\'term1\', 3500)" class="btn-small" style="margin-top:15px;"><i class="fas fa-credit-card"></i> Pay Now</button>' : ''}</div>
-                <div class="card"><h3><i class="fas fa-bus"></i> Term 2 + Bus</h3><p>3,500 ETB</p><span class="badge ${student.payments.term2 ? 'badge-passed' : 'badge-pending'}">${student.payments.term2 ? 'Paid ✓' : 'Unpaid'}</span>${!student.payments.term2 ? '<br><button onclick="makeStudentPayment(\'term2\', 3500)" class="btn-small" style="margin-top:15px;"><i class="fas fa-credit-card"></i> Pay Now</button>' : ''}</div>
-            </div>
-            
-            <div class="footer-links">
-                <a onclick="openModal('purposeModal')"><i class="fas fa-lightbulb"></i> My Purpose</a>
-                <a onclick="openModal('feedbackModal')"><i class="fas fa-comment-dots"></i> Feedback</a>
-                <a onclick="openModal('privacyModal')"><i class="fas fa-shield-alt"></i> Privacy Policy</a>
-                <a onclick="openModal('contactModal')"><i class="fas fa-address-card"></i> Contact Me</a>
-            </div>
+            <div class="form-card"><div style="display:flex; justify-content:space-between;"><h2><i class="fas fa-graduation-cap"></i> Welcome, ${student.fullName}!</h2><button onclick="logout()" class="btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</button></div></div>
+            <div class="id-card" id="student-id-card"><div class="id-card-ethiopia"></div><div style="text-align:center;"><img class="id-photo-img" src="${student.photo}"><h3 style="color:white;">${student.fullName}</h3><p><strong>Student ID:</strong> ${student.studentId}</p><p><strong>Grade:</strong> ${student.grade}</p><p><strong>Exam Score:</strong> ${student.examScore}%</p><p><strong>Telegram:</strong> ${student.telegram || 'Not provided'}</p></div></div>
+            <div style="text-align:center;"><button onclick="downloadStudentIDCard()" class="btn-success"><i class="fas fa-download"></i> Download ID Card</button></div>
+            <div class="grid-3"><div class="card"><h3>Registration Fee</h3><p>1000 ETB</p><span class="badge ${student.payments.registration?'badge-passed':'badge-pending'}">${student.payments.registration?'Paid':'Unpaid'}</span>${!student.payments.registration?'<br><button onclick="makeStudentPayment(\'registration\',1000)" class="btn-small" style="margin-top:15px;">Pay Now</button>':''}</div>
+            <div class="card"><h3>Term 1 + Bus</h3><p>3500 ETB</p><span class="badge ${student.payments.term1?'badge-passed':'badge-pending'}">${student.payments.term1?'Paid':'Unpaid'}</span>${!student.payments.term1?'<br><button onclick="makeStudentPayment(\'term1\',3500)" class="btn-small" style="margin-top:15px;">Pay Now</button>':''}</div>
+            <div class="card"><h3>Term 2 + Bus</h3><p>3500 ETB</p><span class="badge ${student.payments.term2?'badge-passed':'badge-pending'}">${student.payments.term2?'Paid':'Unpaid'}</span>${!student.payments.term2?'<br><button onclick="makeStudentPayment(\'term2\',3500)" class="btn-small" style="margin-top:15px;">Pay Now</button>':''}</div></div>
+            <div class="footer-links"><a onclick="openModal('purposeModal')"><i class="fas fa-lightbulb"></i> Purpose</a><a onclick="openModal('feedbackModal')"><i class="fas fa-comment-dots"></i> Feedback</a><a onclick="openModal('privacyModal')"><i class="fas fa-shield-alt"></i> Privacy</a><a onclick="openModal('contactModal')"><i class="fas fa-address-card"></i> Contact</a></div>
         `;
-        
-        window.sendIdToTelegram = sendIdToTelegram;
     }
     
     window.makeStudentPayment = (type, amount) => {
@@ -1423,10 +1391,7 @@
         if(student) { student.payments[type] = true; saveData(); alert(`✅ Paid ${amount} ETB`); displayStudentProfile(student); }
     };
     
-    window.downloadStudentIDCard = () => {
-        const card = document.getElementById('student-id-card');
-        if(card) html2canvas(card, { scale: 2 }).then(canvas => { const link = document.createElement('a'); link.download = 'Hermana_Student_ID.png'; link.href = canvas.toDataURL(); link.click(); });
-    };
+    window.downloadStudentIDCard = () => { const card = document.getElementById('student-id-card'); if(card) html2canvas(card,{scale:2}).then(canvas=>{const a=document.createElement('a'); a.download='Student_ID.png'; a.href=canvas.toDataURL(); a.click();}); };
     
     // ==================== TEACHER FUNCTIONS ====================
     function generateTeacherExamQuestions() {
@@ -1439,10 +1404,11 @@
         ];
     }
     
-    async function startTeacherExam(teacherData, photoFile, docFile) {
+    async function startTeacherExam(teacherData, photoFile, docFile, telegramUsername) {
         const questions = generateTeacherExamQuestions();
         let currentQuestion = 0, answers = new Array(questions.length).fill(-1), timeLeft = 300;
         examActive = true;
+        examViolations = 0;
         
         let teacherPhoto = null;
         try {
@@ -1455,9 +1421,14 @@
             canvas.getContext('2d').drawImage(video, 0, 0, 200, 200);
             teacherPhoto = canvas.toDataURL();
             stream.getTracks().forEach(t => t.stop());
-        } catch(e) {}
+        } catch(e) { console.log("Camera error:", e); }
         
         document.body.style.overflow = 'hidden';
+        document.addEventListener('contextmenu', (e) => { if(examActive){ e.preventDefault(); examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } });
+        document.addEventListener('keydown', (e) => { if(examActive && (e.key==='F12'||(e.ctrlKey&&e.shiftKey&&e.key==='I')||(e.ctrlKey&&e.key==='u'))) { e.preventDefault(); examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } });
+        document.addEventListener('visibilitychange', () => { if(examActive && document.hidden) { examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } });
+        window.addEventListener('blur', () => { if(examActive) { examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } });
+        
         const examHTML = `<div id="examContainer" class="exam-container"><div class="exam-timer">⏱️ Time: <span id="timer">05:00</span></div><div id="examContent"></div></div>`;
         document.body.insertAdjacentHTML('beforeend', examHTML);
         
@@ -1484,12 +1455,35 @@
             
             if(percentage >= 60) {
                 const approvalCode = generateApprovalCode();
-                pendingTeachers.push({ id: Date.now(), fullName: teacherData.fullName, email: teacherData.email, phone: teacherData.phone, gradeLevel: teacherData.gradeLevel, subject: teacherData.subject, experience: teacherData.experience, reason: teacherData.reason, photo: teacherPhoto, document: docFile, examScore: percentage, approvalCode, status: 'pending' });
+                const pendingTeacher = {
+                    id: Date.now(),
+                    fullName: teacherData.fullName,
+                    email: teacherData.email,
+                    telegram: telegramUsername,
+                    phone: teacherData.phone,
+                    gradeLevel: teacherData.gradeLevel,
+                    subject: teacherData.subject,
+                    experience: teacherData.experience,
+                    reason: teacherData.reason,
+                    photo: teacherPhoto,
+                    document: docFile,
+                    examScore: percentage,
+                    approvalCode: approvalCode,
+                    status: 'pending'
+                };
+                pendingTeachers.push(pendingTeacher);
                 saveData();
-                alert(`✅ Exam passed! Score: ${percentage}%\nApplication submitted. Approval code will be emailed.`);
+                
+                // Send Telegram notification to admin
+                const adminMessage = `👨‍🏫 NEW TEACHER APPLICATION!\n\n👤 Name: ${teacherData.fullName}\n📧 Email: ${teacherData.email}\n🤖 Telegram: ${telegramUsername || 'Not provided'}\n📚 Grade Level: ${teacherData.gradeLevel}\n📊 Exam Score: ${percentage}%\n🔑 Approval Code: ${approvalCode}`;
+                sendToTelegram('ADMIN_CHAT_ID', adminMessage, teacherPhoto);
+                
+                alert(`✅ Exam passed! Score: ${percentage}%\nApplication submitted. You will receive approval code via Telegram within 2 days.`);
                 document.getElementById('teacherRegistrationSection').style.display = 'none';
                 document.getElementById('teacherWaitingSection').style.display = 'block';
-            } else { alert(`❌ Failed! Score: ${percentage}%. Need 60% to pass.`); }
+            } else {
+                alert(`❌ Exam failed! Score: ${percentage}%. Need 60% to pass.`);
+            }
         }
         
         const timerInterval = setInterval(() => {
@@ -1504,6 +1498,7 @@
         e.preventDefault();
         const docFile = document.getElementById('teacherDoc').files[0];
         const photoFile = document.getElementById('teacherPhoto').files[0];
+        const telegramUsername = document.getElementById('teacherTelegram').value.trim();
         if(!docFile || !photoFile) { alert('Upload both document and photo!'); return; }
         let docBase64 = null, photoBase64 = null;
         await new Promise(r => { const reader = new FileReader(); reader.onload = (ev) => { docBase64 = ev.target.result; r(); }; reader.readAsDataURL(docFile); });
@@ -1516,7 +1511,7 @@
             subject: document.getElementById('teacherSubject').value,
             experience: document.getElementById('teacherExperience').value,
             reason: document.getElementById('teacherReason').value
-        }, photoBase64, docBase64);
+        }, photoBase64, docBase64, telegramUsername);
     });
     
     document.getElementById('teacherLoginForm')?.addEventListener('submit', (e) => {
@@ -1525,11 +1520,30 @@
         const fullName = document.getElementById('teacherLoginName').value;
         const pending = pendingTeachers.find(t => t.approvalCode === code && t.fullName.toLowerCase() === fullName.toLowerCase());
         if(pending) {
-            const newTeacher = { teacherId: generateTeacherId(), fullName: pending.fullName, email: pending.email, phone: pending.phone, gradeLevel: pending.gradeLevel, subject: pending.subject, experience: pending.experience, photo: pending.photo, students: [], status: 'active' };
+            const newTeacher = {
+                teacherId: generateTeacherId(),
+                fullName: pending.fullName,
+                email: pending.email,
+                telegram: pending.telegram,
+                phone: pending.phone,
+                gradeLevel: pending.gradeLevel,
+                subject: pending.subject,
+                experience: pending.experience,
+                photo: pending.photo,
+                students: [],
+                status: 'active'
+            };
             teachers.push(newTeacher);
             const idx = pendingTeachers.findIndex(t => t.id === pending.id);
             if(idx !== -1) pendingTeachers.splice(idx,1);
             saveData();
+            
+            // Send approval notification to teacher's Telegram
+            if(pending.telegram) {
+                const approvalMessage = `✅ Congratulations ${pending.fullName}! Your teacher application has been APPROVED!\n\n🆔 Teacher ID: ${newTeacher.teacherId}\n🔑 Approval Code: ${code}\n\nLogin with your approval code and full name. Welcome to Hermana Academy! 🎉`;
+                sendToTelegram(pending.telegram, approvalMessage);
+            }
+            
             displayTeacherProfile(newTeacher);
         } else alert('Invalid approval code');
     });
@@ -1548,17 +1562,14 @@
         });
         document.getElementById('teacherProfileContent').innerHTML = `
             <div class="form-card"><div style="display:flex; justify-content:space-between;"><h2><i class="fas fa-chalkboard-user"></i> Welcome, Teacher ${teacher.fullName}!</h2><button onclick="logout()" class="btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</button></div></div>
-            <div class="id-card" id="teacher-id-card"><div class="id-card-ethiopia"></div><div style="text-align:center;"><img class="id-photo-img" src="${teacher.photo}"><h3 style="color:white;">${teacher.fullName}</h3><p><strong>Teacher ID:</strong> ${teacher.teacherId}</p><p><strong>Grade Level:</strong> ${teacher.gradeLevel}</p><p><strong>Subject:</strong> ${teacher.subject || 'General'}</p><p><strong>Experience:</strong> ${teacher.experience || 0} years</p></div></div>
+            <div class="id-card" id="teacher-id-card"><div class="id-card-ethiopia"></div><div style="text-align:center;"><img class="id-photo-img" src="${teacher.photo}"><h3 style="color:white;">${teacher.fullName}</h3><p><strong>Teacher ID:</strong> ${teacher.teacherId}</p><p><strong>Grade Level:</strong> ${teacher.gradeLevel}</p><p><strong>Subject:</strong> ${teacher.subject||'General'}</p><p><strong>Telegram:</strong> ${teacher.telegram||'N/A'}</p></div></div>
             <div style="text-align:center;"><button onclick="downloadTeacherIDCard()" class="btn-success"><i class="fas fa-download"></i> Download Teacher ID</button></div>
-            <div class="card"><h3><i class="fas fa-users"></i> Your Students (${assignedStudents.length})</h3><div class="student-table"><table><thead><tr><th>Name</th><th>Student ID</th><th>Grade</th><th>Score</th></tr></thead><tbody>${assignedStudents.map(s => `<tr><td>${s.fullName}</td><td>${s.studentId}</td><td>${s.grade}</td><td>${s.examScore}%络</tr>`).join('')}${assignedStudents.length===0?'<tr><td colspan="4">No students assigned yet.络</tr>':''}</tbody></table></div></div>
+            <div class="card"><h3><i class="fas fa-users"></i> Your Students (${assignedStudents.length})</h3><div class="student-table"><table><thead><tr><th>Name</th><th>Student ID</th><th>Grade</th><th>Score</th></tr></thead><tbody>${assignedStudents.map(s=>`<tr><td style="padding:12px;">${s.fullName}络<td style="padding:12px;">${s.studentId}络<td style="padding:12px;">${s.grade}络<td style="padding:12px;">${s.examScore}%络</tr>`).join('')}${assignedStudents.length===0?'<tr><td colspan="4">No students assigned yet.络</tr>':''}</tbody></table></div></div>
             <div class="footer-links"><a onclick="openModal('purposeModal')"><i class="fas fa-lightbulb"></i> Purpose</a><a onclick="openModal('feedbackModal')"><i class="fas fa-comment-dots"></i> Feedback</a><a onclick="openModal('privacyModal')"><i class="fas fa-shield-alt"></i> Privacy</a><a onclick="openModal('contactModal')"><i class="fas fa-address-card"></i> Contact</a></div>
         `;
     }
     
-    window.downloadTeacherIDCard = () => {
-        const card = document.getElementById('teacher-id-card');
-        if(card) html2canvas(card, { scale: 2 }).then(canvas => { const link = document.createElement('a'); link.download = 'Teacher_ID.png'; link.href = canvas.toDataURL(); link.click(); });
-    };
+    window.downloadTeacherIDCard = () => { const card = document.getElementById('teacher-id-card'); if(card) html2canvas(card,{scale:2}).then(canvas=>{const a=document.createElement('a'); a.download='Teacher_ID.png'; a.href=canvas.toDataURL(); a.click();}); };
     
     document.getElementById('parentLoginForm')?.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -1568,10 +1579,10 @@
             document.getElementById('parentLoginSection').style.display = 'none';
             document.getElementById('parentProfileSection').style.display = 'block';
             document.getElementById('parentProfileContent').innerHTML = `
-                <div class="form-card"><div style="display:flex; justify-content:space-between;"><h2><i class="fas fa-users"></i> Parent Dashboard - ${student.fullName}</h2><button onclick="logout()" class="btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</button></div></div>
-                <div class="card"><h3><i class="fas fa-info-circle"></i> Student Information</h3><p><strong>Name:</strong> ${student.fullName}</p><p><strong>ID:</strong> ${student.studentId}</p><p><strong>Grade:</strong> ${student.grade}</p><p><strong>Exam Score:</strong> ${student.examScore}%</p><p><strong>Parent:</strong> ${student.parentName || 'N/A'}</p><p><strong>Parent Phone:</strong> ${student.parentPhone || 'N/A'}</p></div>
-                <div class="card"><h3><i class="fas fa-credit-card"></i> Payment Status</h3><p>Registration: ${student.payments.registration?'✅ Paid':'❌ Unpaid'}</p><p>Term 1 + Bus: ${student.payments.term1?'✅ Paid':'❌ Unpaid'}</p><p>Term 2 + Bus: ${student.payments.term2?'✅ Paid':'❌ Unpaid'}</p><p>Term 3 + Bus: ${student.payments.term3?'✅ Paid':'❌ Unpaid'}</p></div>
-                <div class="footer-links"><a onclick="openModal('purposeModal')"><i class="fas fa-lightbulb"></i> Purpose</a><a onclick="openModal('feedbackModal')"><i class="fas fa-comment-dots"></i> Feedback</a><a onclick="openModal('privacyModal')"><i class="fas fa-shield-alt"></i> Privacy</a><a onclick="openModal('contactModal')"><i class="fas fa-address-card"></i> Contact</a></div>
+                <div class="form-card"><div style="display:flex; justify-content:space-between;"><h2><i class="fas fa-users"></i> Parent Dashboard - ${student.fullName}</h2><button onclick="logout()" class="btn-danger">Logout</button></div></div>
+                <div class="card"><h3>Student Information</h3><p><strong>Name:</strong> ${student.fullName}</p><p><strong>ID:</strong> ${student.studentId}</p><p><strong>Grade:</strong> ${student.grade}</p><p><strong>Exam Score:</strong> ${student.examScore}%</p><p><strong>Telegram:</strong> ${student.telegram||'N/A'}</p></div>
+                <div class="card"><h3>Payment Status</h3><p>Registration: ${student.payments.registration?'✅ Paid':'❌ Unpaid'}</p><p>Term 1: ${student.payments.term1?'✅ Paid':'❌ Unpaid'}</p><p>Term 2: ${student.payments.term2?'✅ Paid':'❌ Unpaid'}</p></div>
+                <div class="footer-links"><a onclick="openModal('purposeModal')">Purpose</a><a onclick="openModal('feedbackModal')">Feedback</a><a onclick="openModal('privacyModal')">Privacy</a><a onclick="openModal('contactModal')">Contact</a></div>
             `;
         } else alert('Student not found');
     });
@@ -1595,10 +1606,10 @@
                 const filtered = students.filter(s => gradeFilter.includes(s.grade));
                 const revenue = filtered.reduce((sum,s) => sum + (s.payments.registration?1000:0) + (s.payments.term1?3500:0),0);
                 document.getElementById('directorProfileContent').innerHTML = `
-                    <div class="form-card"><div style="display:flex; justify-content:space-between;"><div><img src="${ev.target.result}" style="width:70px;height:70px;border-radius:50%;"><h2><i class="fas fa-chart-line"></i> ${type.toUpperCase()} Director Dashboard</h2></div><button onclick="logout()" class="btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</button></div></div>
-                    <div class="grid-3"><div class="card"><h3><i class="fas fa-user-graduate"></i> Students</h3><p style="font-size:36px; font-weight:bold;">${filtered.length}</p></div><div class="card"><h3><i class="fas fa-money-bill-wave"></i> Revenue</h3><p style="font-size:36px; font-weight:bold;">${revenue.toLocaleString()} ETB</p></div><div class="card"><h3><i class="fas fa-check-circle"></i> Paid Registration</h3><p>${filtered.filter(s=>s.payments.registration).length}</p></div></div>
-                    <div class="card"><h3><i class="fas fa-users"></i> Students Under Your Command</h3><div class="student-table"><table><thead><tr><th>Name</th><th>ID</th><th>Grade</th><th>Paid</th></tr></thead><tbody>${filtered.map(s => `<tr><td>${s.fullName}络<td>${s.studentId}络<td>${s.grade}络<td>${s.payments.registration?'✅':'❌'}络</tr>`).join('')}</tbody></table></div></div>
-                    <div class="footer-links"><a onclick="openModal('purposeModal')"><i class="fas fa-lightbulb"></i> Purpose</a><a onclick="openModal('feedbackModal')"><i class="fas fa-comment-dots"></i> Feedback</a><a onclick="openModal('privacyModal')"><i class="fas fa-shield-alt"></i> Privacy</a><a onclick="openModal('contactModal')"><i class="fas fa-address-card"></i> Contact</a></div>
+                    <div class="form-card"><div style="display:flex; justify-content:space-between;"><div><img src="${ev.target.result}" style="width:70px;height:70px;border-radius:50%;"><h2><i class="fas fa-chart-line"></i> ${type.toUpperCase()} Director</h2></div><button onclick="logout()" class="btn-danger">Logout</button></div></div>
+                    <div class="grid-3"><div class="card"><h3>Students</h3><p style="font-size:36px;">${filtered.length}</p></div><div class="card"><h3>Revenue</h3><p style="font-size:36px;">${revenue.toLocaleString()} ETB</p></div><div class="card"><h3>Paid Registration</h3><p>${filtered.filter(s=>s.payments.registration).length}</p></div></div>
+                    <div class="card"><h3>Students</h3><div class="student-table"><table><thead><tr><th>Name</th><th>ID</th><th>Grade</th><th>Telegram</th><th>Paid</th></tr></thead><tbody>${filtered.map(s=>`<tr><td style="padding:12px;">${s.fullName}络<td style="padding:12px;">${s.studentId}络<td style="padding:12px;">${s.grade}络<td style="padding:12px;">${s.telegram||'N/A'}络<td style="padding:12px;">${s.payments.registration?'✅':'❌'}络</tr>`).join('')}</tbody></table></div></div>
+                    <div class="footer-links"><a onclick="openModal('purposeModal')">Purpose</a><a onclick="openModal('feedbackModal')">Feedback</a><a onclick="openModal('privacyModal')">Privacy</a><a onclick="openModal('contactModal')">Contact</a></div>
                 `;
             };
             reader.readAsDataURL(photoFile);
@@ -1618,10 +1629,10 @@
                 document.getElementById('boardProfileSection').style.display = 'block';
                 const totalRevenue = students.reduce((sum,s) => sum + (s.payments.registration?1000:0) + (s.payments.term1?3500:0),0);
                 document.getElementById('boardProfileContent').innerHTML = `
-                    <div class="form-card"><div style="display:flex; justify-content:space-between;"><div><img src="${ev.target.result}" style="width:70px;height:70px;border-radius:50%;"><h2><i class="fas fa-building"></i> Board of Directors Dashboard</h2></div><button onclick="logout()" class="btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</button></div></div>
-                    <div class="grid-4"><div class="card"><h3><i class="fas fa-user-graduate"></i> Students</h3><p style="font-size:32px;">${students.length}</p></div><div class="card"><h3><i class="fas fa-chalkboard-user"></i> Teachers</h3><p style="font-size:32px;">${teachers.length}</p></div><div class="card"><h3><i class="fas fa-money-bill-wave"></i> Revenue</h3><p style="font-size:32px;">${totalRevenue.toLocaleString()} ETB</p></div><div class="card"><h3><i class="fas fa-clock"></i> Pending</h3><p style="font-size:32px;">${pendingTeachers.length}</p></div></div>
-                    <div class="card"><h3><i class="fas fa-file-alt"></i> Pending Teacher Applications (${pendingTeachers.length})</h3><div class="student-table"><table><thead><tr><th>Name</th><th>Email</th><th>Grade Level</th><th>Score</th><th>Action</th></tr></thead><tbody>${pendingTeachers.map(t => `<tr><td>${t.fullName}络<td>${t.email}络<td>${t.gradeLevel}络<td>${t.examScore}%络<td><button onclick="approveTeacher(${t.id})" class="btn-small btn-success"><i class="fas fa-check"></i> Approve</button> <button onclick="rejectTeacher(${t.id})" class="btn-small btn-danger"><i class="fas fa-times"></i> Reject</button>络</tr>`).join('')}</tbody></table></div></div>
-                    <div class="footer-links"><a onclick="openModal('purposeModal')"><i class="fas fa-lightbulb"></i> Purpose</a><a onclick="openModal('feedbackModal')"><i class="fas fa-comment-dots"></i> Feedback</a><a onclick="openModal('privacyModal')"><i class="fas fa-shield-alt"></i> Privacy</a><a onclick="openModal('contactModal')"><i class="fas fa-address-card"></i> Contact</a></div>
+                    <div class="form-card"><div style="display:flex; justify-content:space-between;"><div><img src="${ev.target.result}" style="width:70px;height:70px;border-radius:50%;"><h2><i class="fas fa-building"></i> Board Dashboard</h2></div><button onclick="logout()" class="btn-danger">Logout</button></div></div>
+                    <div class="grid-4"><div class="card"><h3>Students</h3><p style="font-size:28px;">${students.length}</p></div><div class="card"><h3>Teachers</h3><p style="font-size:28px;">${teachers.length}</p></div><div class="card"><h3>Revenue</h3><p style="font-size:28px;">${totalRevenue.toLocaleString()} ETB</p></div><div class="card"><h3>Pending</h3><p style="font-size:28px;">${pendingTeachers.length}</p></div></div>
+                    <div class="card"><h3>Pending Teacher Applications</h3><div class="student-table"><table><thead><tr><th>Name</th><th>Email</th><th>Grade Level</th><th>Telegram</th><th>Score</th><th>Action</th></tr></thead><tbody>${pendingTeachers.map(t=>`<tr><td style="padding:12px;">${t.fullName}络<td style="padding:12px;">${t.email}络<td style="padding:12px;">${t.gradeLevel}络<td style="padding:12px;">${t.telegram||'N/A'}络<td style="padding:12px;">${t.examScore}%络<td style="padding:12px;"><button onclick="approveTeacher(${t.id})" class="btn-small btn-success">✅ Approve</button> <button onclick="rejectTeacher(${t.id})" class="btn-small btn-danger">❌ Reject</button>络</tr>`).join('')}</tbody></table></div></div>
+                    <div class="footer-links"><a onclick="openModal('purposeModal')">Purpose</a><a onclick="openModal('feedbackModal')">Feedback</a><a onclick="openModal('privacyModal')">Privacy</a><a onclick="openModal('contactModal')">Contact</a></div>
                 `;
             };
             reader.readAsDataURL(photoFile);
@@ -1633,13 +1644,27 @@
         if(teacher) {
             teacher.status = 'approved';
             saveData();
+            // Send approval notification to teacher's Telegram
+            if(teacher.telegram) {
+                const approvalMessage = `✅ Congratulations ${teacher.fullName}! Your teacher application has been APPROVED!\n\n🆔 Teacher ID: ${generateTeacherId()}\n🔑 Approval Code: ${teacher.approvalCode}\n\nLogin with your approval code and full name. Welcome to Hermana Academy! 🎉`;
+                sendToTelegram(teacher.telegram, approvalMessage);
+            }
             alert(`Teacher ${teacher.fullName} approved!`);
             location.reload();
         }
     };
     window.rejectTeacher = (id) => {
         const idx = pendingTeachers.findIndex(t => t.id === id);
-        if(idx !== -1) { pendingTeachers.splice(idx,1); saveData(); alert('Teacher rejected.'); location.reload(); }
+        if(idx !== -1) {
+            const teacher = pendingTeachers[idx];
+            if(teacher.telegram) {
+                sendToTelegram(teacher.telegram, `❌ Dear ${teacher.fullName}, we regret to inform you that your teacher application has not been accepted at this time. Thank you for your interest in Hermana Academy.`);
+            }
+            pendingTeachers.splice(idx,1);
+            saveData();
+            alert('Teacher rejected.');
+            location.reload();
+        }
     };
     
     let selectedRating = 0;
@@ -1681,5 +1706,4 @@
 </div>
 
 </body>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   </html>
-                                                                                       </div>
+    </html>
