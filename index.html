@@ -1078,8 +1078,9 @@
             <p style="text-align:center;"><strong>💬 Want to collaborate or hire me? Let's talk!</strong></p>
         </div>
     </div>
-    </div><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+                                                    </div><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
+    // ==================== CONFIGURATION ====================
     const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : 'https://hermana-acad.onrender.com/api';
     let examActive = false, examViolations = 0;
 
@@ -1097,10 +1098,10 @@
         const statusDiv = document.getElementById('serverStatus');
         try {
             await apiCall('/health');
-            statusDiv.innerHTML = '✅ Server Connected';
+            statusDiv.innerHTML = '✅ Server Connected (MongoDB + Telegram)';
             statusDiv.className = 'server-status online';
-        } catch {
-            statusDiv.innerHTML = '⚠️ Server Offline';
+        } catch (error) {
+            statusDiv.innerHTML = '⚠️ Server Offline – Check backend';
             statusDiv.className = 'server-status offline';
         }
     }
@@ -1140,7 +1141,7 @@
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     function logout() { location.reload(); }
 
-    // ========== STUDENT EXAM ==========
+    // ==================== STUDENT EXAM & REGISTRATION ====================
     function generateStudentExamQuestions(grade) {
         if (grade.includes("KG") || grade === "Nursery") {
             return [
@@ -1189,7 +1190,7 @@
         const violationHandler = () => {
             if(examActive) {
                 examViolations++;
-                alert(`Violation ${examViolations}/3`);
+                alert(`⚠️ Violation ${examViolations}/3 – Do not switch tabs!`);
                 if(examViolations >= 3) terminateExam();
             }
         };
@@ -1203,16 +1204,19 @@
         document.addEventListener('visibilitychange', () => { if(examActive && document.hidden) violationHandler(); });
         window.addEventListener('blur', violationHandler);
 
-        const examHTML = `<div id="examContainer" class="exam-container"><div class="exam-timer">⏱️ Time: <span id="timer">05:00</span></div><div id="examContent"></div></div>`;
+        const examHTML = `<div id="examContainer" class="exam-container"><div class="exam-timer">⏱️ Time: <span id="timer">05:00</span></div><div id="examContent"></div><div style="text-align:center; padding:15px; color:#ccc;">⚠️ DO NOT leave this page! 3 violations = termination</div></div>`;
         document.body.insertAdjacentHTML('beforeend', examHTML);
         try { await document.documentElement.requestFullscreen(); } catch(e) {}
 
         function render() {
             const q = questions[currentQuestion];
             document.getElementById('examContent').innerHTML = `
-                <div class="exam-question"><h3>Question ${currentQuestion+1}/${questions.length}</h3><p>${q.text}</p>
+                <div class="exam-question"><h3>Question ${currentQuestion+1}/${questions.length}</h3><p style="font-size:20px; margin:20px 0;">${q.text}</p>
                 ${q.options.map((opt, idx) => `<div class="exam-option ${answers[currentQuestion]===idx?'selected':''}" onclick="selectAnswer(${idx})">${String.fromCharCode(65+idx)}. ${opt}</div>`).join('')}</div>
-                <div><button onclick="prevQuestion()">◀ Previous</button><button onclick="nextQuestion()">${currentQuestion===questions.length-1?'Submit':'Next ▶'}</button></div>`;
+                <div style="display:flex; gap:15px; margin-top:20px;">
+                    <button onclick="prevQuestion()" class="${currentQuestion===0?'btn-danger':'btn-success'}">◀ Previous</button>
+                    <button onclick="nextQuestion()" class="btn-success" style="flex:1;">${currentQuestion===questions.length-1?'Submit Exam':'Next ▶'}</button>
+                </div>`;
         }
 
         window.selectAnswer = (idx) => { answers[currentQuestion] = idx; render(); };
@@ -1223,7 +1227,7 @@
             examActive = false;
             document.body.style.overflow = '';
             document.getElementById('examContainer')?.remove();
-            alert("Exam terminated.");
+            alert("❌ Exam terminated due to violations.");
             document.getElementById('studentRegistrationSection').style.display = 'block';
         }
 
@@ -1252,15 +1256,16 @@
 
                 try {
                     const result = await apiCall('/student/register', { method: 'POST', body: formData });
-                    alert(`Passed! Score: ${percentage}%\nStudent ID: ${result.studentId}\nCheck Telegram!`);
+                    alert(`🎉 Passed! Score: ${percentage}%\nYour Student ID: ${result.studentId}\n\n📱 Check your Telegram @${telegramUsername.replace('@','')} for login details!\n\n⚠️ IMPORTANT: You MUST have started a chat with @Hermana_Acadamey_bot first!`);
                     document.getElementById('studentRegistrationSection').style.display = 'none';
                     document.getElementById('studentLoginSection').style.display = 'block';
                 } catch (err) {
-                    alert('Registration failed: ' + err.message);
+                    console.error('Registration error:', err);
+                    alert(`❌ Registration failed: ${err.message}\n\nMake sure:\n1. You started a chat with @Hermana_Acadamey_bot on Telegram\n2. Your Telegram username is correct (with @)\n3. Backend server is running`);
                     document.getElementById('studentRegistrationSection').style.display = 'block';
                 }
             } else {
-                alert(`Failed! Score: ${percentage}%. Need 50% to pass.`);
+                alert(`❌ Failed! Score: ${percentage}%. Need 50% to pass.`);
                 document.getElementById('studentRegistrationSection').style.display = 'block';
             }
         }
@@ -1273,16 +1278,21 @@
         render();
     }
 
-    // Student registration form
+    // Student Registration Form
     document.getElementById('studentRegForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const photoFile = document.getElementById('stuPhoto').files[0];
-        const telegramUsername = document.getElementById('stuTelegram').value.trim();
-        if (!photoFile) { alert('Upload your photo!'); return; }
-        if (!telegramUsername) { alert('Enter Telegram username!'); return; }
+        let telegramUsername = document.getElementById('stuTelegram').value.trim();
+        if (!photoFile) { alert('📸 Please upload your photo!'); return; }
+        if (!telegramUsername) { alert('🤖 Please enter your Telegram username (e.g., @username)'); return; }
+        if (!telegramUsername.startsWith('@')) telegramUsername = '@' + telegramUsername;
+        
+        const fullName = document.getElementById('stuFullName').value.trim();
+        const email = document.getElementById('stuEmail').value.trim();
+        if (!fullName || !email) { alert('❌ Full Name and Email are required.'); return; }
+
         startSecureStudentExam({
-            fullName: document.getElementById('stuFullName').value,
-            email: document.getElementById('stuEmail').value,
+            fullName, email,
             phone: document.getElementById('stuPhone').value,
             grade: document.getElementById('stuGrade').value,
             parentName: document.getElementById('stuParentName').value,
@@ -1291,26 +1301,62 @@
         }, photoFile, telegramUsername);
     });
 
-    // Student login
+    // Student Login
     document.getElementById('studentLoginForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
+        const studentId = document.getElementById('studentLoginId').value;
+        const fullName = document.getElementById('studentLoginName').value;
         try {
-            const data = await apiCall('/student/login', { method: 'POST', body: JSON.stringify({ studentId: document.getElementById('studentLoginId').value, fullName: document.getElementById('studentLoginName').value }) });
-            document.getElementById('studentRegistrationSection').style.display = 'none';
-            document.getElementById('studentLoginSection').style.display = 'none';
-            document.getElementById('studentProfileSection').style.display = 'block';
-            document.getElementById('studentProfileContent').innerHTML = `<div class="form-card"><h2>Welcome ${data.student.fullName}!</h2><p>Student ID: ${data.student.studentId}</p><p>Grade: ${data.student.grade}</p><p>Exam Score: ${data.student.examScore}%</p><button onclick="logout()">Logout</button></div>`;
-        } catch { alert('Invalid credentials'); }
+            const data = await apiCall('/student/login', { method: 'POST', body: JSON.stringify({ studentId, fullName }) });
+            displayStudentProfile(data.student);
+        } catch (err) {
+            alert('❌ Invalid Student ID or Name.\n\nCheck your Telegram for the correct Student ID.');
+        }
     });
 
-    // ========== TEACHER EXAM ==========
+    function displayStudentProfile(student) {
+        document.getElementById('studentRegistrationSection').style.display = 'none';
+        document.getElementById('studentLoginSection').style.display = 'none';
+        document.getElementById('studentProfileSection').style.display = 'block';
+        
+        const photoUrl = student.photoUrl ? `${API_BASE_URL.replace('/api','')}${student.photoUrl}` : 'https://via.placeholder.com/150';
+        
+        document.getElementById('studentProfileContent').innerHTML = `
+            <div class="form-card"><div style="display:flex; justify-content:space-between;"><h2><i class="fas fa-graduation-cap"></i> Welcome, ${student.fullName}!</h2><button onclick="logout()" class="btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</button></div></div>
+            <div class="id-card" id="student-id-card"><div class="id-card-ethiopia" style="background:linear-gradient(90deg,#078930 0%,#078930 33%,#fcdd09 33%,#fcdd09 66%,#da121a 66%,#da121a 100%); height:12px; border-radius:6px; margin-bottom:25px;"></div><div style="text-align:center;"><img class="id-photo-img" src="${photoUrl}" onerror="this.src='https://via.placeholder.com/150'"><h3 style="color:white;">${student.fullName}</h3><p><strong>Student ID:</strong> ${student.studentId}</p><p><strong>Grade:</strong> ${student.grade}</p><p><strong>Exam Score:</strong> ${student.examScore}%</p><p><strong>Telegram:</strong> ${student.telegram || 'Not provided'}</p></div></div>
+            <div style="text-align:center;"><button onclick="downloadStudentIDCard()" class="btn-success"><i class="fas fa-download"></i> Download ID Card</button></div>
+            <div class="grid-3"><div class="card"><h3>Registration Fee</h3><p>1000 ETB</p><span class="badge" style="padding:6px 15px; border-radius:40px; background:${student.registration_paid?'linear-gradient(135deg,#11998e,#38ef7d)':'linear-gradient(135deg,#fa709a,#fee140)'}; color:${student.registration_paid?'white':'#1a1a2e'}">${student.registration_paid?'Paid':'Unpaid'}</span>${!student.registration_paid?'<br><button onclick="makeStudentPayment(\'registration\',1000)" style="margin-top:15px; padding:10px 20px;">Pay Now</button>':''}</div>
+            <div class="card"><h3>Term 1 + Bus</h3><p>3500 ETB</p><span class="badge" style="padding:6px 15px; border-radius:40px; background:${student.term1_paid?'linear-gradient(135deg,#11998e,#38ef7d)':'linear-gradient(135deg,#fa709a,#fee140)'}; color:${student.term1_paid?'white':'#1a1a2e'}">${student.term1_paid?'Paid':'Unpaid'}</span>${!student.term1_paid?'<br><button onclick="makeStudentPayment(\'term1\',3500)" style="margin-top:15px; padding:10px 20px;">Pay Now</button>':''}</div>
+            <div class="card"><h3>Term 2 + Bus</h3><p>3500 ETB</p><span class="badge" style="padding:6px 15px; border-radius:40px; background:${student.term2_paid?'linear-gradient(135deg,#11998e,#38ef7d)':'linear-gradient(135deg,#fa709a,#fee140)'}; color:${student.term2_paid?'white':'#1a1a2e'}">${student.term2_paid?'Paid':'Unpaid'}</span>${!student.term2_paid?'<br><button onclick="makeStudentPayment(\'term2\',3500)" style="margin-top:15px; padding:10px 20px;">Pay Now</button>':''}</div></div>
+            <div class="footer-links" style="margin-top:45px; padding-top:25px; border-top:1px solid rgba(255,255,255,0.1); display:flex; justify-content:center; gap:40px; flex-wrap:wrap;"><a onclick="openModal('purposeModal')" style="color:rgba(255,255,255,0.7); cursor:pointer;"><i class="fas fa-lightbulb"></i> Purpose</a><a onclick="openModal('feedbackModal')" style="color:rgba(255,255,255,0.7); cursor:pointer;"><i class="fas fa-comment-dots"></i> Feedback</a><a onclick="openModal('privacyModal')" style="color:rgba(255,255,255,0.7); cursor:pointer;"><i class="fas fa-shield-alt"></i> Privacy</a><a onclick="openModal('contactModal')" style="color:rgba(255,255,255,0.7); cursor:pointer;"><i class="fas fa-address-card"></i> Contact</a></div>
+        `;
+    }
+
+    window.makeStudentPayment = async (type, amount) => {
+        const studentId = document.getElementById('studentLoginId').value;
+        try {
+            await apiCall(`/student/${studentId}/payment`, { method: 'POST', body: JSON.stringify({ type, amount }) });
+            alert(`✅ Paid ${amount} ETB successfully!`);
+            const data = await apiCall(`/student/${studentId}`);
+            displayStudentProfile(data);
+        } catch (err) {
+            alert('Payment failed: ' + err.message);
+        }
+    };
+
+    window.downloadStudentIDCard = () => {
+        const card = document.getElementById('student-id-card');
+        if(card) html2canvas(card,{scale:2}).then(canvas=>{const a=document.createElement('a'); a.download='Student_ID_Card.png'; a.href=canvas.toDataURL(); a.click();});
+    };
+
+    // ==================== TEACHER EXAM & APPLICATION ====================
     function generateTeacherExamQuestions() {
         return [
             { text: "What is your teaching philosophy?", options: ["Student-centered","Teacher-centered","Both","None"], correct:0 },
-            { text: "How do you handle classroom discipline?", options: ["Strict rules","Positive reinforcement","Ignore","Send to principal"], correct:1 },
-            { text: "Best way to assess student learning?", options: ["Final exam","Continuous assessment","Homework","Participation"], correct:1 },
-            { text: "How to engage struggling students?", options: ["Extra homework","One-on-one support","Ignore","Move to back"], correct:1 },
-            { text: "Approach to parent communication?", options: ["Only issues","Regular updates","Never","Only conferences"], correct:1 }
+            { text: "How do you handle classroom discipline?", options: ["Strict rules","Positive reinforcement","Ignore minor issues","Send to principal"], correct:1 },
+            { text: "What is the best way to assess student learning?", options: ["Final exam only","Continuous assessment","Homework only","Class participation only"], correct:1 },
+            { text: "How do you engage struggling students?", options: ["Extra homework","One-on-one support","Ignore them","Move them to back"], correct:1 },
+            { text: "What is your approach to parent communication?", options: ["Only when issues arise","Regular updates","Never","Only at parent-teacher conferences"], correct:1 }
         ];
     }
 
@@ -1320,29 +1366,58 @@
         examActive = true;
         examViolations = 0;
 
-        const violationHandler = () => { if(examActive) { examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } };
-        document.addEventListener('contextmenu', violationHandler);
-        document.addEventListener('visibilitychange', () => { if(examActive && document.hidden) violationHandler(); });
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            const video = document.createElement('video');
+            video.srcObject = stream;
+            await video.play();
+            const canvas = document.createElement('canvas');
+            canvas.width = canvas.height = 200;
+            canvas.getContext('2d').drawImage(video, 0, 0, 200, 200);
+            stream.getTracks().forEach(t => t.stop());
+        } catch(e) { console.warn("Camera error"); }
 
-        const examHTML = `<div id="examContainer" class="exam-container"><div class="exam-timer">⏱️ Time: <span id="timer">05:00</span></div><div id="examContent"></div></div>`;
+        const violationHandler = () => {
+            if(examActive) {
+                examViolations++;
+                alert(`⚠️ Violation ${examViolations}/3 – Do not switch tabs!`);
+                if(examViolations >= 3) terminateExam();
+            }
+        };
+        document.addEventListener('contextmenu', violationHandler);
+        document.addEventListener('keydown', (e) => {
+            if(examActive && (e.key==='F12'||(e.ctrlKey&&e.shiftKey&&e.key==='I'))) {
+                e.preventDefault();
+                violationHandler();
+            }
+        });
+        document.addEventListener('visibilitychange', () => { if(examActive && document.hidden) violationHandler(); });
+        window.addEventListener('blur', violationHandler);
+
+        const examHTML = `<div id="examContainer" class="exam-container"><div class="exam-timer">⏱️ Time: <span id="timer">05:00</span></div><div id="examContent"></div><div style="text-align:center; padding:15px; color:#ccc;">⚠️ DO NOT leave this page! 3 violations = termination</div></div>`;
         document.body.insertAdjacentHTML('beforeend', examHTML);
+        try { await document.documentElement.requestFullscreen(); } catch(e) {}
 
         function render() {
             const q = questions[currentQuestion];
             document.getElementById('examContent').innerHTML = `
-                <div class="exam-question"><h3>Question ${currentQuestion+1}/${questions.length}</h3><p>${q.text}</p>
-                ${q.options.map((opt, idx) => `<div class="exam-option ${answers[currentQuestion]===idx?'selected':''}" onclick="selectAnswer(${idx})">${String.fromCharCode(65+idx)}. ${opt}</div>`).join('')}</div>
-                <div><button onclick="prevQuestion()">◀ Previous</button><button onclick="nextQuestion()">${currentQuestion===questions.length-1?'Submit':'Next ▶'}</button></div>`;
+                <div class="exam-question"><h3>Question ${currentQuestion+1}/${questions.length}</h3><p style="font-size:20px; margin:20px 0;">${q.text}</p>
+                ${q.options.map((opt, idx) => `<div class="exam-option ${answers[currentQuestion]===idx?'selected':''}" onclick="selectTeacherAnswer(${idx})">${String.fromCharCode(65+idx)}. ${opt}</div>`).join('')}</div>
+                <div style="display:flex; gap:15px; margin-top:20px;">
+                    <button onclick="prevTeacher()" class="${currentQuestion===0?'btn-danger':'btn-success'}">◀ Previous</button>
+                    <button onclick="nextTeacher()" class="btn-success" style="flex:1;">${currentQuestion===questions.length-1?'Submit Application':'Next ▶'}</button>
+                </div>`;
         }
-        window.selectAnswer = (idx) => { answers[currentQuestion] = idx; render(); };
-        window.nextQuestion = () => { if(currentQuestion === questions.length-1) submitExam(); else { currentQuestion++; render(); } };
-        window.prevQuestion = () => { if(currentQuestion > 0) { currentQuestion--; render(); } };
+
+        window.selectTeacherAnswer = (idx) => { answers[currentQuestion] = idx; render(); };
+        window.nextTeacher = () => { if(currentQuestion === questions.length-1) submitExam(); else { currentQuestion++; render(); } };
+        window.prevTeacher = () => { if(currentQuestion > 0) { currentQuestion--; render(); } };
 
         function terminateExam() {
             examActive = false;
             document.body.style.overflow = '';
             document.getElementById('examContainer')?.remove();
-            alert("Exam terminated.");
+            alert("❌ Exam terminated due to violations.");
             document.getElementById('teacherRegistrationSection').style.display = 'block';
         }
 
@@ -1370,35 +1445,38 @@
                 if (docFile) formData.append('document', docFile);
 
                 try {
-                    await apiCall('/teacher/apply', { method: 'POST', body: formData });
-                    alert(`Exam passed! Score: ${percentage}%\nApplication submitted! Check Telegram for approval code.`);
+                    const result = await apiCall('/teacher/apply', { method: 'POST', body: formData });
+                    alert(`✅ Exam passed! Score: ${percentage}%\n\nApplication submitted successfully!\nApproval Code: ${result.approvalCode}\n\n📱 Check your Telegram for updates!`);
                     document.getElementById('teacherRegistrationSection').style.display = 'none';
                     document.getElementById('teacherWaitingSection').style.display = 'block';
                 } catch (err) {
-                    alert('Application failed: ' + err.message);
+                    alert(`❌ Application failed: ${err.message}`);
                     document.getElementById('teacherRegistrationSection').style.display = 'block';
                 }
             } else {
-                alert(`Failed! Score: ${percentage}%. Need 60% to pass.`);
+                alert(`❌ Failed! Score: ${percentage}%. Need 60% to pass.`);
                 document.getElementById('teacherRegistrationSection').style.display = 'block';
             }
         }
 
         const timerInterval = setInterval(() => {
             if(!examActive) return clearInterval(timerInterval);
-            if(timeLeft <= 0) submitExam();
+            if(timeLeft <= 0) { clearInterval(timerInterval); submitExam(); }
             else { timeLeft--; const mins = Math.floor(timeLeft/60); const secs = timeLeft%60; document.getElementById('timer') && (document.getElementById('timer').innerText = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`); }
         }, 1000);
         render();
     }
 
-    // Teacher registration form
+    // Teacher Registration Form
     document.getElementById('teacherRegForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const docFile = document.getElementById('teacherDoc').files[0];
         const photoFile = document.getElementById('teacherPhoto').files[0];
-        const telegramUsername = document.getElementById('teacherTelegram').value.trim();
-        if (!docFile || !photoFile) { alert('Upload both document and photo!'); return; }
+        let telegramUsername = document.getElementById('teacherTelegram').value.trim();
+        if (!docFile) { alert('📄 Please upload your education document!'); return; }
+        if (!photoFile) { alert('📸 Please upload your photo!'); return; }
+        if (telegramUsername && !telegramUsername.startsWith('@')) telegramUsername = '@' + telegramUsername;
+
         startTeacherExam({
             fullName: document.getElementById('teacherFullName').value,
             email: document.getElementById('teacherEmail').value,
@@ -1410,55 +1488,112 @@
         }, photoFile, docFile, telegramUsername);
     });
 
-    // Teacher login
+    // Teacher Login
     document.getElementById('teacherLoginForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
+        const code = document.getElementById('teacherCode').value;
+        const fullName = document.getElementById('teacherLoginName').value;
         try {
-            const data = await apiCall('/teacher/login', { method: 'POST', body: JSON.stringify({ code: document.getElementById('teacherCode').value, fullName: document.getElementById('teacherLoginName').value }) });
-            alert('Login successful! Teacher dashboard coming soon.');
-        } catch { alert('Invalid approval code'); }
+            const data = await apiCall('/teacher/login', { method: 'POST', body: JSON.stringify({ code, fullName }) });
+            alert(`✅ Welcome ${data.teacher.fullName}!\n\nTeacher ID: ${data.teacher.teacherId}\nDashboard loading...`);
+            // Display teacher profile
+            document.getElementById('teacherRegistrationSection').style.display = 'none';
+            document.getElementById('teacherWaitingSection').style.display = 'none';
+            document.getElementById('teacherLoginSection').style.display = 'none';
+            document.getElementById('teacherProfileSection').style.display = 'block';
+            document.getElementById('teacherProfileContent').innerHTML = `
+                <div class="form-card"><h2><i class="fas fa-chalkboard-user"></i> Welcome, Teacher ${data.teacher.fullName}!</h2><button onclick="logout()" class="btn-danger">Logout</button></div>
+                <div class="card"><h3>Your Information</h3><p><strong>Teacher ID:</strong> ${data.teacher.teacherId}</p><p><strong>Grade Level:</strong> ${data.teacher.gradeLevel}</p><p><strong>Subject:</strong> ${data.teacher.subject || 'General'}</p><p><strong>Status:</strong> Approved ✅</p></div>`;
+        } catch (err) {
+            alert('❌ Invalid approval code. Please check your Telegram for the correct code.');
+        }
     });
 
-    // Parent login
+    // ==================== PARENT DASHBOARD ====================
     document.getElementById('parentLoginForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
+        const studentId = document.getElementById('parentStudentId').value;
         try {
-            const data = await apiCall('/parent/login', { method: 'POST', body: JSON.stringify({ studentId: document.getElementById('parentStudentId').value }) });
+            const data = await apiCall('/parent/login', { method: 'POST', body: JSON.stringify({ studentId }) });
             document.getElementById('parentLoginSection').style.display = 'none';
             document.getElementById('parentProfileSection').style.display = 'block';
-            document.getElementById('parentProfileContent').innerHTML = `<div class="form-card"><h2>Student: ${data.student.fullName}</h2><p>Grade: ${data.student.grade}</p><p>Exam Score: ${data.student.examScore}%</p><p>Registration Paid: ${data.student.registration_paid ? 'Yes' : 'No'}</p><button onclick="logout()">Logout</button></div>`;
-        } catch { alert('Student not found'); }
+            document.getElementById('parentProfileContent').innerHTML = `
+                <div class="form-card"><div style="display:flex; justify-content:space-between;"><h2><i class="fas fa-users"></i> Parent Dashboard - ${data.student.fullName}</h2><button onclick="logout()" class="btn-danger">Logout</button></div></div>
+                <div class="card"><h3>Student Information</h3><p><strong>Name:</strong> ${data.student.fullName}</p><p><strong>Student ID:</strong> ${data.student.studentId}</p><p><strong>Grade:</strong> ${data.student.grade}</p><p><strong>Exam Score:</strong> ${data.student.examScore}%</p><p><strong>Telegram:</strong> ${data.student.telegram || 'N/A'}</p></div>
+                <div class="card"><h3>Payment Status</h3><p>Registration Fee: ${data.student.registration_paid ? '✅ Paid' : '❌ Unpaid'}</p><p>Term 1: ${data.student.term1_paid ? '✅ Paid' : '❌ Unpaid'}</p><p>Term 2: ${data.student.term2_paid ? '✅ Paid' : '❌ Unpaid'}</p></div>
+                <div class="footer-links"><a onclick="openModal('purposeModal')">Purpose</a><a onclick="openModal('feedbackModal')">Feedback</a><a onclick="openModal('privacyModal')">Privacy</a><a onclick="openModal('contactModal')">Contact</a></div>`;
+        } catch (err) {
+            alert('❌ Student not found. Please check the Student ID.');
+        }
     });
 
-    // Director login
+    // ==================== DIRECTOR DASHBOARD ====================
     document.getElementById('directorLoginForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const photoFile = document.getElementById('directorPhoto').files[0];
-        if (!photoFile) { alert('Upload photo!'); return; }
+        if (!photoFile) { alert('📸 Please upload your photo for verification!'); return; }
         try {
-            const data = await apiCall('/director/login', { method: 'POST', body: JSON.stringify({ type: document.getElementById('directorType').value, password: document.getElementById('directorPassword').value }) });
+            const data = await apiCall('/director/login', { method: 'POST', body: JSON.stringify({ 
+                type: document.getElementById('directorType').value, 
+                password: document.getElementById('directorPassword').value 
+            }) });
             const stats = await apiCall(`/director/${data.director.type}/stats`);
             document.getElementById('directorLoginSection').style.display = 'none';
             document.getElementById('directorProfileSection').style.display = 'block';
-            document.getElementById('directorProfileContent').innerHTML = `<div class="form-card"><h2>${data.director.name} Dashboard</h2><p>Students: ${stats.students.length}</p><p>Revenue: ${stats.revenue} ETB</p><button onclick="logout()">Logout</button></div>`;
-        } catch { alert('Invalid credentials'); }
+            document.getElementById('directorProfileContent').innerHTML = `
+                <div class="form-card"><div style="display:flex; justify-content:space-between;"><h2><i class="fas fa-chart-line"></i> ${data.director.name} Dashboard</h2><button onclick="logout()" class="btn-danger">Logout</button></div></div>
+                <div class="grid-3"><div class="card"><h3>Total Students</h3><p style="font-size:36px;">${stats.students.length}</p></div><div class="card"><h3>Revenue</h3><p style="font-size:36px;">${stats.revenue.toLocaleString()} ETB</p></div><div class="card"><h3>Teachers</h3><p style="font-size:36px;">${stats.teachers.length}</p></div></div>
+                <div class="card"><h3>Student List</h3><div class="student-table"><table style="width:100%;"><thead><tr><th>Name</th><th>ID</th><th>Grade</th><th>Paid</th></tr></thead><tbody>${stats.students.map(s => `<tr><td>${s.fullName}</td><td>${s.studentId}</td><td>${s.grade}</td><td>${s.registration_paid ? '✅' : '❌'}</td></tr>`).join('')}</tbody></table></div></div>`;
+        } catch (err) {
+            alert('❌ Invalid director credentials. Default passwords: kg123, elem123, high123');
+        }
     });
 
-    // Board login
+    // ==================== BOARD DASHBOARD ====================
     document.getElementById('boardLoginForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const photoFile = document.getElementById('boardPhoto').files[0];
-        if (!photoFile) { alert('Upload photo!'); return; }
+        if (!photoFile) { alert('📸 Please upload your photo for verification!'); return; }
         try {
-            await apiCall('/board/login', { method: 'POST', body: JSON.stringify({ email: document.getElementById('boardEmail').value, password: document.getElementById('boardPassword').value }) });
+            await apiCall('/board/login', { method: 'POST', body: JSON.stringify({ 
+                email: document.getElementById('boardEmail').value, 
+                password: document.getElementById('boardPassword').value 
+            }) });
             const stats = await apiCall('/board/stats');
             document.getElementById('boardLoginSection').style.display = 'none';
             document.getElementById('boardProfileSection').style.display = 'block';
-            document.getElementById('boardProfileContent').innerHTML = `<div class="form-card"><h2>Board Dashboard</h2><p>Students: ${stats.totalStudents}</p><p>Teachers: ${stats.totalTeachers}</p><p>Pending Teachers: ${stats.pendingTeachers}</p><p>Revenue: ${stats.totalRevenue} ETB</p><button onclick="logout()">Logout</button></div>`;
-        } catch { alert('Invalid credentials'); }
+            document.getElementById('boardProfileContent').innerHTML = `
+                <div class="form-card"><div style="display:flex; justify-content:space-between;"><h2><i class="fas fa-building"></i> Board of Directors Dashboard</h2><button onclick="logout()" class="btn-danger">Logout</button></div></div>
+                <div class="grid-4"><div class="card"><h3>Students</h3><p style="font-size:28px;">${stats.totalStudents}</p></div><div class="card"><h3>Teachers</h3><p style="font-size:28px;">${stats.totalTeachers}</p></div><div class="card"><h3>Pending Teachers</h3><p style="font-size:28px;">${stats.pendingTeachers}</p></div><div class="card"><h3>Revenue</h3><p style="font-size:28px;">${stats.totalRevenue.toLocaleString()} ETB</p></div></div>
+                <div class="card"><h3>Pending Teacher Applications</h3><div class="student-table"><table style="width:100%;"><thead><tr><th>Name</th><th>Email</th><th>Grade Level</th><th>Score</th><th>Action</th></tr></thead><tbody>${stats.pendingTeachersList.map(t => `<tr><td>${t.fullName}</td><td>${t.email}</td><td>${t.gradeLevel}</td><td>${t.examScore}%</td><td><button onclick="approveTeacher('${t._id}')" style="background:#11998e; padding:8px 15px;">Approve</button> <button onclick="rejectTeacher('${t._id}')" style="background:#dc3545; padding:8px 15px;">Reject</button></td></tr>`).join('')}</tbody></table></div></div>`;
+        } catch (err) {
+            alert('❌ Invalid board credentials. Default: board@hermana.edu / board123');
+        }
     });
 
-    // Feedback
+    window.approveTeacher = async (id) => {
+        try {
+            await apiCall(`/teacher/${id}/approve`, { method: 'POST' });
+            alert('✅ Teacher approved! They will receive a Telegram notification.');
+            location.reload();
+        } catch (err) {
+            alert('Failed to approve: ' + err.message);
+        }
+    };
+
+    window.rejectTeacher = async (id) => {
+        if (confirm('Reject this teacher application?')) {
+            try {
+                await apiCall(`/teacher/${id}/reject`, { method: 'POST' });
+                alert('❌ Teacher rejected.');
+                location.reload();
+            } catch (err) {
+                alert('Failed to reject: ' + err.message);
+            }
+        }
+    };
+
+    // ==================== FEEDBACK SYSTEM ====================
     let selectedRating = 0;
     document.querySelectorAll('#starRating .star')?.forEach(star => {
         star.addEventListener('click', function() {
@@ -1468,25 +1603,33 @@
             document.getElementById('feedbackRating').value = selectedRating;
         });
     });
+
     document.getElementById('feedbackForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const rating = document.getElementById('feedbackRating').value;
         const text = document.getElementById('feedbackText').value;
-        if (!rating || rating==0) { alert('Rate us!'); return; }
-        if (!text.trim()) { alert('Write feedback!'); return; }
-        await apiCall('/feedback', { method: 'POST', body: JSON.stringify({ rating, message: text, name: 'Anonymous' }) });
-        document.getElementById('feedbackThanks').style.display = 'block';
-        document.getElementById('feedbackForm').reset();
-        document.querySelectorAll('#starRating .star').forEach(s => s.classList.remove('active'));
-        document.getElementById('feedbackRating').value = '0';
-        selectedRating = 0;
-        setTimeout(() => { document.getElementById('feedbackThanks').style.display = 'none'; closeModal('feedbackModal'); }, 2000);
+        if (!rating || rating == 0) { alert('⭐ Please rate us!'); return; }
+        if (!text.trim()) { alert('💬 Please write your feedback!'); return; }
+        try {
+            await apiCall('/feedback', { method: 'POST', body: JSON.stringify({ rating, message: text, name: 'Anonymous' }) });
+            document.getElementById('feedbackThanks').style.display = 'block';
+            document.getElementById('feedbackForm').reset();
+            document.querySelectorAll('#starRating .star').forEach(s => s.classList.remove('active'));
+            document.getElementById('feedbackRating').value = '0';
+            selectedRating = 0;
+            setTimeout(() => { document.getElementById('feedbackThanks').style.display = 'none'; closeModal('feedbackModal'); }, 2000);
+        } catch (err) {
+            alert('Failed to submit feedback: ' + err.message);
+        }
     });
 
+    // Make functions global
     window.selectRole = selectRole;
     window.openModal = openModal;
     window.closeModal = closeModal;
     window.logout = logout;
-</script>
+    window.approveTeacher = approveTeacher;
+    window.rejectTeacher = rejectTeacher;
+    </script>
 </body>
 </html>
