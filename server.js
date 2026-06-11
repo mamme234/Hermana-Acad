@@ -19,6 +19,7 @@ console.log('========================================');
 console.log('📧 ENVIRONMENT VARIABLES CHECK:');
 console.log('   TELEGRAM_BOT_TOKEN:', process.env.TELEGRAM_BOT_TOKEN ? '✅ SET' : '❌ MISSING');
 console.log('   ADMIN_CHAT_ID:', process.env.ADMIN_CHAT_ID ? '✅ SET' : '❌ MISSING');
+console.log('   MONGODB_URI:', process.env.MONGODB_URI ? '✅ SET' : '❌ MISSING');
 console.log('========================================');
 
 // ==================== MIDDLEWARE ====================
@@ -97,6 +98,43 @@ function sendTelegramMessage(chatId, message) {
         });
         
         req.write(postData);
+        req.end();
+    });
+}
+
+// Function to check if user has started a chat with the bot
+function checkUserExists(telegramUsername) {
+    return new Promise((resolve) => {
+        if (!TELEGRAM_BOT_TOKEN || !telegramUsername) {
+            resolve(false);
+            return;
+        }
+        
+        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates`;
+        
+        const req = https.get(url, (res) => {
+            let data = '';
+            res.on('data', chunk => data += chunk);
+            res.on('end', () => {
+                try {
+                    const json = JSON.parse(data);
+                    if (json.ok && json.result) {
+                        // Check if the username exists in updates
+                        const userExists = json.result.some(update => {
+                            const username = update.message?.from?.username || update.message?.chat?.username;
+                            return username && username.toLowerCase() === telegramUsername.toLowerCase();
+                        });
+                        resolve(userExists);
+                    } else {
+                        resolve(false);
+                    }
+                } catch(e) {
+                    resolve(false);
+                }
+            });
+        });
+        
+        req.on('error', () => resolve(false));
         req.end();
     });
 }
@@ -210,7 +248,7 @@ function sendTelegramPhoto(chatId, photoBase64, caption) {
 // Send startup notification
 if (TELEGRAM_BOT_TOKEN && ADMIN_CHAT_ID) {
     setTimeout(() => {
-        sendTelegramMessage(ADMIN_CHAT_ID, '🤖 *Hermana Academy Bot Started!*\n\nServer is online.');
+        sendTelegramMessage(ADMIN_CHAT_ID, '🤖 *Hermana Academy Bot Started!*\n\nServer is online and ready.');
     }, 3000);
 }
 
@@ -343,6 +381,13 @@ app.get('/api/health', (req, res) => {
     });
 });
 
+// ==================== CHECK IF USER EXISTS IN TELEGRAM ====================
+app.get('/api/telegram/check-user/:username', async (req, res) => {
+    const { username } = req.params;
+    const exists = await checkUserExists(username);
+    res.json({ username, exists });
+});
+
 // ==================== TEST TELEGRAM ENDPOINT ====================
 app.get('/api/test-telegram', async (req, res) => {
     if (!TELEGRAM_BOT_TOKEN || !ADMIN_CHAT_ID) {
@@ -375,7 +420,7 @@ app.post('/api/telegram/send', async (req, res) => {
     if (sent) {
         res.json({ success: true });
     } else {
-        res.status(500).json({ error: 'Failed to send Telegram message' });
+        res.status(500).json({ error: 'Failed to send Telegram message. Make sure the user has started a chat with the bot.' });
     }
 });
 
@@ -430,6 +475,9 @@ app.post('/api/student/register', upload.single('photo'), async (req, res) => {
         }
         
         // Send ID to STUDENT via Telegram
+        let studentMessageSent = false;
+        let studentMessageError = null;
+        
         if (telegram && TELEGRAM_BOT_TOKEN) {
             // Remove @ if present
             let cleanTelegram = telegram;
@@ -439,21 +487,38 @@ app.post('/api/student/register', upload.single('photo'), async (req, res) => {
             
             console.log('📱 Attempting to send Telegram to student:', cleanTelegram);
             
-            const studentMessage = `🎉 <b>Welcome to Hermana Academy, ${fullName}!</b>\n\n🆔 <b>Your Student ID:</b> ${studentId}\n📚 <b>Grade:</b> ${grade}\n📊 <b>Exam Score:</b> ${examScore}%\n\n🔐 <b>Login with:</b>\n   Student ID: ${studentId}\n   Full Name: ${fullName}\n\n📱 <b>Parent Access:</b> Same Student ID\n\n⚠️ <b>Important:</b> You must start a chat with this bot first!\n   Search @HermanaAcademyBot and press START.\n\nThank you for choosing Hermana Academy! 🇪🇹`;
+            // First check if user exists
+            const userExists = await checkUserExists(cleanTelegram);
             
-            const sent = await sendTelegramMessage(cleanTelegram, studentMessage);
-            
-            if (sent) {
-                console.log('✅ Student ID message sent to Telegram user:', cleanTelegram);
+            if (!userExists) {
+                studentMessageError = 'User has not started a chat with the bot';
+                console.log('⚠️ Student has NOT started a chat with the bot. Please ask them to send /start to @Hermana_Acadamey_bot');
             } else {
-                console.log('⚠️ Could not send to student. Make sure the student has started a chat with the bot.');
-                console.log('   Student should search @HermanaAcademyBot and click START');
+                const studentMessage = `🎉 <b>Welcome to Hermana Academy, ${fullName}!</b>\n\n🆔 <b>Your Student ID:</b> ${studentId}\n📚 <b>Grade:</b> ${grade}\n📊 <b>Exam Score:</b> ${examScore}%\n\n🔐 <b>Login with:</b>\n   Student ID: ${studentId}\n   Full Name: ${fullName}\n\n📱 <b>Parent Access:</b> Same Student ID\n\nThank you for choosing Hermana Academy! 🇪🇹`;
+                
+                const sent = await sendTelegramMessage(cleanTelegram, studentMessage);
+                
+                if (sent) {
+                    console.log('✅ Student ID message sent to Telegram user:', cleanTelegram);
+                    studentMessageSent = true;
+                } else {
+                    studentMessageError = 'Failed to send message';
+                    console.log('⚠️ Failed to send message to student');
+                }
             }
         } else {
+            studentMessageError = 'No Telegram username provided';
             console.log('⚠️ No Telegram username provided for student:', fullName);
         }
         
-        res.status(201).json({ success: true, studentId, student });
+        res.status(201).json({ 
+            success: true, 
+            studentId, 
+            student,
+            telegramSent: studentMessageSent,
+            telegramError: studentMessageError,
+            telegramNote: studentMessageSent ? 'ID sent to Telegram' : 'Could not send Telegram. Please make sure you have started a chat with @Hermana_Acadamey_bot first!'
+        });
     } catch (error) {
         console.error('Registration error:', error);
         res.status(500).json({ error: error.message });
@@ -597,8 +662,16 @@ app.post('/api/teacher/:id/approve', async (req, res) => {
             if (teacher.telegram.startsWith('@')) {
                 cleanTelegram = teacher.telegram.substring(1);
             }
-            const teacherMessage = `✅ <b>Congratulations ${teacher.fullName}!</b>\n\nYour teacher application has been <b>APPROVED</b>!\n\n🆔 <b>Teacher ID:</b> ${teacher.teacherId}\n🔑 <b>Approval Code:</b> ${teacher.approvalCode}\n\nWelcome to Hermana Academy! 🎉`;
-            await sendTelegramMessage(cleanTelegram, teacherMessage);
+            
+            // Check if user exists first
+            const userExists = await checkUserExists(cleanTelegram);
+            
+            if (userExists) {
+                const teacherMessage = `✅ <b>Congratulations ${teacher.fullName}!</b>\n\nYour teacher application has been <b>APPROVED</b>!\n\n🆔 <b>Teacher ID:</b> ${teacher.teacherId}\n🔑 <b>Approval Code:</b> ${teacher.approvalCode}\n\nWelcome to Hermana Academy! 🎉`;
+                await sendTelegramMessage(cleanTelegram, teacherMessage);
+            } else {
+                console.log('⚠️ Teacher has not started chat with bot. Cannot send approval message.');
+            }
         }
         
         res.json({ success: true });
@@ -618,8 +691,13 @@ app.post('/api/teacher/:id/reject', async (req, res) => {
             if (teacher.telegram.startsWith('@')) {
                 cleanTelegram = teacher.telegram.substring(1);
             }
-            const teacherMessage = `❌ <b>Dear ${teacher.fullName},</b>\n\nThank you for your interest in Hermana Academy.\n\nAfter careful review, we regret to inform you that your application has not been accepted at this time.\n\nBest regards,\nHermana Academy Board`;
-            await sendTelegramMessage(cleanTelegram, teacherMessage);
+            
+            const userExists = await checkUserExists(cleanTelegram);
+            
+            if (userExists) {
+                const teacherMessage = `❌ <b>Dear ${teacher.fullName},</b>\n\nThank you for your interest in Hermana Academy.\n\nAfter careful review, we regret to inform you that your application has not been accepted at this time.\n\nBest regards,\nHermana Academy Board`;
+                await sendTelegramMessage(cleanTelegram, teacherMessage);
+            }
         }
         
         if (ADMIN_CHAT_ID && TELEGRAM_BOT_TOKEN) {
@@ -743,8 +821,11 @@ app.listen(PORT, () => {
     ║                                                                    ║
     ║  ⚠️ IMPORTANT FOR STUDENTS:                                       ║
     ║     Students MUST start a chat with the bot FIRST!                ║
-    ║     Search @HermanaAcademyBot and press START                     ║
-    ║     Then they will receive their Student ID via Telegram          ║
+    ║     1. Open Telegram                                              ║
+    ║     2. Search for: @Hermana_Acadamey_bot                          ║
+    ║     3. Click START button                                         ║
+    ║     4. Send any message (say "Hello")                             ║
+    ║     5. THEN register on the website                               ║
     ║                                                                    ║
     ║  🔑 Demo Accounts:                                                ║
     ║     Board: board@hermana.edu / board123                           ║
