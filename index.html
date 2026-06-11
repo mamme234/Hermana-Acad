@@ -848,8 +848,7 @@
             <div id="studentProfileSection" style="display: none;">
                 <div id="studentProfileContent"></div>
             </div>
-    </div>
-            <!-- TEACHER DASHBOARD -->
+    </div>        <!-- TEACHER DASHBOARD -->
         <div id="teacherDashboard" class="dashboard-container">
             <div id="teacherRegistrationSection">
                 <div class="form-card">
@@ -1079,70 +1078,38 @@
             <p style="text-align:center;"><strong>💬 Want to collaborate or hire me? Let's talk!</strong></p>
         </div>
     </div>
-                     </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    </div><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
-    // ==================== RENDER BACKEND URL ====================
-    const API_BASE_URL = 'https://hermana-acad.onrender.com/api';
-    
+    const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : 'https://hermana-acad.onrender.com/api';
+    let examActive = false, examViolations = 0;
+
+    async function apiCall(endpoint, options = {}) {
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+            ...options,
+            headers: options.body instanceof FormData ? {} : { 'Content-Type': 'application/json', ...options.headers }
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Request failed');
+        return data;
+    }
+
     async function checkServerConnection() {
         const statusDiv = document.getElementById('serverStatus');
         try {
-            const response = await fetch(`${API_BASE_URL}/health`);
-            if (response.ok) {
-                statusDiv.innerHTML = '✅ Server Connected';
-                statusDiv.className = 'server-status online';
-                console.log('✅ Backend server is running');
-                return true;
-            } else {
-                throw new Error('Server not responding');
-            }
-        } catch (error) {
-            statusDiv.innerHTML = '⚠️ Server Offline - Using Local Storage';
+            await apiCall('/health');
+            statusDiv.innerHTML = '✅ Server Connected';
+            statusDiv.className = 'server-status online';
+        } catch {
+            statusDiv.innerHTML = '⚠️ Server Offline';
             statusDiv.className = 'server-status offline';
-            console.log('⚠️ Backend server not reachable, using localStorage fallback');
-            return false;
         }
     }
-    
     checkServerConnection();
-    
-    let students = JSON.parse(localStorage.getItem('hermana_students') || '[]');
-    let teachers = JSON.parse(localStorage.getItem('hermana_teachers') || '[]');
-    let pendingTeachers = JSON.parse(localStorage.getItem('hermana_pending_teachers') || '[]');
-    let directors = JSON.parse(localStorage.getItem('hermana_directors') || '[]');
-    
-    if (directors.length === 0) {
-        directors = [
-            { type: 'kg', password: 'kg123', name: 'KG Director' },
-            { type: 'elementary', password: 'elem123', name: 'Elementary Director' },
-            { type: 'high', password: 'high123', name: 'High School Director' }
-        ];
-        localStorage.setItem('hermana_directors', JSON.stringify(directors));
-    }
-    
-    let examActive = false, examViolations = 0, currentRole = null;
-    
-    function saveData() {
-        localStorage.setItem('hermana_students', JSON.stringify(students));
-        localStorage.setItem('hermana_teachers', JSON.stringify(teachers));
-        localStorage.setItem('hermana_pending_teachers', JSON.stringify(pendingTeachers));
-    }
-    
-    function generateStudentId() { return 'HA' + new Date().getFullYear() + Math.floor(Math.random() * 100000).toString().padStart(5, '0'); }
-    function generateTeacherId() { return 'TCH' + new Date().getFullYear() + Math.floor(Math.random() * 10000).toString().padStart(4, '0'); }
-    function generateApprovalCode() { return 'AP-' + Math.random().toString(36).substring(2, 10).toUpperCase(); }
-    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-    
+
     function selectRole(role) {
-        currentRole = role;
         document.getElementById('roleModal').style.display = 'none';
         document.getElementById('mainContainer').style.display = 'block';
-        
-        const dashboards = ['studentDashboard', 'teacherDashboard', 'parentDashboard', 'directorDashboard', 'boardDashboard'];
-        dashboards.forEach(d => document.getElementById(d).classList.remove('active'));
-        
+        ['studentDashboard','teacherDashboard','parentDashboard','directorDashboard','boardDashboard'].forEach(d => document.getElementById(d).classList.remove('active'));
         if (role === 'student') {
             document.getElementById('studentDashboard').classList.add('active');
             document.getElementById('studentRegistrationSection').style.display = 'block';
@@ -1168,83 +1135,46 @@
             document.getElementById('boardProfileSection').style.display = 'none';
         }
     }
-    
-    async function apiCall(endpoint, options = {}) {
-        try {
-            const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-                ...options,
-                headers: { 'Content-Type': 'application/json', ...options.headers }
-            });
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.error || 'API call failed');
-            return data;
-        } catch (error) {
-            console.log('API Error:', error.message);
-            return null;
-        }
-    }
-    
-    // ==================== SEND TO TELEGRAM BOT FUNCTION ====================
-    async function sendToTelegram(chatId, message, photoBase64 = null) {
-        try {
-            // Send message first
-            const msgResponse = await fetch(`${API_BASE_URL}/telegram/send`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chatId, message })
-            });
-            
-            // If photo provided, send photo
-            if (photoBase64) {
-                await fetch(`${API_BASE_URL}/telegram/send-photo`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chatId, photo: photoBase64, caption: message.substring(0, 200) })
-                });
-            }
-            return true;
-        } catch (error) {
-            console.log('Telegram send error:', error);
-            return false;
-        }
-    }
-    
-    // ==================== STUDENT EXAM ====================
+
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function logout() { location.reload(); }
+
+    // ========== STUDENT EXAM ==========
     function generateStudentExamQuestions(grade) {
         if (grade.includes("KG") || grade === "Nursery") {
             return [
-                { text: "What color is the sun?", options: ["Red", "Yellow", "Blue", "Green"], correct: 1 },
-                { text: "Which animal says 'Moo'?", options: ["Cat", "Dog", "Cow", "Lion"], correct: 2 },
-                { text: "What is 1 + 1?", options: ["1", "2", "3", "4"], correct: 1 },
-                { text: "First letter of alphabet?", options: ["B", "C", "A", "D"], correct: 2 },
-                { text: "Shape with 3 sides?", options: ["Square", "Circle", "Triangle", "Rectangle"], correct: 2 }
+                { text: "What color is the sun?", options: ["Red","Yellow","Blue","Green"], correct:1 },
+                { text: "Which animal says 'Moo'?", options: ["Cat","Dog","Cow","Lion"], correct:2 },
+                { text: "What is 1 + 1?", options: ["1","2","3","4"], correct:1 },
+                { text: "First letter of alphabet?", options: ["B","C","A","D"], correct:2 },
+                { text: "Shape with 3 sides?", options: ["Square","Circle","Triangle","Rectangle"], correct:2 }
             ];
         } else if (parseInt(grade.match(/\d+/)?.[0] || 5) <= 4) {
             return [
-                { text: "15 + 27 = ?", options: ["42", "40", "38", "45"], correct: 0 },
-                { text: "የኢትዮጵያ ዋና ከተማ?", options: ["ጎንደር", "አዲስ አበባ", "ሀዋሳ", "ባህርዳር"], correct: 1 },
-                { text: "8 × 7 = ?", options: ["48", "56", "64", "49"], correct: 1 },
-                { text: "Red Planet?", options: ["Jupiter", "Mars", "Venus", "Saturn"], correct: 1 },
-                { text: "Capital of Ethiopia?", options: ["Adama", "Addis Ababa", "Harar", "Dire Dawa"], correct: 1 }
+                { text: "15 + 27 = ?", options: ["42","40","38","45"], correct:0 },
+                { text: "የኢትዮጵያ ዋና ከተማ?", options: ["ጎንደር","አዲስ አበባ","ሀዋሳ","ባህርዳር"], correct:1 },
+                { text: "8 × 7 = ?", options: ["48","56","64","49"], correct:1 },
+                { text: "Red Planet?", options: ["Jupiter","Mars","Venus","Saturn"], correct:1 },
+                { text: "Capital of Ethiopia?", options: ["Adama","Addis Ababa","Harar","Dire Dawa"], correct:1 }
             ];
         } else {
             return [
-                { text: "3x - 7 = 11, x = ?", options: ["4", "5", "6", "7"], correct: 2 },
-                { text: "√144 = ?", options: ["10", "11", "12", "13"], correct: 2 },
-                { text: "Chemical symbol for Gold?", options: ["Go", "Gd", "Au", "Ag"], correct: 2 },
-                { text: "Oxygen atomic number?", options: ["6", "7", "8", "9"], correct: 2 },
-                { text: "Who wrote Ethiopian national anthem?", options: ["Tsegaye", "Haddis", "Baalu", "Afewerk"], correct: 0 }
+                { text: "3x - 7 = 11, x = ?", options: ["4","5","6","7"], correct:2 },
+                { text: "√144 = ?", options: ["10","11","12","13"], correct:2 },
+                { text: "Chemical symbol for Gold?", options: ["Go","Gd","Au","Ag"], correct:2 },
+                { text: "Oxygen atomic number?", options: ["6","7","8","9"], correct:2 },
+                { text: "Who wrote Ethiopian national anthem?", options: ["Tsegaye","Haddis","Baalu","Afewerk"], correct:0 }
             ];
         }
     }
-    
+
     async function startSecureStudentExam(studentData, photoFile, telegramUsername) {
         const questions = generateStudentExamQuestions(studentData.grade);
         let currentQuestion = 0, answers = new Array(questions.length).fill(-1), timeLeft = 300;
         examActive = true;
         examViolations = 0;
-        
-        let examPhoto = null;
+
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
             const video = document.createElement('video');
@@ -1253,258 +1183,222 @@
             const canvas = document.createElement('canvas');
             canvas.width = canvas.height = 200;
             canvas.getContext('2d').drawImage(video, 0, 0, 200, 200);
-            examPhoto = canvas.toDataURL();
             stream.getTracks().forEach(t => t.stop());
-        } catch(e) { console.log("Camera error:", e); }
-        
-        document.body.style.overflow = 'hidden';
-        document.addEventListener('contextmenu', (e) => { if(examActive){ e.preventDefault(); examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } });
-        document.addEventListener('keydown', (e) => { if(examActive && (e.key==='F12'||(e.ctrlKey&&e.shiftKey&&e.key==='I')||(e.ctrlKey&&e.key==='u'))) { e.preventDefault(); examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } });
-        document.addEventListener('visibilitychange', () => { if(examActive && document.hidden) { examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } });
-        window.addEventListener('blur', () => { if(examActive) { examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } });
-        
-        const examHTML = `<div id="examContainer" class="exam-container"><div class="exam-timer">⏱️ Time: <span id="timer">05:00</span></div><div id="examContent"></div><div style="text-align:center; padding:15px; color:#ccc;">⚠️ DO NOT leave this page! 3 violations = termination</div></div>`;
+        } catch(e) { console.warn("Camera error"); }
+
+        const violationHandler = () => {
+            if(examActive) {
+                examViolations++;
+                alert(`Violation ${examViolations}/3`);
+                if(examViolations >= 3) terminateExam();
+            }
+        };
+        document.addEventListener('contextmenu', violationHandler);
+        document.addEventListener('keydown', (e) => {
+            if(examActive && (e.key==='F12'||(e.ctrlKey&&e.shiftKey&&e.key==='I'))) {
+                e.preventDefault();
+                violationHandler();
+            }
+        });
+        document.addEventListener('visibilitychange', () => { if(examActive && document.hidden) violationHandler(); });
+        window.addEventListener('blur', violationHandler);
+
+        const examHTML = `<div id="examContainer" class="exam-container"><div class="exam-timer">⏱️ Time: <span id="timer">05:00</span></div><div id="examContent"></div></div>`;
         document.body.insertAdjacentHTML('beforeend', examHTML);
-        
+        try { await document.documentElement.requestFullscreen(); } catch(e) {}
+
         function render() {
             const q = questions[currentQuestion];
             document.getElementById('examContent').innerHTML = `
-                <div class="exam-question"><h3>Question ${currentQuestion+1}/${questions.length}</h3><p style="font-size:20px; margin:20px 0;">${q.text}</p>
+                <div class="exam-question"><h3>Question ${currentQuestion+1}/${questions.length}</h3><p>${q.text}</p>
                 ${q.options.map((opt, idx) => `<div class="exam-option ${answers[currentQuestion]===idx?'selected':''}" onclick="selectAnswer(${idx})">${String.fromCharCode(65+idx)}. ${opt}</div>`).join('')}</div>
-                <div style="display:flex; gap:15px; margin-top:20px;">
-                    <button onclick="prevQuestion()" class="${currentQuestion===0?'btn-danger':'btn-success'}">◀ Previous</button>
-                    <button onclick="nextQuestion()" class="btn-success" style="flex:1;">${currentQuestion===questions.length-1?'Submit Exam':'Next ▶'}</button>
-                </div>`;
+                <div><button onclick="prevQuestion()">◀ Previous</button><button onclick="nextQuestion()">${currentQuestion===questions.length-1?'Submit':'Next ▶'}</button></div>`;
         }
-        
+
         window.selectAnswer = (idx) => { answers[currentQuestion] = idx; render(); };
         window.nextQuestion = () => { if(currentQuestion === questions.length-1) submitExam(); else { currentQuestion++; render(); } };
         window.prevQuestion = () => { if(currentQuestion > 0) { currentQuestion--; render(); } };
-        
+
         function terminateExam() {
             examActive = false;
             document.body.style.overflow = '';
-            const container = document.getElementById('examContainer');
-            if(container) container.remove();
-            alert("Exam terminated due to violations.");
+            document.getElementById('examContainer')?.remove();
+            alert("Exam terminated.");
             document.getElementById('studentRegistrationSection').style.display = 'block';
         }
-        
+
         async function submitExam() {
             clearInterval(timerInterval);
             let correct = 0;
             answers.forEach((ans,i) => { if(ans === questions[i].correct) correct++; });
             const percentage = (correct/questions.length)*100;
-            
             examActive = false;
             document.body.style.overflow = '';
-            document.getElementById('examContainer').remove();
-            
+            document.getElementById('examContainer')?.remove();
+
             if(percentage >= 50) {
-                const studentId = generateStudentId();
-                const newStudent = {
-                    studentId, fullName: studentData.fullName, email: studentData.email, telegram: telegramUsername,
-                    phone: studentData.phone, grade: studentData.grade, parentName: studentData.parentName,
-                    parentPhone: studentData.parentPhone, address: studentData.address,
-                    photo: examPhoto || studentData.photo, examScore: percentage,
-                    examViolations: examViolations, payments: { registration: false, term1: false, term2: false, term3: false }
-                };
-                students.push(newStudent);
-                saveData();
-                
-                // Send to ADMIN Telegram (with photo)
-                const adminMessage = `🎓 NEW STUDENT REGISTERED!\n\n👤 Name: ${studentData.fullName}\n🆔 ID: ${studentId}\n📚 Grade: ${studentData.grade}\n📧 Email: ${studentData.email}\n🤖 Telegram: ${telegramUsername}\n📊 Score: ${percentage}%\n⚠️ Violations: ${examViolations}`;
-                await sendToTelegram('ADMIN_CHAT_ID', adminMessage, examPhoto || studentData.photo);
-                
-                // Send ID to STUDENT via Telegram
-                const studentMessage = `🎉 Welcome to Hermana Academy, ${studentData.fullName}!\n\n🆔 Your Student ID: ${studentId}\n📚 Grade: ${studentData.grade}\n📊 Exam Score: ${percentage}%\n\n🔐 Login with:\n   Student ID: ${studentId}\n   Full Name: ${studentData.fullName}\n\nThank you for choosing Hermana Academy! 🇪🇹`;
-                await sendToTelegram(telegramUsername, studentMessage);
-                
-                alert(`🎉 Passed! Score: ${percentage}%\nYour Student ID has been sent to your Telegram!\nCheck @HermanaAcademyBot`);
-                
-                document.getElementById('studentRegistrationSection').style.display = 'none';
-                document.getElementById('studentLoginSection').style.display = 'block';
+                const formData = new FormData();
+                formData.append('fullName', studentData.fullName);
+                formData.append('email', studentData.email);
+                formData.append('telegram', telegramUsername);
+                formData.append('phone', studentData.phone);
+                formData.append('grade', studentData.grade);
+                formData.append('parentName', studentData.parentName);
+                formData.append('parentPhone', studentData.parentPhone);
+                formData.append('address', studentData.address);
+                formData.append('examScore', percentage);
+                formData.append('examViolations', examViolations);
+                if (photoFile) formData.append('photo', photoFile);
+
+                try {
+                    const result = await apiCall('/student/register', { method: 'POST', body: formData });
+                    alert(`Passed! Score: ${percentage}%\nStudent ID: ${result.studentId}\nCheck Telegram!`);
+                    document.getElementById('studentRegistrationSection').style.display = 'none';
+                    document.getElementById('studentLoginSection').style.display = 'block';
+                } catch (err) {
+                    alert('Registration failed: ' + err.message);
+                    document.getElementById('studentRegistrationSection').style.display = 'block';
+                }
             } else {
-                alert(`❌ Failed! Score: ${percentage}%. Need 50% to pass.`);
+                alert(`Failed! Score: ${percentage}%. Need 50% to pass.`);
                 document.getElementById('studentRegistrationSection').style.display = 'block';
             }
         }
-        
+
         const timerInterval = setInterval(() => {
+            if(!examActive) return clearInterval(timerInterval);
             if(timeLeft <= 0) { clearInterval(timerInterval); submitExam(); }
-            else { timeLeft--; const mins = Math.floor(timeLeft/60); const secs = timeLeft%60; document.getElementById('timer').innerText = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`; }
+            else { timeLeft--; const mins = Math.floor(timeLeft/60); const secs = timeLeft%60; document.getElementById('timer') && (document.getElementById('timer').innerText = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`); }
         }, 1000);
-        
         render();
-        document.documentElement.requestFullscreen().catch(e => console.log("Fullscreen error"));
     }
-    
+
+    // Student registration form
     document.getElementById('studentRegForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const photoFile = document.getElementById('stuPhoto').files[0];
         const telegramUsername = document.getElementById('stuTelegram').value.trim();
-        if(!photoFile) { alert('Please upload your photo!'); return; }
-        if(!telegramUsername) { alert('Please enter your Telegram username!'); return; }
-        
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-            startSecureStudentExam({
-                fullName: document.getElementById('stuFullName').value,
-                email: document.getElementById('stuEmail').value,
-                phone: document.getElementById('stuPhone').value,
-                grade: document.getElementById('stuGrade').value,
-                parentName: document.getElementById('stuParentName').value,
-                parentPhone: document.getElementById('stuParentPhone').value,
-                address: document.getElementById('stuAddress').value,
-                photo: ev.target.result
-            }, photoFile, telegramUsername);
-        };
-        reader.readAsDataURL(photoFile);
+        if (!photoFile) { alert('Upload your photo!'); return; }
+        if (!telegramUsername) { alert('Enter Telegram username!'); return; }
+        startSecureStudentExam({
+            fullName: document.getElementById('stuFullName').value,
+            email: document.getElementById('stuEmail').value,
+            phone: document.getElementById('stuPhone').value,
+            grade: document.getElementById('stuGrade').value,
+            parentName: document.getElementById('stuParentName').value,
+            parentPhone: document.getElementById('stuParentPhone').value,
+            address: document.getElementById('stuAddress').value
+        }, photoFile, telegramUsername);
     });
-    
-    document.getElementById('studentLoginForm')?.addEventListener('submit', (e) => {
+
+    // Student login
+    document.getElementById('studentLoginForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const studentId = document.getElementById('studentLoginId').value;
-        const fullName = document.getElementById('studentLoginName').value;
-        const student = students.find(s => s.studentId === studentId && s.fullName.toLowerCase() === fullName.toLowerCase());
-        if(student) displayStudentProfile(student);
-        else alert('Invalid Student ID or Name. Check your Telegram for your ID.');
+        try {
+            const data = await apiCall('/student/login', { method: 'POST', body: JSON.stringify({ studentId: document.getElementById('studentLoginId').value, fullName: document.getElementById('studentLoginName').value }) });
+            document.getElementById('studentRegistrationSection').style.display = 'none';
+            document.getElementById('studentLoginSection').style.display = 'none';
+            document.getElementById('studentProfileSection').style.display = 'block';
+            document.getElementById('studentProfileContent').innerHTML = `<div class="form-card"><h2>Welcome ${data.student.fullName}!</h2><p>Student ID: ${data.student.studentId}</p><p>Grade: ${data.student.grade}</p><p>Exam Score: ${data.student.examScore}%</p><button onclick="logout()">Logout</button></div>`;
+        } catch { alert('Invalid credentials'); }
     });
-    
-    function displayStudentProfile(student) {
-        document.getElementById('studentRegistrationSection').style.display = 'none';
-        document.getElementById('studentLoginSection').style.display = 'none';
-        document.getElementById('studentProfileSection').style.display = 'block';
-        
-        document.getElementById('studentProfileContent').innerHTML = `
-            <div class="form-card"><div style="display:flex; justify-content:space-between;"><h2><i class="fas fa-graduation-cap"></i> Welcome, ${student.fullName}!</h2><button onclick="logout()" class="btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</button></div></div>
-            <div class="id-card" id="student-id-card"><div class="id-card-ethiopia"></div><div style="text-align:center;"><img class="id-photo-img" src="${student.photo}"><h3 style="color:white;">${student.fullName}</h3><p><strong>Student ID:</strong> ${student.studentId}</p><p><strong>Grade:</strong> ${student.grade}</p><p><strong>Exam Score:</strong> ${student.examScore}%</p><p><strong>Telegram:</strong> ${student.telegram || 'Not provided'}</p></div></div>
-            <div style="text-align:center;"><button onclick="downloadStudentIDCard()" class="btn-success"><i class="fas fa-download"></i> Download ID Card</button></div>
-            <div class="grid-3"><div class="card"><h3>Registration Fee</h3><p>1000 ETB</p><span class="badge ${student.payments.registration?'badge-passed':'badge-pending'}">${student.payments.registration?'Paid':'Unpaid'}</span>${!student.payments.registration?'<br><button onclick="makeStudentPayment(\'registration\',1000)" class="btn-small" style="margin-top:15px;">Pay Now</button>':''}</div>
-            <div class="card"><h3>Term 1 + Bus</h3><p>3500 ETB</p><span class="badge ${student.payments.term1?'badge-passed':'badge-pending'}">${student.payments.term1?'Paid':'Unpaid'}</span>${!student.payments.term1?'<br><button onclick="makeStudentPayment(\'term1\',3500)" class="btn-small" style="margin-top:15px;">Pay Now</button>':''}</div>
-            <div class="card"><h3>Term 2 + Bus</h3><p>3500 ETB</p><span class="badge ${student.payments.term2?'badge-passed':'badge-pending'}">${student.payments.term2?'Paid':'Unpaid'}</span>${!student.payments.term2?'<br><button onclick="makeStudentPayment(\'term2\',3500)" class="btn-small" style="margin-top:15px;">Pay Now</button>':''}</div></div>
-            <div class="footer-links"><a onclick="openModal('purposeModal')"><i class="fas fa-lightbulb"></i> Purpose</a><a onclick="openModal('feedbackModal')"><i class="fas fa-comment-dots"></i> Feedback</a><a onclick="openModal('privacyModal')"><i class="fas fa-shield-alt"></i> Privacy</a><a onclick="openModal('contactModal')"><i class="fas fa-address-card"></i> Contact</a></div>
-        `;
-    }
-    
-    window.makeStudentPayment = (type, amount) => {
-        const studentId = document.getElementById('studentLoginId').value;
-        const student = students.find(s => s.studentId === studentId);
-        if(student) { student.payments[type] = true; saveData(); alert(`✅ Paid ${amount} ETB`); displayStudentProfile(student); }
-    };
-    
-    window.downloadStudentIDCard = () => { const card = document.getElementById('student-id-card'); if(card) html2canvas(card,{scale:2}).then(canvas=>{const a=document.createElement('a'); a.download='Student_ID.png'; a.href=canvas.toDataURL(); a.click();}); };
-    
-    // ==================== TEACHER FUNCTIONS ====================
+
+    // ========== TEACHER EXAM ==========
     function generateTeacherExamQuestions() {
         return [
-            { text: "What is your teaching philosophy?", options: ["Student-centered", "Teacher-centered", "Both", "None"], correct: 0 },
-            { text: "How do you handle classroom discipline?", options: ["Strict rules", "Positive reinforcement", "Ignore minor issues", "Send to principal"], correct: 1 },
-            { text: "What is the best way to assess student learning?", options: ["Final exam only", "Continuous assessment", "Homework only", "Class participation only"], correct: 1 },
-            { text: "How do you engage struggling students?", options: ["Extra homework", "One-on-one support", "Ignore them", "Move them to back"], correct: 1 },
-            { text: "What is your approach to parent communication?", options: ["Only when issues arise", "Regular updates", "Never", "Only at parent-teacher conferences"], correct: 1 }
+            { text: "What is your teaching philosophy?", options: ["Student-centered","Teacher-centered","Both","None"], correct:0 },
+            { text: "How do you handle classroom discipline?", options: ["Strict rules","Positive reinforcement","Ignore","Send to principal"], correct:1 },
+            { text: "Best way to assess student learning?", options: ["Final exam","Continuous assessment","Homework","Participation"], correct:1 },
+            { text: "How to engage struggling students?", options: ["Extra homework","One-on-one support","Ignore","Move to back"], correct:1 },
+            { text: "Approach to parent communication?", options: ["Only issues","Regular updates","Never","Only conferences"], correct:1 }
         ];
     }
-    
+
     async function startTeacherExam(teacherData, photoFile, docFile, telegramUsername) {
         const questions = generateTeacherExamQuestions();
         let currentQuestion = 0, answers = new Array(questions.length).fill(-1), timeLeft = 300;
         examActive = true;
         examViolations = 0;
-        
-        let teacherPhoto = null;
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            const video = document.createElement('video');
-            video.srcObject = stream;
-            await video.play();
-            const canvas = document.createElement('canvas');
-            canvas.width = canvas.height = 200;
-            canvas.getContext('2d').drawImage(video, 0, 0, 200, 200);
-            teacherPhoto = canvas.toDataURL();
-            stream.getTracks().forEach(t => t.stop());
-        } catch(e) { console.log("Camera error:", e); }
-        
-        document.body.style.overflow = 'hidden';
-        document.addEventListener('contextmenu', (e) => { if(examActive){ e.preventDefault(); examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } });
-        document.addEventListener('keydown', (e) => { if(examActive && (e.key==='F12'||(e.ctrlKey&&e.shiftKey&&e.key==='I')||(e.ctrlKey&&e.key==='u'))) { e.preventDefault(); examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } });
-        document.addEventListener('visibilitychange', () => { if(examActive && document.hidden) { examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } });
-        window.addEventListener('blur', () => { if(examActive) { examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } });
-        
+
+        const violationHandler = () => { if(examActive) { examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } };
+        document.addEventListener('contextmenu', violationHandler);
+        document.addEventListener('visibilitychange', () => { if(examActive && document.hidden) violationHandler(); });
+
         const examHTML = `<div id="examContainer" class="exam-container"><div class="exam-timer">⏱️ Time: <span id="timer">05:00</span></div><div id="examContent"></div></div>`;
         document.body.insertAdjacentHTML('beforeend', examHTML);
-        
+
         function render() {
             const q = questions[currentQuestion];
             document.getElementById('examContent').innerHTML = `
                 <div class="exam-question"><h3>Question ${currentQuestion+1}/${questions.length}</h3><p>${q.text}</p>
-                ${q.options.map((opt, idx) => `<div class="exam-option ${answers[currentQuestion]===idx?'selected':''}" onclick="selectTeacherAnswer(${idx})">${String.fromCharCode(65+idx)}. ${opt}</div>`).join('')}</div>
-                <div style="display:flex; gap:15px;"><button onclick="prevTeacher()" class="${currentQuestion===0?'btn-danger':'btn-success'}">◀ Previous</button>
-                <button onclick="nextTeacher()" class="btn-success" style="flex:1;">${currentQuestion===questions.length-1?'Submit':'Next ▶'}</button></div>`;
+                ${q.options.map((opt, idx) => `<div class="exam-option ${answers[currentQuestion]===idx?'selected':''}" onclick="selectAnswer(${idx})">${String.fromCharCode(65+idx)}. ${opt}</div>`).join('')}</div>
+                <div><button onclick="prevQuestion()">◀ Previous</button><button onclick="nextQuestion()">${currentQuestion===questions.length-1?'Submit':'Next ▶'}</button></div>`;
         }
-        
-        window.selectTeacherAnswer = (idx) => { answers[currentQuestion] = idx; render(); };
-        window.nextTeacher = () => { if(currentQuestion === questions.length-1) submitExam(); else { currentQuestion++; render(); } };
-        window.prevTeacher = () => { if(currentQuestion > 0) { currentQuestion--; render(); } };
-        
-        function submitExam() {
+        window.selectAnswer = (idx) => { answers[currentQuestion] = idx; render(); };
+        window.nextQuestion = () => { if(currentQuestion === questions.length-1) submitExam(); else { currentQuestion++; render(); } };
+        window.prevQuestion = () => { if(currentQuestion > 0) { currentQuestion--; render(); } };
+
+        function terminateExam() {
+            examActive = false;
+            document.body.style.overflow = '';
+            document.getElementById('examContainer')?.remove();
+            alert("Exam terminated.");
+            document.getElementById('teacherRegistrationSection').style.display = 'block';
+        }
+
+        async function submitExam() {
             clearInterval(timerInterval);
             let correct = 0;
             answers.forEach((ans,i) => { if(ans === questions[i].correct) correct++; });
             const percentage = (correct/questions.length)*100;
-            document.getElementById('examContainer').remove();
+            examActive = false;
             document.body.style.overflow = '';
-            
+            document.getElementById('examContainer')?.remove();
+
             if(percentage >= 60) {
-                const approvalCode = generateApprovalCode();
-                const pendingTeacher = {
-                    id: Date.now(),
-                    fullName: teacherData.fullName,
-                    email: teacherData.email,
-                    telegram: telegramUsername,
-                    phone: teacherData.phone,
-                    gradeLevel: teacherData.gradeLevel,
-                    subject: teacherData.subject,
-                    experience: teacherData.experience,
-                    reason: teacherData.reason,
-                    photo: teacherPhoto,
-                    document: docFile,
-                    examScore: percentage,
-                    approvalCode: approvalCode,
-                    status: 'pending'
-                };
-                pendingTeachers.push(pendingTeacher);
-                saveData();
-                
-                // Send Telegram notification to admin
-                const adminMessage = `👨‍🏫 NEW TEACHER APPLICATION!\n\n👤 Name: ${teacherData.fullName}\n📧 Email: ${teacherData.email}\n🤖 Telegram: ${telegramUsername || 'Not provided'}\n📚 Grade Level: ${teacherData.gradeLevel}\n📊 Exam Score: ${percentage}%\n🔑 Approval Code: ${approvalCode}`;
-                sendToTelegram('ADMIN_CHAT_ID', adminMessage, teacherPhoto);
-                
-                alert(`✅ Exam passed! Score: ${percentage}%\nApplication submitted. You will receive approval code via Telegram within 2 days.`);
-                document.getElementById('teacherRegistrationSection').style.display = 'none';
-                document.getElementById('teacherWaitingSection').style.display = 'block';
+                const formData = new FormData();
+                formData.append('fullName', teacherData.fullName);
+                formData.append('email', teacherData.email);
+                formData.append('telegram', telegramUsername);
+                formData.append('phone', teacherData.phone);
+                formData.append('gradeLevel', teacherData.gradeLevel);
+                formData.append('subject', teacherData.subject);
+                formData.append('experience', teacherData.experience);
+                formData.append('reason', teacherData.reason);
+                formData.append('examScore', percentage);
+                if (photoFile) formData.append('photo', photoFile);
+                if (docFile) formData.append('document', docFile);
+
+                try {
+                    await apiCall('/teacher/apply', { method: 'POST', body: formData });
+                    alert(`Exam passed! Score: ${percentage}%\nApplication submitted! Check Telegram for approval code.`);
+                    document.getElementById('teacherRegistrationSection').style.display = 'none';
+                    document.getElementById('teacherWaitingSection').style.display = 'block';
+                } catch (err) {
+                    alert('Application failed: ' + err.message);
+                    document.getElementById('teacherRegistrationSection').style.display = 'block';
+                }
             } else {
-                alert(`❌ Exam failed! Score: ${percentage}%. Need 60% to pass.`);
+                alert(`Failed! Score: ${percentage}%. Need 60% to pass.`);
+                document.getElementById('teacherRegistrationSection').style.display = 'block';
             }
         }
-        
+
         const timerInterval = setInterval(() => {
+            if(!examActive) return clearInterval(timerInterval);
             if(timeLeft <= 0) submitExam();
-            else { timeLeft--; const mins = Math.floor(timeLeft/60); const secs = timeLeft%60; document.getElementById('timer').innerText = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`; }
+            else { timeLeft--; const mins = Math.floor(timeLeft/60); const secs = timeLeft%60; document.getElementById('timer') && (document.getElementById('timer').innerText = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`); }
         }, 1000);
-        
         render();
     }
-    
+
+    // Teacher registration form
     document.getElementById('teacherRegForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const docFile = document.getElementById('teacherDoc').files[0];
         const photoFile = document.getElementById('teacherPhoto').files[0];
         const telegramUsername = document.getElementById('teacherTelegram').value.trim();
-        if(!docFile || !photoFile) { alert('Upload both document and photo!'); return; }
-        let docBase64 = null, photoBase64 = null;
-        await new Promise(r => { const reader = new FileReader(); reader.onload = (ev) => { docBase64 = ev.target.result; r(); }; reader.readAsDataURL(docFile); });
-        await new Promise(r => { const reader = new FileReader(); reader.onload = (ev) => { photoBase64 = ev.target.result; r(); }; reader.readAsDataURL(photoFile); });
+        if (!docFile || !photoFile) { alert('Upload both document and photo!'); return; }
         startTeacherExam({
             fullName: document.getElementById('teacherFullName').value,
             email: document.getElementById('teacherEmail').value,
@@ -1513,162 +1407,58 @@
             subject: document.getElementById('teacherSubject').value,
             experience: document.getElementById('teacherExperience').value,
             reason: document.getElementById('teacherReason').value
-        }, photoBase64, docBase64, telegramUsername);
+        }, photoFile, docFile, telegramUsername);
     });
-    
-    document.getElementById('teacherLoginForm')?.addEventListener('submit', (e) => {
+
+    // Teacher login
+    document.getElementById('teacherLoginForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const code = document.getElementById('teacherCode').value;
-        const fullName = document.getElementById('teacherLoginName').value;
-        const pending = pendingTeachers.find(t => t.approvalCode === code && t.fullName.toLowerCase() === fullName.toLowerCase());
-        if(pending) {
-            const newTeacher = {
-                teacherId: generateTeacherId(),
-                fullName: pending.fullName,
-                email: pending.email,
-                telegram: pending.telegram,
-                phone: pending.phone,
-                gradeLevel: pending.gradeLevel,
-                subject: pending.subject,
-                experience: pending.experience,
-                photo: pending.photo,
-                students: [],
-                status: 'active'
-            };
-            teachers.push(newTeacher);
-            const idx = pendingTeachers.findIndex(t => t.id === pending.id);
-            if(idx !== -1) pendingTeachers.splice(idx,1);
-            saveData();
-            
-            // Send approval notification to teacher's Telegram
-            if(pending.telegram) {
-                const approvalMessage = `✅ Congratulations ${pending.fullName}! Your teacher application has been APPROVED!\n\n🆔 Teacher ID: ${newTeacher.teacherId}\n🔑 Approval Code: ${code}\n\nLogin with your approval code and full name. Welcome to Hermana Academy! 🎉`;
-                sendToTelegram(pending.telegram, approvalMessage);
-            }
-            
-            displayTeacherProfile(newTeacher);
-        } else alert('Invalid approval code');
+        try {
+            const data = await apiCall('/teacher/login', { method: 'POST', body: JSON.stringify({ code: document.getElementById('teacherCode').value, fullName: document.getElementById('teacherLoginName').value }) });
+            alert('Login successful! Teacher dashboard coming soon.');
+        } catch { alert('Invalid approval code'); }
     });
-    
-    function displayTeacherProfile(teacher) {
-        document.getElementById('teacherRegistrationSection').style.display = 'none';
-        document.getElementById('teacherWaitingSection').style.display = 'none';
-        document.getElementById('teacherLoginSection').style.display = 'none';
-        document.getElementById('teacherProfileSection').style.display = 'block';
-        const assignedStudents = students.filter(s => {
-            if(teacher.gradeLevel === 'KG') return s.grade.includes('KG') || s.grade === 'Nursery';
-            if(teacher.gradeLevel === 'Elementary') return s.grade.includes('Grade 1') || s.grade.includes('Grade 2') || s.grade.includes('Grade 3') || s.grade.includes('Grade 4');
-            if(teacher.gradeLevel === 'Middle') return s.grade.includes('Grade 5') || s.grade.includes('Grade 6') || s.grade.includes('Grade 7') || s.grade.includes('Grade 8');
-            if(teacher.gradeLevel === 'High') return s.grade.includes('Grade 9') || s.grade.includes('Grade 10') || s.grade.includes('Grade 11') || s.grade.includes('Grade 12');
-            return false;
-        });
-        document.getElementById('teacherProfileContent').innerHTML = `
-            <div class="form-card"><div style="display:flex; justify-content:space-between;"><h2><i class="fas fa-chalkboard-user"></i> Welcome, Teacher ${teacher.fullName}!</h2><button onclick="logout()" class="btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</button></div></div>
-            <div class="id-card" id="teacher-id-card"><div class="id-card-ethiopia"></div><div style="text-align:center;"><img class="id-photo-img" src="${teacher.photo}"><h3 style="color:white;">${teacher.fullName}</h3><p><strong>Teacher ID:</strong> ${teacher.teacherId}</p><p><strong>Grade Level:</strong> ${teacher.gradeLevel}</p><p><strong>Subject:</strong> ${teacher.subject||'General'}</p><p><strong>Telegram:</strong> ${teacher.telegram||'N/A'}</p></div></div>
-            <div style="text-align:center;"><button onclick="downloadTeacherIDCard()" class="btn-success"><i class="fas fa-download"></i> Download Teacher ID</button></div>
-            <div class="card"><h3><i class="fas fa-users"></i> Your Students (${assignedStudents.length})</h3><div class="student-table"><table><thead><tr><th>Name</th><th>Student ID</th><th>Grade</th><th>Score</th></tr></thead><tbody>${assignedStudents.map(s=>`<tr><td style="padding:12px;">${s.fullName}络<td style="padding:12px;">${s.studentId}络<td style="padding:12px;">${s.grade}络<td style="padding:12px;">${s.examScore}%络</tr>`).join('')}${assignedStudents.length===0?'<tr><td colspan="4">No students assigned yet.络</tr>':''}</tbody></table></div></div>
-            <div class="footer-links"><a onclick="openModal('purposeModal')"><i class="fas fa-lightbulb"></i> Purpose</a><a onclick="openModal('feedbackModal')"><i class="fas fa-comment-dots"></i> Feedback</a><a onclick="openModal('privacyModal')"><i class="fas fa-shield-alt"></i> Privacy</a><a onclick="openModal('contactModal')"><i class="fas fa-address-card"></i> Contact</a></div>
-        `;
-    }
-    
-    window.downloadTeacherIDCard = () => { const card = document.getElementById('teacher-id-card'); if(card) html2canvas(card,{scale:2}).then(canvas=>{const a=document.createElement('a'); a.download='Teacher_ID.png'; a.href=canvas.toDataURL(); a.click();}); };
-    
-    document.getElementById('parentLoginForm')?.addEventListener('submit', (e) => {
+
+    // Parent login
+    document.getElementById('parentLoginForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const studentId = document.getElementById('parentStudentId').value;
-        const student = students.find(s => s.studentId === studentId);
-        if(student) {
+        try {
+            const data = await apiCall('/parent/login', { method: 'POST', body: JSON.stringify({ studentId: document.getElementById('parentStudentId').value }) });
             document.getElementById('parentLoginSection').style.display = 'none';
             document.getElementById('parentProfileSection').style.display = 'block';
-            document.getElementById('parentProfileContent').innerHTML = `
-                <div class="form-card"><div style="display:flex; justify-content:space-between;"><h2><i class="fas fa-users"></i> Parent Dashboard - ${student.fullName}</h2><button onclick="logout()" class="btn-danger">Logout</button></div></div>
-                <div class="card"><h3>Student Information</h3><p><strong>Name:</strong> ${student.fullName}</p><p><strong>ID:</strong> ${student.studentId}</p><p><strong>Grade:</strong> ${student.grade}</p><p><strong>Exam Score:</strong> ${student.examScore}%</p><p><strong>Telegram:</strong> ${student.telegram||'N/A'}</p></div>
-                <div class="card"><h3>Payment Status</h3><p>Registration: ${student.payments.registration?'✅ Paid':'❌ Unpaid'}</p><p>Term 1: ${student.payments.term1?'✅ Paid':'❌ Unpaid'}</p><p>Term 2: ${student.payments.term2?'✅ Paid':'❌ Unpaid'}</p></div>
-                <div class="footer-links"><a onclick="openModal('purposeModal')">Purpose</a><a onclick="openModal('feedbackModal')">Feedback</a><a onclick="openModal('privacyModal')">Privacy</a><a onclick="openModal('contactModal')">Contact</a></div>
-            `;
-        } else alert('Student not found');
+            document.getElementById('parentProfileContent').innerHTML = `<div class="form-card"><h2>Student: ${data.student.fullName}</h2><p>Grade: ${data.student.grade}</p><p>Exam Score: ${data.student.examScore}%</p><p>Registration Paid: ${data.student.registration_paid ? 'Yes' : 'No'}</p><button onclick="logout()">Logout</button></div>`;
+        } catch { alert('Student not found'); }
     });
-    
-    document.getElementById('directorLoginForm')?.addEventListener('submit', (e) => {
+
+    // Director login
+    document.getElementById('directorLoginForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const type = document.getElementById('directorType').value;
-        const password = document.getElementById('directorPassword').value;
-        const director = directors.find(d => d.type === type && d.password === password);
-        if(director) {
-            const photoFile = document.getElementById('directorPhoto').files[0];
-            if(!photoFile) { alert('Upload photo!'); return; }
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                document.getElementById('directorLoginSection').style.display = 'none';
-                document.getElementById('directorProfileSection').style.display = 'block';
-                let gradeFilter = [];
-                if(type === 'kg') gradeFilter = ['Nursery','Lower KG','Upper KG'];
-                else if(type === 'elementary') gradeFilter = ['Grade 1','Grade 2','Grade 3','Grade 4'];
-                else gradeFilter = ['Grade 9','Grade 10','Grade 11','Grade 12'];
-                const filtered = students.filter(s => gradeFilter.includes(s.grade));
-                const revenue = filtered.reduce((sum,s) => sum + (s.payments.registration?1000:0) + (s.payments.term1?3500:0),0);
-                document.getElementById('directorProfileContent').innerHTML = `
-                    <div class="form-card"><div style="display:flex; justify-content:space-between;"><div><img src="${ev.target.result}" style="width:70px;height:70px;border-radius:50%;"><h2><i class="fas fa-chart-line"></i> ${type.toUpperCase()} Director</h2></div><button onclick="logout()" class="btn-danger">Logout</button></div></div>
-                    <div class="grid-3"><div class="card"><h3>Students</h3><p style="font-size:36px;">${filtered.length}</p></div><div class="card"><h3>Revenue</h3><p style="font-size:36px;">${revenue.toLocaleString()} ETB</p></div><div class="card"><h3>Paid Registration</h3><p>${filtered.filter(s=>s.payments.registration).length}</p></div></div>
-                    <div class="card"><h3>Students</h3><div class="student-table"><table><thead><tr><th>Name</th><th>ID</th><th>Grade</th><th>Telegram</th><th>Paid</th></tr></thead><tbody>${filtered.map(s=>`<tr><td style="padding:12px;">${s.fullName}络<td style="padding:12px;">${s.studentId}络<td style="padding:12px;">${s.grade}络<td style="padding:12px;">${s.telegram||'N/A'}络<td style="padding:12px;">${s.payments.registration?'✅':'❌'}络</tr>`).join('')}</tbody></table></div></div>
-                    <div class="footer-links"><a onclick="openModal('purposeModal')">Purpose</a><a onclick="openModal('feedbackModal')">Feedback</a><a onclick="openModal('privacyModal')">Privacy</a><a onclick="openModal('contactModal')">Contact</a></div>
-                `;
-            };
-            reader.readAsDataURL(photoFile);
-        } else alert('Invalid credentials');
+        const photoFile = document.getElementById('directorPhoto').files[0];
+        if (!photoFile) { alert('Upload photo!'); return; }
+        try {
+            const data = await apiCall('/director/login', { method: 'POST', body: JSON.stringify({ type: document.getElementById('directorType').value, password: document.getElementById('directorPassword').value }) });
+            const stats = await apiCall(`/director/${data.director.type}/stats`);
+            document.getElementById('directorLoginSection').style.display = 'none';
+            document.getElementById('directorProfileSection').style.display = 'block';
+            document.getElementById('directorProfileContent').innerHTML = `<div class="form-card"><h2>${data.director.name} Dashboard</h2><p>Students: ${stats.students.length}</p><p>Revenue: ${stats.revenue} ETB</p><button onclick="logout()">Logout</button></div>`;
+        } catch { alert('Invalid credentials'); }
     });
-    
-    document.getElementById('boardLoginForm')?.addEventListener('submit', (e) => {
+
+    // Board login
+    document.getElementById('boardLoginForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const email = document.getElementById('boardEmail').value;
-        const password = document.getElementById('boardPassword').value;
-        if(email === 'board@hermana.edu' && password === 'board123') {
-            const photoFile = document.getElementById('boardPhoto').files[0];
-            if(!photoFile) { alert('Upload photo!'); return; }
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                document.getElementById('boardLoginSection').style.display = 'none';
-                document.getElementById('boardProfileSection').style.display = 'block';
-                const totalRevenue = students.reduce((sum,s) => sum + (s.payments.registration?1000:0) + (s.payments.term1?3500:0),0);
-                document.getElementById('boardProfileContent').innerHTML = `
-                    <div class="form-card"><div style="display:flex; justify-content:space-between;"><div><img src="${ev.target.result}" style="width:70px;height:70px;border-radius:50%;"><h2><i class="fas fa-building"></i> Board Dashboard</h2></div><button onclick="logout()" class="btn-danger">Logout</button></div></div>
-                    <div class="grid-4"><div class="card"><h3>Students</h3><p style="font-size:28px;">${students.length}</p></div><div class="card"><h3>Teachers</h3><p style="font-size:28px;">${teachers.length}</p></div><div class="card"><h3>Revenue</h3><p style="font-size:28px;">${totalRevenue.toLocaleString()} ETB</p></div><div class="card"><h3>Pending</h3><p style="font-size:28px;">${pendingTeachers.length}</p></div></div>
-                    <div class="card"><h3>Pending Teacher Applications</h3><div class="student-table"><table><thead><tr><th>Name</th><th>Email</th><th>Grade Level</th><th>Telegram</th><th>Score</th><th>Action</th></tr></thead><tbody>${pendingTeachers.map(t=>`<tr><td style="padding:12px;">${t.fullName}络<td style="padding:12px;">${t.email}络<td style="padding:12px;">${t.gradeLevel}络<td style="padding:12px;">${t.telegram||'N/A'}络<td style="padding:12px;">${t.examScore}%络<td style="padding:12px;"><button onclick="approveTeacher(${t.id})" class="btn-small btn-success">✅ Approve</button> <button onclick="rejectTeacher(${t.id})" class="btn-small btn-danger">❌ Reject</button>络</tr>`).join('')}</tbody></table></div></div>
-                    <div class="footer-links"><a onclick="openModal('purposeModal')">Purpose</a><a onclick="openModal('feedbackModal')">Feedback</a><a onclick="openModal('privacyModal')">Privacy</a><a onclick="openModal('contactModal')">Contact</a></div>
-                `;
-            };
-            reader.readAsDataURL(photoFile);
-        } else alert('Invalid credentials');
+        const photoFile = document.getElementById('boardPhoto').files[0];
+        if (!photoFile) { alert('Upload photo!'); return; }
+        try {
+            await apiCall('/board/login', { method: 'POST', body: JSON.stringify({ email: document.getElementById('boardEmail').value, password: document.getElementById('boardPassword').value }) });
+            const stats = await apiCall('/board/stats');
+            document.getElementById('boardLoginSection').style.display = 'none';
+            document.getElementById('boardProfileSection').style.display = 'block';
+            document.getElementById('boardProfileContent').innerHTML = `<div class="form-card"><h2>Board Dashboard</h2><p>Students: ${stats.totalStudents}</p><p>Teachers: ${stats.totalTeachers}</p><p>Pending Teachers: ${stats.pendingTeachers}</p><p>Revenue: ${stats.totalRevenue} ETB</p><button onclick="logout()">Logout</button></div>`;
+        } catch { alert('Invalid credentials'); }
     });
-    
-    window.approveTeacher = (id) => {
-        const teacher = pendingTeachers.find(t => t.id === id);
-        if(teacher) {
-            teacher.status = 'approved';
-            saveData();
-            // Send approval notification to teacher's Telegram
-            if(teacher.telegram) {
-                const approvalMessage = `✅ Congratulations ${teacher.fullName}! Your teacher application has been APPROVED!\n\n🆔 Teacher ID: ${generateTeacherId()}\n🔑 Approval Code: ${teacher.approvalCode}\n\nLogin with your approval code and full name. Welcome to Hermana Academy! 🎉`;
-                sendToTelegram(teacher.telegram, approvalMessage);
-            }
-            alert(`Teacher ${teacher.fullName} approved!`);
-            location.reload();
-        }
-    };
-    window.rejectTeacher = (id) => {
-        const idx = pendingTeachers.findIndex(t => t.id === id);
-        if(idx !== -1) {
-            const teacher = pendingTeachers[idx];
-            if(teacher.telegram) {
-                sendToTelegram(teacher.telegram, `❌ Dear ${teacher.fullName}, we regret to inform you that your teacher application has not been accepted at this time. Thank you for your interest in Hermana Academy.`);
-            }
-            pendingTeachers.splice(idx,1);
-            saveData();
-            alert('Teacher rejected.');
-            location.reload();
-        }
-    };
-    
+
+    // Feedback
     let selectedRating = 0;
     document.querySelectorAll('#starRating .star')?.forEach(star => {
         star.addEventListener('click', function() {
@@ -1678,15 +1468,13 @@
             document.getElementById('feedbackRating').value = selectedRating;
         });
     });
-    document.getElementById('feedbackForm')?.addEventListener('submit', (e) => {
+    document.getElementById('feedbackForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const rating = document.getElementById('feedbackRating').value;
         const text = document.getElementById('feedbackText').value;
-        if(!rating || rating==0) { alert('Rate us!'); return; }
-        if(!text.trim()) { alert('Write feedback!'); return; }
-        const fb = JSON.parse(localStorage.getItem('hermana_feedbacks') || '[]');
-        fb.unshift({ rating, text, date: new Date().toISOString() });
-        localStorage.setItem('hermana_feedbacks', JSON.stringify(fb));
+        if (!rating || rating==0) { alert('Rate us!'); return; }
+        if (!text.trim()) { alert('Write feedback!'); return; }
+        await apiCall('/feedback', { method: 'POST', body: JSON.stringify({ rating, message: text, name: 'Anonymous' }) });
         document.getElementById('feedbackThanks').style.display = 'block';
         document.getElementById('feedbackForm').reset();
         document.querySelectorAll('#starRating .star').forEach(s => s.classList.remove('active'));
@@ -1694,18 +1482,11 @@
         selectedRating = 0;
         setTimeout(() => { document.getElementById('feedbackThanks').style.display = 'none'; closeModal('feedbackModal'); }, 2000);
     });
-    
-    function logout() { location.reload(); }
-    
+
     window.selectRole = selectRole;
     window.openModal = openModal;
     window.closeModal = closeModal;
     window.logout = logout;
 </script>
-
-<div class="creator-credit">
-    Created with <span>❤️</span> by <span>Muhammad Ilyas</span> | Hermana Academy Management System
-</div>
-
 </body>
-    </html>
+</html>
