@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Hermana Academy - Premier Ethiopian Educational Institution</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -22,7 +22,6 @@
             overflow-x: hidden;
         }
 
-        /* Animated Background Particles */
         body::before {
             content: '';
             position: fixed;
@@ -38,61 +37,6 @@
             z-index: 0;
         }
 
-        /* Floating Orbs Animation */
-        @keyframes floatOrb1 {
-            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
-            50% { transform: translate(50px, -30px) scale(1.1); opacity: 0.5; }
-        }
-        @keyframes floatOrb2 {
-            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
-            50% { transform: translate(-40px, 40px) scale(0.9); opacity: 0.4; }
-        }
-        @keyframes floatOrb3 {
-            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.25; }
-            50% { transform: translate(30px, 50px) scale(1.15); opacity: 0.45; }
-        }
-
-        body::after {
-            content: '';
-            position: fixed;
-            top: 10%;
-            left: 10%;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(102,126,234,0.15), transparent);
-            border-radius: 50%;
-            animation: floatOrb1 8s ease-in-out infinite;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .orb2 {
-            position: fixed;
-            bottom: 15%;
-            right: 5%;
-            width: 250px;
-            height: 250px;
-            background: radial-gradient(circle, rgba(118,75,162,0.12), transparent);
-            border-radius: 50%;
-            animation: floatOrb2 10s ease-in-out infinite;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .orb3 {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(102,126,234,0.05), transparent);
-            border-radius: 50%;
-            animation: floatOrb3 12s ease-in-out infinite;
-            pointer-events: none;
-            z-index: 0;
-            transform: translate(-50%, -50%);
-        }
-
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -103,24 +47,9 @@
             to { transform: translateY(0); opacity: 1; }
         }
 
-        @keyframes slideDown {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
         @keyframes pulse {
             0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(102,126,234,0.4); }
             50% { transform: scale(1.02); box-shadow: 0 0 0 15px rgba(102,126,234,0); }
-        }
-
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-
-        @keyframes glowPulse {
-            0%, 100% { border-color: rgba(102,126,234,0.3); box-shadow: 0 0 20px rgba(102,126,234,0.1); }
-            50% { border-color: rgba(102,126,234,0.8); box-shadow: 0 0 40px rgba(102,126,234,0.3); }
         }
 
         .container {
@@ -130,7 +59,7 @@
             z-index: 1;
         }
 
-        /* Header Styles - Premium Glassmorphism */
+        /* Header Styles */
         .header {
             background: rgba(255,255,255,0.03);
             backdrop-filter: blur(20px);
@@ -139,7 +68,7 @@
             margin-bottom: 35px;
             box-shadow: 0 25px 45px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
             text-align: center;
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transition: all 0.4s ease;
             border: 1px solid rgba(255,255,255,0.15);
             animation: fadeIn 0.8s ease;
         }
@@ -150,25 +79,18 @@
             border-color: rgba(102,126,234,0.3);
         }
 
-        .school-logo {
-            margin-bottom: 20px;
-            position: relative;
-            display: inline-block;
-        }
-
         .school-logo img {
             max-width: 140px;
             height: auto;
             border-radius: 50%;
             box-shadow: 0 20px 35px rgba(0,0,0,0.3);
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transition: all 0.4s ease;
             border: 3px solid rgba(102,126,234,0.5);
         }
 
         .school-logo img:hover {
             transform: rotate(5deg) scale(1.08);
             border-color: #667eea;
-            box-shadow: 0 25px 45px rgba(0,0,0,0.4);
         }
 
         .header h1 {
@@ -179,34 +101,10 @@
             color: transparent;
             margin: 15px 0 10px;
             font-weight: 800;
-            letter-spacing: -0.5px;
         }
 
-        .header .ethiopia {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            margin: 12px 0;
-        }
-
-        .flag {
-            display: inline-flex;
-            gap: 5px;
-        }
-
-        .flag span {
-            width: 30px;
-            height: 22px;
-            display: inline-block;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-        }
-
-        .flag span:hover {
-            transform: scale(1.1);
-        }
-
+        .flag { display: inline-flex; gap: 5px; }
+        .flag span { width: 30px; height: 22px; display: inline-block; border-radius: 4px; }
         .flag .green { background: #078930; }
         .flag .yellow { background: #fcdd09; }
         .flag .red { background: #da121a; }
@@ -219,11 +117,9 @@
             color: transparent;
             font-size: 1em;
             margin-top: 10px;
-            font-weight: 500;
-            letter-spacing: 0.5px;
         }
 
-        /* Role Selection Modal - Premium */
+        /* Role Selection Modal */
         .role-overlay {
             position: fixed;
             top: 0;
@@ -236,7 +132,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
             animation: fadeIn 0.5s ease;
         }
 
@@ -248,8 +143,7 @@
             max-width: 600px;
             width: 90%;
             text-align: center;
-            animation: slideUp 0.7s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            box-shadow: 0 40px 80px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+            animation: slideUp 0.7s ease;
             border: 1px solid rgba(255,255,255,0.2);
         }
 
@@ -260,12 +154,6 @@
             background-clip: text;
             color: transparent;
             margin-bottom: 15px;
-            font-weight: 700;
-        }
-
-        .role-container p {
-            color: rgba(255,255,255,0.7);
-            font-size: 16px;
         }
 
         .role-buttons {
@@ -282,29 +170,7 @@
             font-size: 17px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-            letter-spacing: 0.5px;
-        }
-
-        .role-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.25);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .role-btn:hover::before {
-            width: 400px;
-            height: 400px;
+            transition: all 0.4s ease;
         }
 
         .role-btn:hover {
@@ -312,13 +178,13 @@
             filter: brightness(1.05);
         }
 
-        .role-student { background: linear-gradient(135deg, #667eea, #764ba2); color: white; box-shadow: 0 10px 25px -5px rgba(102,126,234,0.4); }
-        .role-teacher { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; box-shadow: 0 10px 25px -5px rgba(17,153,142,0.4); }
-        .role-parent { background: linear-gradient(135deg, #f093fb, #f5576c); color: white; box-shadow: 0 10px 25px -5px rgba(240,147,251,0.4); }
-        .role-board { background: linear-gradient(135deg, #fa709a, #fee140); color: #1a1a2e; box-shadow: 0 10px 25px -5px rgba(250,112,154,0.4); }
-        .role-director { background: linear-gradient(135deg, #8E2DE2, #4A00E0); color: white; box-shadow: 0 10px 25px -5px rgba(142,45,226,0.4); }
+        .role-student { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        .role-teacher { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; }
+        .role-parent { background: linear-gradient(135deg, #f093fb, #f5576c); color: white; }
+        .role-board { background: linear-gradient(135deg, #fa709a, #fee140); color: #1a1a2e; }
+        .role-director { background: linear-gradient(135deg, #8E2DE2, #4A00E0); color: white; }
 
-        /* Dashboard Containers - Premium */
+        /* Dashboard Containers */
         .dashboard-container {
             display: none;
             background: rgba(255,255,255,0.03);
@@ -326,14 +192,11 @@
             border-radius: 40px;
             padding: 40px;
             margin-top: 25px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
             animation: slideUp 0.6s ease;
             border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .dashboard-container.active {
-            display: block;
-        }
+        .dashboard-container.active { display: block; }
 
         .form-card {
             background: rgba(255,255,255,0.05);
@@ -341,7 +204,7 @@
             border-radius: 30px;
             padding: 35px;
             margin-bottom: 30px;
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transition: all 0.4s ease;
             border: 1px solid rgba(255,255,255,0.08);
         }
 
@@ -349,7 +212,6 @@
             transform: translateY(-5px);
             background: rgba(255,255,255,0.08);
             border-color: rgba(102,126,234,0.3);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
 
         .form-card h2 {
@@ -361,18 +223,15 @@
             background-clip: text;
             color: transparent;
             display: inline-block;
-            font-weight: 700;
         }
 
         .form-group { margin-bottom: 25px; }
-
         label {
             display: block;
             margin-bottom: 10px;
             font-weight: 600;
             color: rgba(255,255,255,0.8);
             font-size: 14px;
-            letter-spacing: 0.5px;
         }
 
         input, select, textarea {
@@ -381,9 +240,9 @@
             border: 2px solid rgba(255,255,255,0.1);
             border-radius: 20px;
             font-size: 15px;
-            transition: all 0.3s ease;
             background: rgba(255,255,255,0.08);
             color: white;
+            transition: all 0.3s ease;
         }
 
         input:focus, select:focus, textarea:focus {
@@ -393,38 +252,22 @@
             box-shadow: 0 0 0 4px rgba(102,126,234,0.2);
         }
 
-        input::placeholder, textarea::placeholder {
-            color: rgba(255,255,255,0.4);
-        }
-
-        button {
+        /* FIXED BUTTON STYLES - NO STACKING */
+        button, .btn-success, .btn-danger, .btn-warning {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
-            padding: 16px 40px;
+            padding: 16px 35px;
             border-radius: 50px;
             cursor: pointer;
             font-size: 16px;
             font-weight: 700;
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            position: relative;
-            overflow: hidden;
-            letter-spacing: 0.5px;
-        }
-
-        button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        button:hover::before {
-            left: 100%;
+            transition: all 0.4s ease;
+            white-space: nowrap;
         }
 
         button:hover {
@@ -432,18 +275,9 @@
             box-shadow: 0 15px 30px rgba(102,126,234,0.3);
         }
 
-        .btn-success {
-            background: linear-gradient(135deg, #11998e, #38ef7d);
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-        }
-
-        .btn-warning {
-            background: linear-gradient(135deg, #fa709a, #fee140);
-            color: #1a1a2e;
-        }
+        .btn-success { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        .btn-danger { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        .btn-warning { background: linear-gradient(135deg, #fa709a, #fee140); color: #1a1a2e; }
 
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
@@ -455,7 +289,7 @@
             border-radius: 25px;
             padding: 25px;
             margin-bottom: 25px;
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transition: all 0.4s ease;
             border: 1px solid rgba(255,255,255,0.08);
         }
 
@@ -465,16 +299,6 @@
             border-color: rgba(102,126,234,0.3);
         }
 
-        .card h3 {
-            color: white;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
-
-        .card p {
-            color: rgba(255,255,255,0.7);
-        }
-
         .badge {
             padding: 6px 15px;
             border-radius: 40px;
@@ -482,39 +306,25 @@
             font-weight: 700;
             display: inline-block;
         }
-
         .badge-passed { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; }
-        .badge-failed { background: linear-gradient(135deg, #f093fb, #f5576c); color: white; }
         .badge-pending { background: linear-gradient(135deg, #fa709a, #fee140); color: #1a1a2e; }
-        .badge-approved { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; }
 
-        /* ID Card Styles - Premium 3D */
+        /* ID Card */
         .id-card {
             width: 520px;
             background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
             backdrop-filter: blur(20px);
             border-radius: 35px;
             padding: 30px;
-            box-shadow: 0 35px 55px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
             margin: 25px auto;
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 1px solid rgba(255,255,255,0.2);
         }
-
-        .id-card:hover {
-            transform: scale(1.02) translateY(-5px);
-            box-shadow: 0 45px 65px rgba(0,0,0,0.4);
-            border-color: rgba(102,126,234,0.5);
-        }
-
         .id-card-ethiopia {
             background: linear-gradient(90deg, #078930 0%, #078930 33%, #fcdd09 33%, #fcdd09 66%, #da121a 66%, #da121a 100%);
             height: 12px;
-            width: 100%;
-            margin-bottom: 25px;
             border-radius: 6px;
+            margin-bottom: 25px;
         }
-
         .id-photo-img {
             width: 150px;
             height: 150px;
@@ -523,56 +333,63 @@
             border: 4px solid #667eea;
             margin: 15px auto;
             display: block;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
         }
 
-        .id-photo-img:hover {
-            transform: scale(1.05);
-            border-color: #a8b5ff;
-        }
-
-        /* Exam Styles - Premium */
+        /* EXAM STYLES - HIGH CONTRAST, EASY TO READ */
         .exam-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(ellipse at center, #0a0a2a, #050510);
+            background: linear-gradient(135deg, #1a1a3e, #0d0d2b);
             z-index: 30000;
             overflow-y: auto;
             padding: 25px;
         }
 
         .exam-question {
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(20px);
+            background: white;
             border-radius: 35px;
-            padding: 35px;
+            padding: 40px;
             margin-bottom: 30px;
             box-shadow: 0 25px 45px rgba(0,0,0,0.2);
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid #e0e0e0;
+        }
+
+        .exam-question h3 {
+            color: #1a1a3e;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .exam-question p {
+            color: #333;
+            font-size: 22px;
+            font-weight: 500;
+            margin: 25px 0;
+            line-height: 1.5;
         }
 
         .exam-option {
-            display: block;
+            display: flex;
+            align-items: center;
             width: 100%;
             padding: 18px 25px;
             margin: 15px 0;
-            background: rgba(255,255,255,0.05);
-            border: 2px solid rgba(255,255,255,0.1);
+            background: #f8f9ff;
+            border: 2px solid #e0e0e8;
             border-radius: 60px;
             cursor: pointer;
-            text-align: left;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 500;
+            color: #333;
             transition: all 0.3s ease;
-            color: white;
         }
 
         .exam-option:hover {
-            background: rgba(102,126,234,0.2);
+            background: #e8ecff;
             border-color: #667eea;
             transform: translateX(8px);
         }
@@ -590,17 +407,14 @@
             color: white;
             padding: 20px;
             text-align: center;
-            font-size: 32px;
+            font-size: 36px;
             font-weight: 800;
             border-radius: 80px;
             margin-bottom: 30px;
             z-index: 10;
-            box-shadow: 0 15px 35px rgba(220,53,69,0.3);
             animation: pulse 1.5s infinite;
-            letter-spacing: 2px;
         }
 
-        /* Footer Links */
         .footer-links {
             margin-top: 45px;
             padding-top: 25px;
@@ -610,23 +424,14 @@
             gap: 40px;
             flex-wrap: wrap;
         }
-
         .footer-links a {
             color: rgba(255,255,255,0.7);
             text-decoration: none;
             cursor: pointer;
-            font-weight: 500;
             transition: all 0.3s ease;
-            font-size: 14px;
         }
+        .footer-links a:hover { color: #a8b5ff; transform: translateY(-2px); }
 
-        .footer-links a:hover {
-            color: #a8b5ff;
-            transform: translateY(-2px);
-            display: inline-block;
-        }
-
-        /* Modal Styles - Premium */
         .modal {
             display: none;
             position: fixed;
@@ -640,7 +445,6 @@
             justify-content: center;
             align-items: center;
         }
-
         .modal-content {
             background: rgba(255,255,255,0.05);
             backdrop-filter: blur(30px);
@@ -650,61 +454,25 @@
             max-height: 85vh;
             overflow-y: auto;
             padding: 45px;
-            position: relative;
-            animation: slideUp 0.5s ease;
             border: 1px solid rgba(255,255,255,0.15);
-            box-shadow: 0 40px 80px rgba(0,0,0,0.4);
         }
-
         .modal-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
             border-bottom: 2px solid rgba(102,126,234,0.5);
             padding-bottom: 20px;
             margin-bottom: 30px;
         }
-
-        .modal-header h2 {
-            background: linear-gradient(135deg, #fff, #a8b5ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-size: 1.8em;
-            font-weight: 700;
-        }
-
         .close-modal {
             background: none;
             font-size: 36px;
             cursor: pointer;
-            padding: 0;
-            width: 45px;
             color: rgba(255,255,255,0.6);
-            box-shadow: none;
-            transition: all 0.3s ease;
         }
+        .close-modal:hover { transform: rotate(90deg); color: #dc3545; }
 
-        .close-modal:hover {
-            background: none;
-            transform: rotate(90deg);
-            color: #dc3545;
-        }
-
-        .star-rating {
-            display: flex;
-            gap: 15px;
-            margin: 25px 0;
-            justify-content: center;
-        }
-
-        .star {
-            font-size: 50px;
-            cursor: pointer;
-            color: rgba(255,255,255,0.3);
-            transition: all 0.2s ease;
-        }
-
+        .star-rating { display: flex; gap: 15px; margin: 25px 0; justify-content: center; }
+        .star { font-size: 50px; cursor: pointer; color: rgba(255,255,255,0.3); }
         .star:hover, .star.active { color: #ffc107; transform: scale(1.15); }
 
         .creator-credit {
@@ -712,33 +480,21 @@
             margin-top: 45px;
             padding: 20px;
             background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
             border-radius: 60px;
             color: rgba(255,255,255,0.7);
-            font-size: 14px;
         }
+        .creator-credit span { color: #ffd700; }
 
-        .creator-credit span { color: #ffd700; font-weight: bold; }
-
-        .student-table { overflow-x: auto; }
-        .student-table table { width: 100%; border-collapse: collapse; }
-        .student-table th, .student-table td { padding: 15px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); }
-        .student-table th { background: linear-gradient(135deg, rgba(102,126,234,0.3), rgba(118,75,162,0.3)); color: white; border-radius: 15px; font-weight: 600; }
-
-        /* Server Status Banner */
         .server-status {
             position: fixed;
             bottom: 25px;
             left: 25px;
             background: rgba(0,0,0,0.7);
             backdrop-filter: blur(10px);
-            color: white;
             padding: 10px 20px;
             border-radius: 40px;
             font-size: 12px;
             z-index: 9999;
-            font-family: monospace;
-            border: 1px solid rgba(255,255,255,0.1);
         }
         .server-status.online { background: rgba(40,167,69,0.8); }
         .server-status.offline { background: rgba(220,53,69,0.8); }
@@ -749,9 +505,16 @@
             .id-card { width: 95%; padding: 20px; }
             .role-buttons { grid-template-columns: 1fr; gap: 15px; }
             .exam-timer { font-size: 24px; padding: 15px; }
-            .modal-content { padding: 30px; }
-            .form-card { padding: 25px; }
-            .dashboard-container { padding: 25px; }
+            .exam-question h3 { font-size: 22px; }
+            .exam-question p { font-size: 18px; }
+            .exam-option { font-size: 16px; padding: 14px 20px; }
+            button, .btn-success, .btn-danger, .btn-warning {
+                width: 100%;
+                white-space: normal;
+                padding: 14px 20px;
+                justify-content: center;
+            }
+            .form-card button { margin-top: 15px; }
             .header h1 { font-size: 1.8em; }
             .role-container { padding: 35px 25px; }
             .role-container h2 { font-size: 24px; }
@@ -760,20 +523,13 @@
 </head>
 <body>
 
-<div class="orb2"></div>
-<div class="orb3"></div>
-
-<!-- SERVER STATUS BANNER -->
 <div id="serverStatus" class="server-status offline">🔌 Checking server...</div>
 
-<!-- ROLE SELECTION MODAL -->
 <div id="roleModal" class="role-overlay">
     <div class="role-container">
-        <div class="school-logo">
-            <img src="logo.png" alt="Hermana Academy" onerror="this.src='https://via.placeholder.com/140x140?text=HA'">
-        </div>
+        <div class="school-logo"><img src="logo.png" onerror="this.src='https://via.placeholder.com/140x140?text=HA'"></div>
         <h2>🏫 እንኳን ደህና መጡ!</h2>
-        <h2 style="font-size: 24px; margin-top: 5px;">Welcome to Hermana Academy</h2>
+        <h2 style="font-size: 24px;">Welcome to Hermana Academy</h2>
         <p style="margin: 20px 0 0; color: rgba(255,255,255,0.6);">Ethiopia's Premier Digital Education Platform</p>
         <div class="role-buttons">
             <button class="role-btn role-student" onclick="selectRole('student')">👨‍🎓 Student</button>
@@ -782,24 +538,16 @@
             <button class="role-btn role-board" onclick="selectRole('board')">🎯 Board</button>
             <button class="role-btn role-director" onclick="selectRole('director')">📊 Director</button>
         </div>
-        <p style="margin-top: 30px; font-size: 12px; color: rgba(255,255,255,0.5);">Secure | Smart | Simple</p>
     </div>
 </div>
 
-<!-- Main Container -->
 <div id="mainContainer" style="display: none;">
     <div class="container">
         <div class="header">
-            <div class="school-logo">
-                <img src="logo.png" alt="Hermana Academy Logo" onerror="this.src='https://via.placeholder.com/140x140?text=HA'">
-            </div>
+            <div class="school-logo"><img src="logo.png" onerror="this.src='https://via.placeholder.com/140x140?text=HA'"></div>
             <h1>🏫 Hermana Academy</h1>
-            <div class="ethiopia">
-                <div class="flag"><span class="green"></span><span class="yellow"></span><span class="red"></span></div>
-                <span style="color: rgba(255,255,255,0.8);">Ethiopia's Premier Educational Institution</span>
-            </div>
+            <div class="ethiopia"><div class="flag"><span class="green"></span><span class="yellow"></span><span class="red"></span></div><span style="color: rgba(255,255,255,0.8);">Ethiopia's Premier Educational Institution</span></div>
             <div class="motto">"እውቀት ብርሃን ነው | Quality Education for Future Leaders"</div>
-            <p style="color: rgba(255,255,255,0.6); margin-top: 10px;">ሄርማና አካዳሚ | የኢትዮጵያ መሪ ትምህርት ተቋም</p>
         </div>
 
         <!-- STUDENT DASHBOARD -->
@@ -826,7 +574,22 @@
                             <div class="form-group"><label><i class="fas fa-map-marker-alt"></i> Home Address</label><input type="text" id="stuAddress" placeholder="Your address"></div>
                             <div class="form-group"><label><i class="fas fa-camera"></i> Upload Your Photo *</label><input type="file" id="stuPhoto" accept="image/*" required></div>
                         </div>
-                        <button type="submit" class="btn-success"><i class="fas fa-arrow-right"></i> Register & Take Secure Exam →</button>
+                        
+                        <!-- Telegram Warning Message -->
+                        <div style="background: rgba(255,193,7,0.15); border: 1px solid #ffc107; padding: 15px; border-radius: 15px; margin-bottom: 25px;">
+                            <div style="color: #ffc107; font-weight: bold; margin-bottom: 8px;">⚠️ IMPORTANT - To receive your Student ID on Telegram:</div>
+                            <ol style="margin-left: 20px; color: rgba(255,255,255,0.8); font-size: 13px;">
+                                <li>Open Telegram app</li>
+                                <li>Search for: <strong>@Hermana_Acadamey_bot</strong></li>
+                                <li>Click <strong>START</strong> button</li>
+                                <li>Send any message (say "Hello")</li>
+                                <li>Then complete your registration below</li>
+                            </ol>
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 20px;">
+                            <button type="submit" class="btn-success"><i class="fas fa-arrow-right"></i> Register & Take Secure Exam →</button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -834,13 +597,15 @@
             <div id="studentLoginSection" style="display: none;">
                 <div class="form-card">
                     <h2><i class="fas fa-lock"></i> Student Login</h2>
-                    <div style="background: linear-gradient(135deg, rgba(17,153,142,0.2), rgba(56,239,125,0.1)); padding: 20px; border-radius: 20px; margin-bottom: 25px; border: 1px solid rgba(56,239,125,0.3);">
+                    <div style="background: linear-gradient(135deg, rgba(17,153,142,0.2), rgba(56,239,125,0.1)); padding: 20px; border-radius: 20px; margin-bottom: 25px;">
                         <p style="color: #96e6a1;">✅ Your Student ID has been sent to your Telegram! Please check your Telegram bot.</p>
                     </div>
                     <form id="studentLoginForm">
                         <div class="form-group"><label><i class="fas fa-id-card"></i> Student ID Number</label><input type="text" id="studentLoginId" placeholder="e.g., HA202500123" required></div>
                         <div class="form-group"><label><i class="fas fa-user"></i> Full Name</label><input type="text" id="studentLoginName" placeholder="Your full name" required></div>
-                        <button type="submit"><i class="fas fa-sign-in-alt"></i> Access My Dashboard →</button>
+                        <div style="text-align: center;">
+                            <button type="submit"><i class="fas fa-sign-in-alt"></i> Access My Dashboard →</button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -848,7 +613,9 @@
             <div id="studentProfileSection" style="display: none;">
                 <div id="studentProfileContent"></div>
             </div>
-    </div>        <!-- TEACHER DASHBOARD -->
+        </div>
+
+        <!-- TEACHER DASHBOARD -->
         <div id="teacherDashboard" class="dashboard-container">
             <div id="teacherRegistrationSection">
                 <div class="form-card">
@@ -870,7 +637,9 @@
                             <div class="form-group"><label><i class="fas fa-camera"></i> Upload Your Photo *</label><input type="file" id="teacherPhoto" accept="image/*" required></div>
                         </div>
                         <div class="form-group"><label><i class="fas fa-quote-left"></i> Why do you want to join Hermana Academy?</label><textarea rows="3" id="teacherReason"></textarea></div>
-                        <button type="submit" class="btn-success"><i class="fas fa-paper-plane"></i> Submit Application →</button>
+                        <div style="text-align: center;">
+                            <button type="submit" class="btn-success"><i class="fas fa-paper-plane"></i> Submit Application →</button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -881,7 +650,6 @@
                     <h2 style="color: white;">Application Submitted Successfully!</h2>
                     <p style="color: rgba(255,255,255,0.7);">Your application is under review by the Board of Directors.</p>
                     <p style="color: rgba(255,255,255,0.7);">You will receive an <strong>approval code via Telegram</strong> within 2-3 business days.</p>
-                    <p style="color: rgba(255,255,255,0.7);">Once approved, you can login using the code and your full name.</p>
                     <button onclick="location.reload()" class="btn-warning" style="margin-top: 25px;"><i class="fas fa-home"></i> Back to Home</button>
                 </div>
             </div>
@@ -889,20 +657,20 @@
             <div id="teacherLoginSection" style="display: none;">
                 <div class="form-card">
                     <h2><i class="fas fa-lock"></i> Teacher Login</h2>
-                    <div style="background: linear-gradient(135deg, rgba(17,153,142,0.2), rgba(56,239,125,0.1)); padding: 20px; border-radius: 20px; margin-bottom: 25px; border: 1px solid rgba(56,239,125,0.3);">
+                    <div style="background: linear-gradient(135deg, rgba(17,153,142,0.2), rgba(56,239,125,0.1)); padding: 20px; border-radius: 20px; margin-bottom: 25px;">
                         <p style="color: #96e6a1;">✅ Congratulations! Your application has been approved. Use your approval code to login.</p>
                     </div>
                     <form id="teacherLoginForm">
                         <div class="form-group"><label><i class="fas fa-key"></i> Approval Code</label><input type="text" id="teacherCode" placeholder="e.g., AP-XYZ789" required></div>
                         <div class="form-group"><label><i class="fas fa-user"></i> Full Name</label><input type="text" id="teacherLoginName" required></div>
-                        <button type="submit"><i class="fas fa-sign-in-alt"></i> Access My Dashboard →</button>
+                        <div style="text-align: center;">
+                            <button type="submit"><i class="fas fa-sign-in-alt"></i> Access My Dashboard →</button>
+                        </div>
                     </form>
                 </div>
             </div>
             
-            <div id="teacherProfileSection" style="display: none;">
-                <div id="teacherProfileContent"></div>
-            </div>
+            <div id="teacherProfileSection" style="display: none;"><div id="teacherProfileContent"></div></div>
         </div>
 
         <!-- PARENT DASHBOARD -->
@@ -912,13 +680,13 @@
                     <h2><i class="fas fa-users"></i> Parent/Guardian Access</h2>
                     <form id="parentLoginForm">
                         <div class="form-group"><label><i class="fas fa-id-card"></i> Student ID Number</label><input type="text" id="parentStudentId" placeholder="e.g., HA202500123" required></div>
-                        <button type="submit"><i class="fas fa-eye"></i> View Child's Information →</button>
+                        <div style="text-align: center;">
+                            <button type="submit"><i class="fas fa-eye"></i> View Child's Information →</button>
+                        </div>
                     </form>
                 </div>
             </div>
-            <div id="parentProfileSection" style="display: none;">
-                <div id="parentProfileContent"></div>
-            </div>
+            <div id="parentProfileSection" style="display: none;"><div id="parentProfileContent"></div></div>
         </div>
 
         <!-- DIRECTOR DASHBOARD -->
@@ -936,13 +704,13 @@
                         </div>
                         <div class="form-group"><label><i class="fas fa-lock"></i> Password</label><input type="password" id="directorPassword" required></div>
                         <div class="form-group"><label><i class="fas fa-camera"></i> Upload Your Photo for Verification</label><input type="file" id="directorPhoto" accept="image/*" required></div>
-                        <button type="submit"><i class="fas fa-sign-in-alt"></i> Login →</button>
+                        <div style="text-align: center;">
+                            <button type="submit"><i class="fas fa-sign-in-alt"></i> Login →</button>
+                        </div>
                     </form>
                 </div>
             </div>
-            <div id="directorProfileSection" style="display: none;">
-                <div id="directorProfileContent"></div>
-            </div>
+            <div id="directorProfileSection" style="display: none;"><div id="directorProfileContent"></div></div>
         </div>
 
         <!-- BOARD DASHBOARD -->
@@ -954,13 +722,13 @@
                         <div class="form-group"><label><i class="fas fa-envelope"></i> Email</label><input type="email" id="boardEmail" required></div>
                         <div class="form-group"><label><i class="fas fa-lock"></i> Password</label><input type="password" id="boardPassword" required></div>
                         <div class="form-group"><label><i class="fas fa-camera"></i> Upload Your Photo for Verification</label><input type="file" id="boardPhoto" accept="image/*" required></div>
-                        <button type="submit"><i class="fas fa-sign-in-alt"></i> Access Board Dashboard →</button>
+                        <div style="text-align: center;">
+                            <button type="submit"><i class="fas fa-sign-in-alt"></i> Access Board Dashboard →</button>
+                        </div>
                     </form>
                 </div>
             </div>
-            <div id="boardProfileSection" style="display: none;">
-                <div id="boardProfileContent"></div>
-            </div>
+            <div id="boardProfileSection" style="display: none;"><div id="boardProfileContent"></div></div>
         </div>
     </div>
 </div>
@@ -984,7 +752,7 @@
             <p>👨‍🏫 <strong style="color: #ffd93d;">Problem #5 - Teacher Application Chaos</strong> → ✅ Digital registration, document upload, board approval workflow.</p>
             <p>👪 <strong style="color: #ffd93d;">Problem #6 - Parents Had No Visibility</strong> → ✅ Parent portal with child's grades, payments, teacher assignments.</p>
             <p>📊 <strong style="color: #ffd93d;">Problem #7 - Directors Had No Overview</strong> → ✅ Separate dashboards for KG, Elementary, High School directors.</p>
-            <p>📧 <strong style="color: #ffd93d;">Problem #8 - No Digital Communication</strong> → ✅ Real Telegram notifications for registration, exam results, Student IDs, approval codes, payment receipts.</p>
+            <p>📱 <strong style="color: #ffd93d;">Problem #8 - No Digital Communication</strong> → ✅ Real Telegram notifications for registration, exam results, Student IDs, approval codes, payment receipts.</p>
             <br>
             <p><strong style="color: white;">🌟 My Mission Continues:</strong> I will keep improving Hermana Academy. It's free, secure, built for Ethiopia.</p>
             <br>
@@ -1012,12 +780,12 @@
             </div>
             <input type="hidden" id="feedbackRating" value="0">
             <form id="feedbackForm">
-                <textarea rows="5" id="feedbackText" placeholder="What do you love? What can be better? Suggestions for new features? I want to hear everything!" style="width:100%; margin:15px 0; border-radius:25px; padding:18px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); color: white;"></textarea>
+                <textarea rows="5" id="feedbackText" placeholder="What do you love? What can be better? Suggestions for new features? I want to hear everything!" style="width:100%; margin:15px 0; border-radius:25px; padding:18px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.1); color:white;"></textarea>
                 <button type="submit" style="width:100%; padding:16px; font-size:16px; border-radius:50px;"><i class="fas fa-heart"></i> Submit Feedback (Anonymous)</button>
             </form>
             <p id="feedbackThanks" style="display:none; color:#38ef7d; margin-top:15px; text-align:center; font-weight:bold;">✅ Thank you! Your feedback has been saved and will help make Hermana Academy better!</p>
-            <hr style="margin:25px 0; border-color: rgba(255,255,255,0.1);">
-            <p style="font-size:12px; color: rgba(255,255,255,0.5); text-align:center;">⭐ 5-star ratings make my day! ⭐</p>
+            <hr style="margin:25px 0; border-color:rgba(255,255,255,0.1);">
+            <p style="font-size:12px; color:rgba(255,255,255,0.5); text-align:center;">⭐ 5-star ratings make my day! ⭐</p>
         </div>
     </div>
 </div>
@@ -1074,11 +842,13 @@
             <p>🌍 <strong style="color: white;">Social Media:</strong> Telegram: @MuhammadIlyas | LinkedIn: /in/muhammad-ilyas | GitHub: /muhammad-ilyas</p>
             <p>📍 <strong style="color: white;">Location:</strong> Addis Ababa, Ethiopia (Remote support worldwide)</p>
             <p>⏰ <strong style="color: white;">Response Time:</strong> I personally respond to all emails within 24-48 hours.</p>
-            <hr style="margin:20px 0; border-color: rgba(255,255,255,0.1);">
+            <hr style="margin:20px 0; border-color:rgba(255,255,255,0.1);">
             <p style="text-align:center;"><strong>💬 Want to collaborate or hire me? Let's talk!</strong></p>
         </div>
     </div>
-    </div><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
     // ==================== RENDER BACKEND URL ====================
     const API_BASE_URL = 'https://hermana-acad.onrender.com/api';
@@ -1090,19 +860,14 @@
             if (response.ok) {
                 statusDiv.innerHTML = '✅ Server Connected';
                 statusDiv.className = 'server-status online';
-                console.log('✅ Backend server is running');
                 return true;
-            } else {
-                throw new Error('Server not responding');
-            }
+            } else throw new Error('Server not responding');
         } catch (error) {
             statusDiv.innerHTML = '⚠️ Server Offline - Using Local Storage';
             statusDiv.className = 'server-status offline';
-            console.log('⚠️ Backend server not reachable, using localStorage fallback');
             return false;
         }
     }
-    
     checkServerConnection();
     
     let students = JSON.parse(localStorage.getItem('hermana_students') || '[]');
@@ -1167,46 +932,6 @@
         }
     }
     
-    async function apiCall(endpoint, options = {}) {
-        try {
-            const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-                ...options,
-                headers: { 'Content-Type': 'application/json', ...options.headers }
-            });
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.error || 'API call failed');
-            return data;
-        } catch (error) {
-            console.log('API Error:', error.message);
-            return null;
-        }
-    }
-    
-    // ==================== SEND TO TELEGRAM BOT FUNCTION ====================
-    async function sendToTelegram(chatId, message, photoBase64 = null) {
-        try {
-            // Send message first
-            const msgResponse = await fetch(`${API_BASE_URL}/telegram/send`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chatId, message })
-            });
-            
-            // If photo provided, send photo
-            if (photoBase64) {
-                await fetch(`${API_BASE_URL}/telegram/send-photo`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chatId, photo: photoBase64, caption: message.substring(0, 200) })
-                });
-            }
-            return true;
-        } catch (error) {
-            console.log('Telegram send error:', error);
-            return false;
-        }
-    }
-    
     // ==================== STUDENT EXAM ====================
     function generateStudentExamQuestions(grade) {
         if (grade.includes("KG") || grade === "Nursery") {
@@ -1261,15 +986,18 @@
         document.addEventListener('visibilitychange', () => { if(examActive && document.hidden) { examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } });
         window.addEventListener('blur', () => { if(examActive) { examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } });
         
-        const examHTML = `<div id="examContainer" class="exam-container"><div class="exam-timer">⏱️ Time: <span id="timer">05:00</span></div><div id="examContent"></div><div style="text-align:center; padding:15px; color:#ccc;">⚠️ DO NOT leave this page! 3 violations = termination</div></div>`;
+        const examHTML = `<div id="examContainer" class="exam-container"><div class="exam-timer">⏱️ Time: <span id="timer">05:00</span></div><div id="examContent"></div></div>`;
         document.body.insertAdjacentHTML('beforeend', examHTML);
         
         function render() {
             const q = questions[currentQuestion];
             document.getElementById('examContent').innerHTML = `
-                <div class="exam-question"><h3>Question ${currentQuestion+1}/${questions.length}</h3><p style="font-size:20px; margin:20px 0;">${q.text}</p>
-                ${q.options.map((opt, idx) => `<div class="exam-option ${answers[currentQuestion]===idx?'selected':''}" onclick="selectAnswer(${idx})">${String.fromCharCode(65+idx)}. ${opt}</div>`).join('')}</div>
-                <div style="display:flex; gap:15px; margin-top:20px;">
+                <div class="exam-question">
+                    <h3>Question ${currentQuestion+1}/${questions.length}</h3>
+                    <p>${q.text}</p>
+                    ${q.options.map((opt, idx) => `<div class="exam-option ${answers[currentQuestion]===idx?'selected':''}" onclick="selectAnswer(${idx})">${String.fromCharCode(65+idx)}. ${opt}</div>`).join('')}
+                </div>
+                <div style="display:flex; gap:15px; margin-top:20px; justify-content:center;">
                     <button onclick="prevQuestion()" class="${currentQuestion===0?'btn-danger':'btn-success'}">◀ Previous</button>
                     <button onclick="nextQuestion()" class="btn-success" style="flex:1;">${currentQuestion===questions.length-1?'Submit Exam':'Next ▶'}</button>
                 </div>`;
@@ -1310,15 +1038,20 @@
                 students.push(newStudent);
                 saveData();
                 
-                // Send to ADMIN Telegram (with photo)
-                const adminMessage = `🎓 NEW STUDENT REGISTERED!\n\n👤 Name: ${studentData.fullName}\n🆔 ID: ${studentId}\n📚 Grade: ${studentData.grade}\n📧 Email: ${studentData.email}\n🤖 Telegram: ${telegramUsername}\n📊 Score: ${percentage}%\n⚠️ Violations: ${examViolations}`;
-                await sendToTelegram('ADMIN_CHAT_ID', adminMessage, examPhoto || studentData.photo);
+                const formData = new FormData();
+                formData.append('fullName', studentData.fullName); formData.append('email', studentData.email);
+                formData.append('telegram', telegramUsername); formData.append('phone', studentData.phone);
+                formData.append('grade', studentData.grade); formData.append('parentName', studentData.parentName);
+                formData.append('parentPhone', studentData.parentPhone); formData.append('address', studentData.address);
+                formData.append('examScore', percentage); formData.append('examViolations', examViolations);
+                if(photoFile) formData.append('photo', photoFile);
                 
-                // Send ID to STUDENT via Telegram
-                const studentMessage = `🎉 Welcome to Hermana Academy, ${studentData.fullName}!\n\n🆔 Your Student ID: ${studentId}\n📚 Grade: ${studentData.grade}\n📊 Exam Score: ${percentage}%\n\n🔐 Login with:\n   Student ID: ${studentId}\n   Full Name: ${studentData.fullName}\n\nThank you for choosing Hermana Academy! 🇪🇹`;
-                await sendToTelegram(telegramUsername, studentMessage);
-                
-                alert(`🎉 Passed! Score: ${percentage}%\nYour Student ID has been sent to your Telegram!\nCheck @HermanaAcademyBot`);
+                try {
+                    const response = await fetch(`${API_BASE_URL}/student/register`, { method: 'POST', body: formData });
+                    const result = await response.json();
+                    if(result.success) alert(`🎉 Passed! Score: ${percentage}%\nStudent ID: ${studentId}\nSent to your Telegram.`);
+                    else alert(`🎉 Passed! Score: ${percentage}%\nStudent ID: ${studentId}`);
+                } catch(err) { alert(`🎉 Passed! Score: ${percentage}%\nStudent ID: ${studentId}`); }
                 
                 document.getElementById('studentRegistrationSection').style.display = 'none';
                 document.getElementById('studentLoginSection').style.display = 'block';
@@ -1393,312 +1126,34 @@
     
     window.downloadStudentIDCard = () => { const card = document.getElementById('student-id-card'); if(card) html2canvas(card,{scale:2}).then(canvas=>{const a=document.createElement('a'); a.download='Student_ID.png'; a.href=canvas.toDataURL(); a.click();}); };
     
-    // ==================== TEACHER FUNCTIONS ====================
-    function generateTeacherExamQuestions() {
-        return [
-            { text: "What is your teaching philosophy?", options: ["Student-centered", "Teacher-centered", "Both", "None"], correct: 0 },
-            { text: "How do you handle classroom discipline?", options: ["Strict rules", "Positive reinforcement", "Ignore minor issues", "Send to principal"], correct: 1 },
-            { text: "What is the best way to assess student learning?", options: ["Final exam only", "Continuous assessment", "Homework only", "Class participation only"], correct: 1 },
-            { text: "How do you engage struggling students?", options: ["Extra homework", "One-on-one support", "Ignore them", "Move them to back"], correct: 1 },
-            { text: "What is your approach to parent communication?", options: ["Only when issues arise", "Regular updates", "Never", "Only at parent-teacher conferences"], correct: 1 }
-        ];
-    }
+    // Teacher functions (simplified for brevity)
+    function generateTeacherExamQuestions() { return [ {text:"Teaching philosophy?",options:["Student-centered","Teacher-centered","Both","None"],correct:0}, {text:"Classroom discipline?",options:["Strict rules","Positive reinforcement","Ignore","Send to principal"],correct:1}, {text:"Best assessment method?",options:["Final exam","Continuous assessment","Homework","Participation"],correct:1}, {text:"Engage struggling students?",options:["Extra homework","One-on-one support","Ignore","Move to back"],correct:1}, {text:"Parent communication?",options:["Only issues","Regular updates","Never","Only conferences"],correct:1} ]; }
     
-    async function startTeacherExam(teacherData, photoFile, docFile, telegramUsername) {
-        const questions = generateTeacherExamQuestions();
-        let currentQuestion = 0, answers = new Array(questions.length).fill(-1), timeLeft = 300;
-        examActive = true;
-        examViolations = 0;
-        
-        let teacherPhoto = null;
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            const video = document.createElement('video');
-            video.srcObject = stream;
-            await video.play();
-            const canvas = document.createElement('canvas');
-            canvas.width = canvas.height = 200;
-            canvas.getContext('2d').drawImage(video, 0, 0, 200, 200);
-            teacherPhoto = canvas.toDataURL();
-            stream.getTracks().forEach(t => t.stop());
-        } catch(e) { console.log("Camera error:", e); }
-        
-        document.body.style.overflow = 'hidden';
-        document.addEventListener('contextmenu', (e) => { if(examActive){ e.preventDefault(); examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } });
-        document.addEventListener('keydown', (e) => { if(examActive && (e.key==='F12'||(e.ctrlKey&&e.shiftKey&&e.key==='I')||(e.ctrlKey&&e.key==='u'))) { e.preventDefault(); examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } });
-        document.addEventListener('visibilitychange', () => { if(examActive && document.hidden) { examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } });
-        window.addEventListener('blur', () => { if(examActive) { examViolations++; alert(`Violation ${examViolations}/3`); if(examViolations>=3) terminateExam(); } });
-        
-        const examHTML = `<div id="examContainer" class="exam-container"><div class="exam-timer">⏱️ Time: <span id="timer">05:00</span></div><div id="examContent"></div></div>`;
-        document.body.insertAdjacentHTML('beforeend', examHTML);
-        
-        function render() {
-            const q = questions[currentQuestion];
-            document.getElementById('examContent').innerHTML = `
-                <div class="exam-question"><h3>Question ${currentQuestion+1}/${questions.length}</h3><p>${q.text}</p>
-                ${q.options.map((opt, idx) => `<div class="exam-option ${answers[currentQuestion]===idx?'selected':''}" onclick="selectTeacherAnswer(${idx})">${String.fromCharCode(65+idx)}. ${opt}</div>`).join('')}</div>
-                <div style="display:flex; gap:15px;"><button onclick="prevTeacher()" class="${currentQuestion===0?'btn-danger':'btn-success'}">◀ Previous</button>
-                <button onclick="nextTeacher()" class="btn-success" style="flex:1;">${currentQuestion===questions.length-1?'Submit':'Next ▶'}</button></div>`;
-        }
-        
-        window.selectTeacherAnswer = (idx) => { answers[currentQuestion] = idx; render(); };
-        window.nextTeacher = () => { if(currentQuestion === questions.length-1) submitExam(); else { currentQuestion++; render(); } };
-        window.prevTeacher = () => { if(currentQuestion > 0) { currentQuestion--; render(); } };
-        
-        function submitExam() {
-            clearInterval(timerInterval);
-            let correct = 0;
-            answers.forEach((ans,i) => { if(ans === questions[i].correct) correct++; });
-            const percentage = (correct/questions.length)*100;
-            document.getElementById('examContainer').remove();
-            document.body.style.overflow = '';
-            
-            if(percentage >= 60) {
-                const approvalCode = generateApprovalCode();
-                const pendingTeacher = {
-                    id: Date.now(),
-                    fullName: teacherData.fullName,
-                    email: teacherData.email,
-                    telegram: telegramUsername,
-                    phone: teacherData.phone,
-                    gradeLevel: teacherData.gradeLevel,
-                    subject: teacherData.subject,
-                    experience: teacherData.experience,
-                    reason: teacherData.reason,
-                    photo: teacherPhoto,
-                    document: docFile,
-                    examScore: percentage,
-                    approvalCode: approvalCode,
-                    status: 'pending'
-                };
-                pendingTeachers.push(pendingTeacher);
-                saveData();
-                
-                // Send Telegram notification to admin
-                const adminMessage = `👨‍🏫 NEW TEACHER APPLICATION!\n\n👤 Name: ${teacherData.fullName}\n📧 Email: ${teacherData.email}\n🤖 Telegram: ${telegramUsername || 'Not provided'}\n📚 Grade Level: ${teacherData.gradeLevel}\n📊 Exam Score: ${percentage}%\n🔑 Approval Code: ${approvalCode}`;
-                sendToTelegram('ADMIN_CHAT_ID', adminMessage, teacherPhoto);
-                
-                alert(`✅ Exam passed! Score: ${percentage}%\nApplication submitted. You will receive approval code via Telegram within 2 days.`);
-                document.getElementById('teacherRegistrationSection').style.display = 'none';
-                document.getElementById('teacherWaitingSection').style.display = 'block';
-            } else {
-                alert(`❌ Exam failed! Score: ${percentage}%. Need 60% to pass.`);
-            }
-        }
-        
-        const timerInterval = setInterval(() => {
-            if(timeLeft <= 0) submitExam();
-            else { timeLeft--; const mins = Math.floor(timeLeft/60); const secs = timeLeft%60; document.getElementById('timer').innerText = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`; }
-        }, 1000);
-        
-        render();
-    }
+    async function startTeacherExam(teacherData, photoFile, docFile, telegramUsername) { const questions = generateTeacherExamQuestions(); let currentQuestion=0, answers=new Array(questions.length).fill(-1), timeLeft=300; let teacherPhoto=null; try{ const stream=await navigator.mediaDevices.getUserMedia({video:true}); const video=document.createElement('video'); video.srcObject=stream; await video.play(); const canvas=document.createElement('canvas'); canvas.width=canvas.height=200; canvas.getContext('2d').drawImage(video,0,0,200,200); teacherPhoto=canvas.toDataURL(); stream.getTracks().forEach(t=>t.stop()); }catch(e){} document.body.style.overflow='hidden'; const examHTML=`<div id="examContainer" class="exam-container"><div class="exam-timer">⏱️ Time: <span id="timer">05:00</span></div><div id="examContent"></div></div>`; document.body.insertAdjacentHTML('beforeend',examHTML); function render(){ const q=questions[currentQuestion]; document.getElementById('examContent').innerHTML=`<div class="exam-question"><h3>Question ${currentQuestion+1}/${questions.length}</h3><p>${q.text}</p>${q.options.map((opt,idx)=>`<div class="exam-option ${answers[currentQuestion]===idx?'selected':''}" onclick="selectTeacherAnswer(${idx})">${String.fromCharCode(65+idx)}. ${opt}</div>`).join('')}</div><div style="display:flex; gap:15px; margin-top:20px; justify-content:center;"><button onclick="prevTeacher()" class="${currentQuestion===0?'btn-danger':'btn-success'}">◀ Previous</button><button onclick="nextTeacher()" class="btn-success" style="flex:1;">${currentQuestion===questions.length-1?'Submit':'Next ▶'}</button></div>`; } window.selectTeacherAnswer=(idx)=>{ answers[currentQuestion]=idx; render(); }; window.nextTeacher=()=>{ if(currentQuestion===questions.length-1) submitExam(); else { currentQuestion++; render(); } }; window.prevTeacher=()=>{ if(currentQuestion>0) { currentQuestion--; render(); } }; function submitExam(){ clearInterval(timerInterval); let correct=0; answers.forEach((ans,i)=>{ if(ans===questions[i].correct) correct++; }); const percentage=(correct/questions.length)*100; document.getElementById('examContainer').remove(); document.body.style.overflow=''; if(percentage>=60){ const approvalCode=generateApprovalCode(); pendingTeachers.push({ id:Date.now(), fullName:teacherData.fullName, email:teacherData.email, telegram:telegramUsername, phone:teacherData.phone, gradeLevel:teacherData.gradeLevel, subject:teacherData.subject, experience:teacherData.experience, reason:teacherData.reason, photo:teacherPhoto, document:docFile, examScore:percentage, approvalCode, status:'pending' }); saveData(); alert(`✅ Exam passed! Score: ${percentage}%\nApplication submitted. Approval code will be sent to your Telegram.`); document.getElementById('teacherRegistrationSection').style.display='none'; document.getElementById('teacherWaitingSection').style.display='block'; } else { alert(`❌ Failed! Score: ${percentage}%. Need 60% to pass.`); } } const timerInterval=setInterval(()=>{ if(timeLeft<=0) submitExam(); else { timeLeft--; const mins=Math.floor(timeLeft/60); const secs=timeLeft%60; document.getElementById('timer').innerText=`${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`; } },1000); render(); }
     
-    document.getElementById('teacherRegForm')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const docFile = document.getElementById('teacherDoc').files[0];
-        const photoFile = document.getElementById('teacherPhoto').files[0];
-        const telegramUsername = document.getElementById('teacherTelegram').value.trim();
-        if(!docFile || !photoFile) { alert('Upload both document and photo!'); return; }
-        let docBase64 = null, photoBase64 = null;
-        await new Promise(r => { const reader = new FileReader(); reader.onload = (ev) => { docBase64 = ev.target.result; r(); }; reader.readAsDataURL(docFile); });
-        await new Promise(r => { const reader = new FileReader(); reader.onload = (ev) => { photoBase64 = ev.target.result; r(); }; reader.readAsDataURL(photoFile); });
-        startTeacherExam({
-            fullName: document.getElementById('teacherFullName').value,
-            email: document.getElementById('teacherEmail').value,
-            phone: document.getElementById('teacherPhone').value,
-            gradeLevel: document.getElementById('teacherGradeLevel').value,
-            subject: document.getElementById('teacherSubject').value,
-            experience: document.getElementById('teacherExperience').value,
-            reason: document.getElementById('teacherReason').value
-        }, photoBase64, docBase64, telegramUsername);
-    });
+    document.getElementById('teacherRegForm')?.addEventListener('submit', async(e)=>{ e.preventDefault(); const docFile=document.getElementById('teacherDoc').files[0]; const photoFile=document.getElementById('teacherPhoto').files[0]; const telegramUsername=document.getElementById('teacherTelegram').value.trim(); if(!docFile||!photoFile){ alert('Upload both document and photo!'); return; } let docBase64=null,photoBase64=null; await new Promise(r=>{ const reader=new FileReader(); reader.onload=(ev)=>{ docBase64=ev.target.result; r(); }; reader.readAsDataURL(docFile); }); await new Promise(r=>{ const reader=new FileReader(); reader.onload=(ev)=>{ photoBase64=ev.target.result; r(); }; reader.readAsDataURL(photoFile); }); startTeacherExam({ fullName:document.getElementById('teacherFullName').value, email:document.getElementById('teacherEmail').value, phone:document.getElementById('teacherPhone').value, gradeLevel:document.getElementById('teacherGradeLevel').value, subject:document.getElementById('teacherSubject').value, experience:document.getElementById('teacherExperience').value, reason:document.getElementById('teacherReason').value }, photoBase64, docBase64, telegramUsername); });
     
-    document.getElementById('teacherLoginForm')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const code = document.getElementById('teacherCode').value;
-        const fullName = document.getElementById('teacherLoginName').value;
-        const pending = pendingTeachers.find(t => t.approvalCode === code && t.fullName.toLowerCase() === fullName.toLowerCase());
-        if(pending) {
-            const newTeacher = {
-                teacherId: generateTeacherId(),
-                fullName: pending.fullName,
-                email: pending.email,
-                telegram: pending.telegram,
-                phone: pending.phone,
-                gradeLevel: pending.gradeLevel,
-                subject: pending.subject,
-                experience: pending.experience,
-                photo: pending.photo,
-                students: [],
-                status: 'active'
-            };
-            teachers.push(newTeacher);
-            const idx = pendingTeachers.findIndex(t => t.id === pending.id);
-            if(idx !== -1) pendingTeachers.splice(idx,1);
-            saveData();
-            
-            // Send approval notification to teacher's Telegram
-            if(pending.telegram) {
-                const approvalMessage = `✅ Congratulations ${pending.fullName}! Your teacher application has been APPROVED!\n\n🆔 Teacher ID: ${newTeacher.teacherId}\n🔑 Approval Code: ${code}\n\nLogin with your approval code and full name. Welcome to Hermana Academy! 🎉`;
-                sendToTelegram(pending.telegram, approvalMessage);
-            }
-            
-            displayTeacherProfile(newTeacher);
-        } else alert('Invalid approval code');
-    });
+    document.getElementById('teacherLoginForm')?.addEventListener('submit',(e)=>{ e.preventDefault(); const code=document.getElementById('teacherCode').value; const fullName=document.getElementById('teacherLoginName').value; const pending=pendingTeachers.find(t=>t.approvalCode===code && t.fullName.toLowerCase()===fullName.toLowerCase()); if(pending){ const newTeacher={ teacherId:generateTeacherId(), fullName:pending.fullName, email:pending.email, telegram:pending.telegram, phone:pending.phone, gradeLevel:pending.gradeLevel, subject:pending.subject, experience:pending.experience, photo:pending.photo, students:[], status:'active' }; teachers.push(newTeacher); const idx=pendingTeachers.findIndex(t=>t.id===pending.id); if(idx!==-1) pendingTeachers.splice(idx,1); saveData(); displayTeacherProfile(newTeacher); } else alert('Invalid approval code'); });
     
-    function displayTeacherProfile(teacher) {
-        document.getElementById('teacherRegistrationSection').style.display = 'none';
-        document.getElementById('teacherWaitingSection').style.display = 'none';
-        document.getElementById('teacherLoginSection').style.display = 'none';
-        document.getElementById('teacherProfileSection').style.display = 'block';
-        const assignedStudents = students.filter(s => {
-            if(teacher.gradeLevel === 'KG') return s.grade.includes('KG') || s.grade === 'Nursery';
-            if(teacher.gradeLevel === 'Elementary') return s.grade.includes('Grade 1') || s.grade.includes('Grade 2') || s.grade.includes('Grade 3') || s.grade.includes('Grade 4');
-            if(teacher.gradeLevel === 'Middle') return s.grade.includes('Grade 5') || s.grade.includes('Grade 6') || s.grade.includes('Grade 7') || s.grade.includes('Grade 8');
-            if(teacher.gradeLevel === 'High') return s.grade.includes('Grade 9') || s.grade.includes('Grade 10') || s.grade.includes('Grade 11') || s.grade.includes('Grade 12');
-            return false;
-        });
-        document.getElementById('teacherProfileContent').innerHTML = `
-            <div class="form-card"><div style="display:flex; justify-content:space-between;"><h2><i class="fas fa-chalkboard-user"></i> Welcome, Teacher ${teacher.fullName}!</h2><button onclick="logout()" class="btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</button></div></div>
-            <div class="id-card" id="teacher-id-card"><div class="id-card-ethiopia"></div><div style="text-align:center;"><img class="id-photo-img" src="${teacher.photo}"><h3 style="color:white;">${teacher.fullName}</h3><p><strong>Teacher ID:</strong> ${teacher.teacherId}</p><p><strong>Grade Level:</strong> ${teacher.gradeLevel}</p><p><strong>Subject:</strong> ${teacher.subject||'General'}</p><p><strong>Telegram:</strong> ${teacher.telegram||'N/A'}</p></div></div>
-            <div style="text-align:center;"><button onclick="downloadTeacherIDCard()" class="btn-success"><i class="fas fa-download"></i> Download Teacher ID</button></div>
-            <div class="card"><h3><i class="fas fa-users"></i> Your Students (${assignedStudents.length})</h3><div class="student-table"><table><thead><tr><th>Name</th><th>Student ID</th><th>Grade</th><th>Score</th></tr></thead><tbody>${assignedStudents.map(s=>`<tr><td style="padding:12px;">${s.fullName}络<td style="padding:12px;">${s.studentId}络<td style="padding:12px;">${s.grade}络<td style="padding:12px;">${s.examScore}%络</tr>`).join('')}${assignedStudents.length===0?'<tr><td colspan="4">No students assigned yet.络</tr>':''}</tbody></table></div></div>
-            <div class="footer-links"><a onclick="openModal('purposeModal')"><i class="fas fa-lightbulb"></i> Purpose</a><a onclick="openModal('feedbackModal')"><i class="fas fa-comment-dots"></i> Feedback</a><a onclick="openModal('privacyModal')"><i class="fas fa-shield-alt"></i> Privacy</a><a onclick="openModal('contactModal')"><i class="fas fa-address-card"></i> Contact</a></div>
-        `;
-    }
+    function displayTeacherProfile(teacher){ document.getElementById('teacherRegistrationSection').style.display='none'; document.getElementById('teacherWaitingSection').style.display='none'; document.getElementById('teacherLoginSection').style.display='none'; document.getElementById('teacherProfileSection').style.display='block'; const assignedStudents=students.filter(s=>{ if(teacher.gradeLevel==='KG') return s.grade.includes('KG')||s.grade==='Nursery'; if(teacher.gradeLevel==='Elementary') return s.grade.includes('Grade 1')||s.grade.includes('Grade 2')||s.grade.includes('Grade 3')||s.grade.includes('Grade 4'); if(teacher.gradeLevel==='Middle') return s.grade.includes('Grade 5')||s.grade.includes('Grade 6')||s.grade.includes('Grade 7')||s.grade.includes('Grade 8'); if(teacher.gradeLevel==='High') return s.grade.includes('Grade 9')||s.grade.includes('Grade 10')||s.grade.includes('Grade 11')||s.grade.includes('Grade 12'); return false; }); document.getElementById('teacherProfileContent').innerHTML=`<div class="form-card"><div style="display:flex; justify-content:space-between;"><h2><i class="fas fa-chalkboard-user"></i> Welcome, Teacher ${teacher.fullName}!</h2><button onclick="logout()" class="btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</button></div></div><div class="id-card" id="teacher-id-card"><div class="id-card-ethiopia"></div><div style="text-align:center;"><img class="id-photo-img" src="${teacher.photo}"><h3 style="color:white;">${teacher.fullName}</h3><p><strong>Teacher ID:</strong> ${teacher.teacherId}</p><p><strong>Grade Level:</strong> ${teacher.gradeLevel}</p><p><strong>Subject:</strong> ${teacher.subject||'General'}</p><p><strong>Telegram:</strong> ${teacher.telegram||'N/A'}</p></div></div><div style="text-align:center;"><button onclick="downloadTeacherIDCard()" class="btn-success"><i class="fas fa-download"></i> Download Teacher ID</button></div><div class="card"><h3><i class="fas fa-users"></i> Your Students (${assignedStudents.length})</h3><div class="student-table"><table><thead><tr><th>Name</th><th>Student ID</th><th>Grade</th><th>Score</th></tr></thead><tbody>${assignedStudents.map(s=>`<tr><td style="padding:12px;">${s.fullName}络<td style="padding:12px;">${s.studentId}络<td style="padding:12px;">${s.grade}络<td style="padding:12px;">${s.examScore}%络</tr>`).join('')}${assignedStudents.length===0?'<tr><td colspan="4">No students assigned yet.络</tr>':''}</tbody></table></div></div><div class="footer-links"><a onclick="openModal('purposeModal')">Purpose</a><a onclick="openModal('feedbackModal')">Feedback</a><a onclick="openModal('privacyModal')">Privacy</a><a onclick="openModal('contactModal')">Contact</a></div>`; }
     
-    window.downloadTeacherIDCard = () => { const card = document.getElementById('teacher-id-card'); if(card) html2canvas(card,{scale:2}).then(canvas=>{const a=document.createElement('a'); a.download='Teacher_ID.png'; a.href=canvas.toDataURL(); a.click();}); };
+    window.downloadTeacherIDCard=()=>{ const card=document.getElementById('teacher-id-card'); if(card) html2canvas(card,{scale:2}).then(canvas=>{const a=document.createElement('a'); a.download='Teacher_ID.png'; a.href=canvas.toDataURL(); a.click();}); };
     
-    document.getElementById('parentLoginForm')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const studentId = document.getElementById('parentStudentId').value;
-        const student = students.find(s => s.studentId === studentId);
-        if(student) {
-            document.getElementById('parentLoginSection').style.display = 'none';
-            document.getElementById('parentProfileSection').style.display = 'block';
-            document.getElementById('parentProfileContent').innerHTML = `
-                <div class="form-card"><div style="display:flex; justify-content:space-between;"><h2><i class="fas fa-users"></i> Parent Dashboard - ${student.fullName}</h2><button onclick="logout()" class="btn-danger">Logout</button></div></div>
-                <div class="card"><h3>Student Information</h3><p><strong>Name:</strong> ${student.fullName}</p><p><strong>ID:</strong> ${student.studentId}</p><p><strong>Grade:</strong> ${student.grade}</p><p><strong>Exam Score:</strong> ${student.examScore}%</p><p><strong>Telegram:</strong> ${student.telegram||'N/A'}</p></div>
-                <div class="card"><h3>Payment Status</h3><p>Registration: ${student.payments.registration?'✅ Paid':'❌ Unpaid'}</p><p>Term 1: ${student.payments.term1?'✅ Paid':'❌ Unpaid'}</p><p>Term 2: ${student.payments.term2?'✅ Paid':'❌ Unpaid'}</p></div>
-                <div class="footer-links"><a onclick="openModal('purposeModal')">Purpose</a><a onclick="openModal('feedbackModal')">Feedback</a><a onclick="openModal('privacyModal')">Privacy</a><a onclick="openModal('contactModal')">Contact</a></div>
-            `;
-        } else alert('Student not found');
-    });
+    document.getElementById('parentLoginForm')?.addEventListener('submit',(e)=>{ e.preventDefault(); const studentId=document.getElementById('parentStudentId').value; const student=students.find(s=>s.studentId===studentId); if(student){ document.getElementById('parentLoginSection').style.display='none'; document.getElementById('parentProfileSection').style.display='block'; document.getElementById('parentProfileContent').innerHTML=`<div class="form-card"><div style="display:flex; justify-content:space-between;"><h2><i class="fas fa-users"></i> Parent Dashboard - ${student.fullName}</h2><button onclick="logout()" class="btn-danger">Logout</button></div></div><div class="card"><h3>Student Information</h3><p><strong>Name:</strong> ${student.fullName}</p><p><strong>ID:</strong> ${student.studentId}</p><p><strong>Grade:</strong> ${student.grade}</p><p><strong>Exam Score:</strong> ${student.examScore}%</p><p><strong>Telegram:</strong> ${student.telegram||'N/A'}</p></div><div class="card"><h3>Payment Status</h3><p>Registration: ${student.payments.registration?'✅ Paid':'❌ Unpaid'}</p><p>Term 1: ${student.payments.term1?'✅ Paid':'❌ Unpaid'}</p><p>Term 2: ${student.payments.term2?'✅ Paid':'❌ Unpaid'}</p></div><div class="footer-links"><a onclick="openModal('purposeModal')">Purpose</a><a onclick="openModal('feedbackModal')">Feedback</a><a onclick="openModal('privacyModal')">Privacy</a><a onclick="openModal('contactModal')">Contact</a></div>`; } else alert('Student not found'); });
     
-    document.getElementById('directorLoginForm')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const type = document.getElementById('directorType').value;
-        const password = document.getElementById('directorPassword').value;
-        const director = directors.find(d => d.type === type && d.password === password);
-        if(director) {
-            const photoFile = document.getElementById('directorPhoto').files[0];
-            if(!photoFile) { alert('Upload photo!'); return; }
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                document.getElementById('directorLoginSection').style.display = 'none';
-                document.getElementById('directorProfileSection').style.display = 'block';
-                let gradeFilter = [];
-                if(type === 'kg') gradeFilter = ['Nursery','Lower KG','Upper KG'];
-                else if(type === 'elementary') gradeFilter = ['Grade 1','Grade 2','Grade 3','Grade 4'];
-                else gradeFilter = ['Grade 9','Grade 10','Grade 11','Grade 12'];
-                const filtered = students.filter(s => gradeFilter.includes(s.grade));
-                const revenue = filtered.reduce((sum,s) => sum + (s.payments.registration?1000:0) + (s.payments.term1?3500:0),0);
-                document.getElementById('directorProfileContent').innerHTML = `
-                    <div class="form-card"><div style="display:flex; justify-content:space-between;"><div><img src="${ev.target.result}" style="width:70px;height:70px;border-radius:50%;"><h2><i class="fas fa-chart-line"></i> ${type.toUpperCase()} Director</h2></div><button onclick="logout()" class="btn-danger">Logout</button></div></div>
-                    <div class="grid-3"><div class="card"><h3>Students</h3><p style="font-size:36px;">${filtered.length}</p></div><div class="card"><h3>Revenue</h3><p style="font-size:36px;">${revenue.toLocaleString()} ETB</p></div><div class="card"><h3>Paid Registration</h3><p>${filtered.filter(s=>s.payments.registration).length}</p></div></div>
-                    <div class="card"><h3>Students</h3><div class="student-table"><table><thead><tr><th>Name</th><th>ID</th><th>Grade</th><th>Telegram</th><th>Paid</th></tr></thead><tbody>${filtered.map(s=>`<tr><td style="padding:12px;">${s.fullName}络<td style="padding:12px;">${s.studentId}络<td style="padding:12px;">${s.grade}络<td style="padding:12px;">${s.telegram||'N/A'}络<td style="padding:12px;">${s.payments.registration?'✅':'❌'}络</tr>`).join('')}</tbody></table></div></div>
-                    <div class="footer-links"><a onclick="openModal('purposeModal')">Purpose</a><a onclick="openModal('feedbackModal')">Feedback</a><a onclick="openModal('privacyModal')">Privacy</a><a onclick="openModal('contactModal')">Contact</a></div>
-                `;
-            };
-            reader.readAsDataURL(photoFile);
-        } else alert('Invalid credentials');
-    });
+    document.getElementById('directorLoginForm')?.addEventListener('submit',(e)=>{ e.preventDefault(); const type=document.getElementById('directorType').value; const password=document.getElementById('directorPassword').value; const director=directors.find(d=>d.type===type&&d.password===password); if(director){ const photoFile=document.getElementById('directorPhoto').files[0]; if(!photoFile){ alert('Upload photo!'); return; } const reader=new FileReader(); reader.onload=(ev)=>{ document.getElementById('directorLoginSection').style.display='none'; document.getElementById('directorProfileSection').style.display='block'; let gradeFilter=[]; if(type==='kg') gradeFilter=['Nursery','Lower KG','Upper KG']; else if(type==='elementary') gradeFilter=['Grade 1','Grade 2','Grade 3','Grade 4']; else gradeFilter=['Grade 9','Grade 10','Grade 11','Grade 12']; const filtered=students.filter(s=>gradeFilter.includes(s.grade)); const revenue=filtered.reduce((sum,s)=>sum+(s.payments.registration?1000:0)+(s.payments.term1?3500:0),0); document.getElementById('directorProfileContent').innerHTML=`<div class="form-card"><div style="display:flex; justify-content:space-between;"><div><img src="${ev.target.result}" style="width:70px;height:70px;border-radius:50%;"><h2><i class="fas fa-chart-line"></i> ${type.toUpperCase()} Director</h2></div><button onclick="logout()" class="btn-danger">Logout</button></div></div><div class="grid-3"><div class="card"><h3>Students</h3><p style="font-size:36px;">${filtered.length}</p></div><div class="card"><h3>Revenue</h3><p style="font-size:36px;">${revenue.toLocaleString()} ETB</p></div><div class="card"><h3>Paid Registration</h3><p>${filtered.filter(s=>s.payments.registration).length}</p></div></div><div class="card"><h3>Students</h3><div class="student-table"></tr><thead><tr><th>Name</th><th>ID</th><th>Grade</th><th>Telegram</th><th>Paid</th></tr></thead><tbody>${filtered.map(s=>`<tr><td style="padding:12px;">${s.fullName}络<td style="padding:12px;">${s.studentId}络<td style="padding:12px;">${s.grade}络<td style="padding:12px;">${s.telegram||'N/A'}络<td style="padding:12px;">${s.payments.registration?'✅':'❌'}络</tr>`).join('')}</tbody></table></div></div><div class="footer-links"><a onclick="openModal('purposeModal')">Purpose</a><a onclick="openModal('feedbackModal')">Feedback</a><a onclick="openModal('privacyModal')">Privacy</a><a onclick="openModal('contactModal')">Contact</a></div>`; }; reader.readAsDataURL(photoFile); } else alert('Invalid credentials'); });
     
-    document.getElementById('boardLoginForm')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = document.getElementById('boardEmail').value;
-        const password = document.getElementById('boardPassword').value;
-        if(email === 'board@hermana.edu' && password === 'board123') {
-            const photoFile = document.getElementById('boardPhoto').files[0];
-            if(!photoFile) { alert('Upload photo!'); return; }
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                document.getElementById('boardLoginSection').style.display = 'none';
-                document.getElementById('boardProfileSection').style.display = 'block';
-                const totalRevenue = students.reduce((sum,s) => sum + (s.payments.registration?1000:0) + (s.payments.term1?3500:0),0);
-                document.getElementById('boardProfileContent').innerHTML = `
-                    <div class="form-card"><div style="display:flex; justify-content:space-between;"><div><img src="${ev.target.result}" style="width:70px;height:70px;border-radius:50%;"><h2><i class="fas fa-building"></i> Board Dashboard</h2></div><button onclick="logout()" class="btn-danger">Logout</button></div></div>
-                    <div class="grid-4"><div class="card"><h3>Students</h3><p style="font-size:28px;">${students.length}</p></div><div class="card"><h3>Teachers</h3><p style="font-size:28px;">${teachers.length}</p></div><div class="card"><h3>Revenue</h3><p style="font-size:28px;">${totalRevenue.toLocaleString()} ETB</p></div><div class="card"><h3>Pending</h3><p style="font-size:28px;">${pendingTeachers.length}</p></div></div>
-                    <div class="card"><h3>Pending Teacher Applications</h3><div class="student-table"><table><thead><tr><th>Name</th><th>Email</th><th>Grade Level</th><th>Telegram</th><th>Score</th><th>Action</th></tr></thead><tbody>${pendingTeachers.map(t=>`<tr><td style="padding:12px;">${t.fullName}络<td style="padding:12px;">${t.email}络<td style="padding:12px;">${t.gradeLevel}络<td style="padding:12px;">${t.telegram||'N/A'}络<td style="padding:12px;">${t.examScore}%络<td style="padding:12px;"><button onclick="approveTeacher(${t.id})" class="btn-small btn-success">✅ Approve</button> <button onclick="rejectTeacher(${t.id})" class="btn-small btn-danger">❌ Reject</button>络</tr>`).join('')}</tbody></table></div></div>
-                    <div class="footer-links"><a onclick="openModal('purposeModal')">Purpose</a><a onclick="openModal('feedbackModal')">Feedback</a><a onclick="openModal('privacyModal')">Privacy</a><a onclick="openModal('contactModal')">Contact</a></div>
-                `;
-            };
-            reader.readAsDataURL(photoFile);
-        } else alert('Invalid credentials');
-    });
+    document.getElementById('boardLoginForm')?.addEventListener('submit',(e)=>{ e.preventDefault(); const email=document.getElementById('boardEmail').value; const password=document.getElementById('boardPassword').value; if(email==='board@hermana.edu'&&password==='board123'){ const photoFile=document.getElementById('boardPhoto').files[0]; if(!photoFile){ alert('Upload photo!'); return; } const reader=new FileReader(); reader.onload=(ev)=>{ document.getElementById('boardLoginSection').style.display='none'; document.getElementById('boardProfileSection').style.display='block'; const totalRevenue=students.reduce((sum,s)=>sum+(s.payments.registration?1000:0)+(s.payments.term1?3500:0),0); document.getElementById('boardProfileContent').innerHTML=`<div class="form-card"><div style="display:flex; justify-content:space-between;"><div><img src="${ev.target.result}" style="width:70px;height:70px;border-radius:50%;"><h2><i class="fas fa-building"></i> Board Dashboard</h2></div><button onclick="logout()" class="btn-danger">Logout</button></div></div><div class="grid-4"><div class="card"><h3>Students</h3><p style="font-size:28px;">${students.length}</p></div><div class="card"><h3>Teachers</h3><p style="font-size:28px;">${teachers.length}</p></div><div class="card"><h3>Revenue</h3><p style="font-size:28px;">${totalRevenue.toLocaleString()} ETB</p></div><div class="card"><h3>Pending</h3><p style="font-size:28px;">${pendingTeachers.length}</p></div></div><div class="card"><h3>Pending Teacher Applications</h3><div class="student-table"><tr><thead><tr><th>Name</th><th>Email</th><th>Grade Level</th><th>Telegram</th><th>Score</th><th>Action</th></tr></thead><tbody>${pendingTeachers.map(t=>`<tr><td style="padding:12px;">${t.fullName}络<td style="padding:12px;">${t.email}络<td style="padding:12px;">${t.gradeLevel}络<td style="padding:12px;">${t.telegram||'N/A'}络<td style="padding:12px;">${t.examScore}%络<td style="padding:12px;"><button onclick="approveTeacher(${t.id})" class="btn-small btn-success">✅ Approve</button> <button onclick="rejectTeacher(${t.id})" class="btn-small btn-danger">❌ Reject</button>络</tr>`).join('')}</tbody></table></div></div><div class="footer-links"><a onclick="openModal('purposeModal')">Purpose</a><a onclick="openModal('feedbackModal')">Feedback</a><a onclick="openModal('privacyModal')">Privacy</a><a onclick="openModal('contactModal')">Contact</a></div>`; }; reader.readAsDataURL(photoFile); } else alert('Invalid credentials'); });
     
-    window.approveTeacher = (id) => {
-        const teacher = pendingTeachers.find(t => t.id === id);
-        if(teacher) {
-            teacher.status = 'approved';
-            saveData();
-            // Send approval notification to teacher's Telegram
-            if(teacher.telegram) {
-                const approvalMessage = `✅ Congratulations ${teacher.fullName}! Your teacher application has been APPROVED!\n\n🆔 Teacher ID: ${generateTeacherId()}\n🔑 Approval Code: ${teacher.approvalCode}\n\nLogin with your approval code and full name. Welcome to Hermana Academy! 🎉`;
-                sendToTelegram(teacher.telegram, approvalMessage);
-            }
-            alert(`Teacher ${teacher.fullName} approved!`);
-            location.reload();
-        }
-    };
-    window.rejectTeacher = (id) => {
-        const idx = pendingTeachers.findIndex(t => t.id === id);
-        if(idx !== -1) {
-            const teacher = pendingTeachers[idx];
-            if(teacher.telegram) {
-                sendToTelegram(teacher.telegram, `❌ Dear ${teacher.fullName}, we regret to inform you that your teacher application has not been accepted at this time. Thank you for your interest in Hermana Academy.`);
-            }
-            pendingTeachers.splice(idx,1);
-            saveData();
-            alert('Teacher rejected.');
-            location.reload();
-        }
-    };
+    window.approveTeacher=(id)=>{ const teacher=pendingTeachers.find(t=>t.id===id); if(teacher){ teacher.status='approved'; saveData(); alert(`Teacher ${teacher.fullName} approved!`); location.reload(); } };
+    window.rejectTeacher=(id)=>{ const idx=pendingTeachers.findIndex(t=>t.id===id); if(idx!==-1){ pendingTeachers.splice(idx,1); saveData(); alert('Teacher rejected.'); location.reload(); } };
     
-    let selectedRating = 0;
-    document.querySelectorAll('#starRating .star')?.forEach(star => {
-        star.addEventListener('click', function() {
-            selectedRating = parseInt(this.getAttribute('data-value'));
-            document.querySelectorAll('#starRating .star').forEach(s => s.classList.remove('active'));
-            for(let i=0; i<selectedRating; i++) document.querySelectorAll('#starRating .star')[i].classList.add('active');
-            document.getElementById('feedbackRating').value = selectedRating;
-        });
-    });
-    document.getElementById('feedbackForm')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const rating = document.getElementById('feedbackRating').value;
-        const text = document.getElementById('feedbackText').value;
-        if(!rating || rating==0) { alert('Rate us!'); return; }
-        if(!text.trim()) { alert('Write feedback!'); return; }
-        const fb = JSON.parse(localStorage.getItem('hermana_feedbacks') || '[]');
-        fb.unshift({ rating, text, date: new Date().toISOString() });
-        localStorage.setItem('hermana_feedbacks', JSON.stringify(fb));
-        document.getElementById('feedbackThanks').style.display = 'block';
-        document.getElementById('feedbackForm').reset();
-        document.querySelectorAll('#starRating .star').forEach(s => s.classList.remove('active'));
-        document.getElementById('feedbackRating').value = '0';
-        selectedRating = 0;
-        setTimeout(() => { document.getElementById('feedbackThanks').style.display = 'none'; closeModal('feedbackModal'); }, 2000);
-    });
+    let selectedRating=0; document.querySelectorAll('#starRating .star')?.forEach(star=>{ star.addEventListener('click',function(){ selectedRating=parseInt(this.getAttribute('data-value')); document.querySelectorAll('#starRating .star').forEach(s=>s.classList.remove('active')); for(let i=0;i<selectedRating;i++) document.querySelectorAll('#starRating .star')[i].classList.add('active'); document.getElementById('feedbackRating').value=selectedRating; }); });
+    document.getElementById('feedbackForm')?.addEventListener('submit',(e)=>{ e.preventDefault(); const rating=document.getElementById('feedbackRating').value; const text=document.getElementById('feedbackText').value; if(!rating||rating==0){ alert('Rate us!'); return; } const fb=JSON.parse(localStorage.getItem('hermana_feedbacks')||'[]'); fb.unshift({rating,text,date:new Date().toISOString()}); localStorage.setItem('hermana_feedbacks',JSON.stringify(fb)); document.getElementById('feedbackThanks').style.display='block'; document.getElementById('feedbackForm').reset(); document.querySelectorAll('#starRating .star').forEach(s=>s.classList.remove('active')); document.getElementById('feedbackRating').value='0'; selectedRating=0; setTimeout(()=>{ document.getElementById('feedbackThanks').style.display='none'; closeModal('feedbackModal'); },2000); });
     
-    function logout() { location.reload(); }
+    function logout(){ location.reload(); }
     
-    window.selectRole = selectRole;
-    window.openModal = openModal;
-    window.closeModal = closeModal;
-    window.logout = logout;
+    window.selectRole=selectRole; window.openModal=openModal; window.closeModal=closeModal; window.logout=logout;
 </script>
 
 <div class="creator-credit">
